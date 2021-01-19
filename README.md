@@ -13,3 +13,7 @@ Ongoing developing a low-cost cell density monitoring accessory for standard lab
 - VIN: 3.3V
 - SDA: IO21
 - SCL: IO22
+
+## Compilation Instructions
+
+This code is designed to be deployed using PlatformIO on either VSCode or Atom. Before attempting to build or upload the code, make sure to verify the upload_port parameter is correct on the platform.ini file.

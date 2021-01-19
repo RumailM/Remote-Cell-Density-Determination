@@ -26,7 +26,7 @@ void setup() {
   while (!Serial) {
     delay(1);
   }
-  Serial.println("SmartClamp v0.1.0\n")
+  Serial.println("SmartClamp v0.1.0\n");
   
   if (!as7341.begin()){
     Serial.println("Could not find AS7341");
@@ -43,9 +43,6 @@ void setup() {
   // Set up the ADC gain multiplier
   as7341.setGain(AS7341_GAIN_256X);
 
-  uint16_t readings[12];
-  float counts[12];
-
   Serial.println("Done with setup");
 }
 
@@ -53,6 +50,9 @@ void setup() {
 
 
 void loop(void) {
+
+  uint16_t readings[12];
+  float counts[12];
 
   if (!as7341.readAllChannels(readings)){
     Serial.println("Error reading all channels!");

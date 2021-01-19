@@ -1,3 +1,6 @@
+
+///////////////////   LIBRARIES    ///////////////
+
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
@@ -6,38 +9,50 @@
 #include <Adafruit_AS7341.h>
 #include <string>
 
+///////////////////   CONSTANTS    ///////////////
+
+
+
+///////////////////   OBJECT DECLARATION    ///////////////
+
 Adafruit_AS7341 as7341;
 
-///////////////////   SETUP AND LOOP ///////////////
+///////////////////   SETUP    ///////////////
 
 
 void setup() {
   Serial.begin(115200);
-  unsigned long start = micros();
 
   while (!Serial) {
     delay(1);
   }
+  Serial.println("SmartClamp v0.1.0\n")
   
   if (!as7341.begin()){
     Serial.println("Could not find AS7341");
     while (1) { delay(10); }
   }
   
+
+  // Set up the integration time step count
+  //  Total integration time will be `(ATIME + 1) * (ASTEP + 1) * 2.78µS`
+
   as7341.setATIME(100);
   as7341.setASTEP(999);
+
+  // Set up the ADC gain multiplier
   as7341.setGain(AS7341_GAIN_256X);
-
-  Serial.println("Done with setup");
-}
-
-
-void loop(void) {
 
   uint16_t readings[12];
   float counts[12];
 
-  unsigned long start = micros();
+  Serial.println("Done with setup");
+}
+
+///////////////////   LOOP    ///////////////
+
+
+void loop(void) {
 
   if (!as7341.readAllChannels(readings)){
     Serial.println("Error reading all channels!");

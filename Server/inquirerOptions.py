@@ -10,7 +10,7 @@ mainMenu = [
             ),
 ]
 
-quit = [
+quitMenu = [
   inquirer.List(name = 'Quit',
                 message="Are you sure you wish to quit?:",
                 choices= YN

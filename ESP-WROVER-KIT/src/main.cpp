@@ -1,6 +1,8 @@
 
 ///////////////////   LIBRARIES    ///////////////
 
+#include <stdint.h>
+#include <stdio.h>
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
@@ -8,9 +10,11 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_AS7341.h>
 #include <string>
+#include <time.h>
 
 #include <Led_Control.h>
 #include <Serial_Processing.h>
+#include <Serial_AS7341.h>
 
 ///////////////////   CONSTANTS    ///////////////
 
@@ -21,7 +25,6 @@ const String SMARTCLAMP_VERSION = "0.15";
 Adafruit_AS7341 as7341;
 
 ///////////////////   SETUP    ///////////////
-
 
 void setup() {
   Serial.begin(115200);
@@ -73,29 +76,9 @@ void loop(void) {
     counts[i] = as7341.toBasicCounts(readings[i]);
   }
 
-  Serial.print("F1 415nm : ");
-  Serial.println(counts[0]);
-  Serial.print("F2 445nm : ");
-  Serial.println(counts[1]);
-  Serial.print("F3 480nm : ");
-  Serial.println(counts[2]);
-  Serial.print("F4 515nm : ");
-  Serial.println(counts[3]);
-  Serial.print("F5 555nm : ");
-  // again, we skip the duplicates  
-  Serial.println(counts[6]);
-  Serial.print("F6 590nm : ");
-  Serial.println(counts[7]);
-  Serial.print("F7 630nm : ");
-  Serial.println(counts[8]);
-  Serial.print("F8 680nm : ");
-  Serial.println(counts[9]);
-  Serial.print("Clear    : ");
-  Serial.println(counts[10]);
-  Serial.print("NIR      : ");
-  Serial.println(counts[11]);
-
-  Serial.println();
+  serialPrintBasicCounts(Serial, counts);
+  
+  
   
   delay(500);
 }

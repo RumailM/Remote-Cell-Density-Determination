@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#include <ledControl.h>
-#include <serialProcessing.h>
+#include <Led_Control.h>
+#include <Serial_Processing.h>
 
 const uint8_t SERIAL_BUFFER_LEN = 128;
 char serialBuffer[SERIAL_BUFFER_LEN];

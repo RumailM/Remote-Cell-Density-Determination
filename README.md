@@ -15,7 +15,7 @@ Ongoing developing a low-cost cell density monitoring accessory for standard lab
 - VIN: 3.3V
 - I2C SDA: IO21
 - I2C SCL: IO22
-- LED PWM:
+- LED PWM: IO4
 
 ## Compilation Instructions
 

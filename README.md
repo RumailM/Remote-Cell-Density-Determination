@@ -6,13 +6,16 @@ Ongoing developing a low-cost cell density monitoring accessory for standard lab
 
 - ESP-WROVER-KIT
 - ADAFRUIT AS7341
+- 56 Ohm Resistor
+- ThorLabs LED631E
 
 ## ESP-WROVER-KIT Hardware Connections
 
 - Power: microUSB port
 - VIN: 3.3V
-- SDA: IO21
-- SCL: IO22
+- I2C SDA: IO21
+- I2C SCL: IO22
+- LED PWM:
 
 ## Compilation Instructions
 

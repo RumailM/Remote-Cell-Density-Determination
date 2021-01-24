@@ -11,7 +11,11 @@
 
 ///////////////////   CONSTANTS    ///////////////
 
-
+const uint8_t LED_PIN = 4;       // PWM Pin
+const double LED_FREQ = 5000;       // PWM Frequency
+const uint8_t LED_CH = 0;         // PWM Channel
+const uint8_t LED_RES = 8;       // ADC Resolution
+const uint32_t LED_DUTY_CYCLE = 255;
 
 ///////////////////   OBJECT DECLARATION    ///////////////
 
@@ -42,6 +46,11 @@ void setup() {
 
   // Set up the ADC gain multiplier
   as7341.setGain(AS7341_GAIN_256X);
+
+  // Setup LED PWM Signal.
+  ledcSetup(LED_CH, LED_FREQ, LED_RES);
+  ledcAttachPin(LED_PIN, LED_CH);
+  ledcWrite(LED_CH, LED_DUTY_CYCLE);
 
   Serial.println("Done with setup");
 }

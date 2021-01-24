@@ -62,9 +62,9 @@
 
 #define AS7341_WHOAMI 0x92 ///< Chip ID register
 
-#define AS7341_ASTATUS 0x60    ///< AS7341_ASTATUS (unused)
-#define AS7341_CH0_DATA_L 0x61 ///< AS7341_CH0_DATA_L (unused)
-#define AS7341_CH0_DATA_H 0x62 ///< AS7341_CH0_DATA_H (unused)
+// #define AS7341_ASTATUS 0x60    ///< AS7341_ASTATUS (unused)
+// #define AS7341_CH0_DATA_L 0x61 ///< AS7341_CH0_DATA_L (unused)
+// #define AS7341_CH0_DATA_H 0x62 ///< AS7341_CH0_DATA_H (unused)
 #define AS7341_ITIME_L 0x63    ///< AS7341_ITIME_L (unused)
 #define AS7341_ITIME_M 0x64    ///< AS7341_ITIME_M (unused)
 #define AS7341_ITIME_H 0x65    ///< AS7341_ITIME_H (unused)

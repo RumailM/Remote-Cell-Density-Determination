@@ -14,6 +14,7 @@ bool setupLED(){
     ledcAttachPin(LED_PIN, LED_CH);
     ledcWrite(LED_CH, dutyCycle);
     turnOnLight();
+    return(true);
 }
 
 bool turnOnLight(){
@@ -30,11 +31,16 @@ bool turnOffLight(){
     Serial.print("Light On: ");
     Serial.print(light);
     Serial.println("$");
+    light = false;
     return !light;
 }
 
 void setLightIntensity(uint8_t intensity){
     dutyCycle = intensity;
+    ledcWrite(LED_CH, dutyCycle);
+    Serial.print("Light On: ");
+    Serial.print(light);
+    Serial.println("$");
 }
 
 bool lightIsOn(){

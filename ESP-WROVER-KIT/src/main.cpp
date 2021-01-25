@@ -17,6 +17,7 @@
 ///////////////////   CONSTANTS    ///////////////
 
 const String SMARTCLAMP_VERSION = "0.15";
+const unsigned long READING_PERIOD = 1000; 
 
 ///////////////////   GLOBAL VARIABLES    ///////////////
 
@@ -61,7 +62,7 @@ void loop(void) {
 
   uint16_t readings[12];
   float counts[12];
-  if (millis() - lastMsecs > 500){
+  if (millis() - lastMsecs > READING_PERIOD){
     if (!as7341.readAllChannels(readings)){
       Serial.println("Error reading all channels!");
       return;
@@ -76,5 +77,5 @@ void loop(void) {
 
     serialPrintBasicCounts(Serial, counts);
     lastMsecs = millis();
-  }
+  }else{read_SERIAL();}
 }

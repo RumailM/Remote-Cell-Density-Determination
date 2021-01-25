@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/rum/Desktop/Flask-MQTT/example/env"
+set -gx VIRTUAL_ENV "/home/rum/Desktop/Remote-Cell-Density-Determination/Webserver/env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

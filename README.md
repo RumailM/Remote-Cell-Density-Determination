@@ -11,7 +11,6 @@ Ongoing developing a low-cost cell density monitoring accessory for standard lab
 
 ## ESP-WROVER-KIT Hardware Connections
 
-- Power: microUSB port
 - VIN: 3.3V
 - I2C SDA: IO21
 - I2C SCL: IO22

@@ -39,6 +39,8 @@ mqtt = Mqtt(app)
 socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
 
+qos = 2;
+
 
 @app.route('/')
 def index():
@@ -49,6 +51,12 @@ def index():
 def handle_publish(json_str):
     data = json.loads(json_str)
     mqtt.publish(data['topic'], data['message'], data['qos'])
+
+@socketio.on('experiment_toggle')
+def handle_publish(json_str):
+    # data = json.loads(json_str)
+    print("this works??")
+    mqtt.publish("lab/control/experimentToggle", json_str, qos)
 
 
 @socketio.on('subscribe')
@@ -77,6 +85,28 @@ def handle_logging(client, userdata, level, buf):
     # print(level, buf)
     pass
 
+@mqtt.on_topic("a")
+def handle_a(client, userdata, message):
+    # create log file and start recording
+    print('Received message on topic {}: {}'
+          .format(message.topic, message.payload.decode()))
+    
+
+
+@mqtt.on_topic("lab/control/experimentToggle")
+def handle_experimentToggle(client, userdata, message):
+    # create log file and start recording
+    print('Received message on topic {}: {}'
+          .format(message.topic, message.payload.decode()))
+    received_payload = message.payload.decode();
+    print('                        line94')
+    print(received_payload);
+    received_payload = json.loads(received_payload)
+    date = "date"; # replace with actual time
+    device_id = received_payload['id'];
+    experiment_counter = "123"; # replace 
+    open(device_id + "_" + experiment_counter + "_" + date,'x');
 
 if __name__ == '__main__':
+    mqtt.subscribe("lab/control/experimentToggle", qos);
     socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)

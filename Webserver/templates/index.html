@@ -35,6 +35,14 @@ var last_time = 7;
       socket.emit('experiment_toggle', message);
     });
 
+    $('#publish_to_a').click(function(event) {
+      var topic = $('#topic_a').val();
+      var message = $('#message_a').val();
+      var qos = $('#qos_a').val();
+      var data = '{"topic (a)": "' + topic + '", "message": "' + message + '", "qos": ' + qos + '}';
+      socket.emit('publish_to_a', message);
+    });
+
     $('#subscribe').click(function(event) {
       var topic = $('#subscribe_topic').val();
       var qos = $('#subscribe_qos').val();
@@ -212,6 +220,48 @@ var last_time = 7;
       </div>
     </div>
 
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Publish MQTT A Message</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Topic: </label>
+                  <div class="col-xs-8">
+                    <input id="topic_a" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Message: </label>
+                  <div class="col-xs-8">
+                    <input id="message_a" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Qos: </label>
+                  <div class="col-xs-8">
+                    <select id="qos_a" class="form-control">
+                      <option value=0>0</option>
+                      <option value=1>1</option>
+                      <option value=2>2</option>
+                    </select>
+                  </div> 
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-8 col-xs-offset-4">
+                    <button id="publish_to_a" class="btn btn-primary">Publish</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
 

@@ -58,6 +58,12 @@ def handle_publish(json_str):
     print("this works??")
     mqtt.publish("lab/control/experimentToggle", json_str, qos)
 
+@socketio.on('publish_to_a')
+def handle_publish(json_str):
+    # data = json.loads(json_str)
+    # print("this works??")
+    mqtt.publish("a", json_str, qos)
+
 
 @socketio.on('subscribe')
 def handle_subscribe(json_str):
@@ -72,11 +78,27 @@ def handle_unsubscribe_all():
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
+    print("inside mqtt.on_message")
+    print(message.payload.decode())
     data = dict(
         topic=message.topic,
         payload=message.payload.decode(),
         qos=message.qos,
     )
+    print(message.payload.decode())
+    # print(payload)
+    payload_dict = json.loads(message.payload.decode())
+    print(payload_dict["msgType"])
+    print(type(payload_dict["msgType"]))
+    if payload_dict["msgType"] == "data":
+        print("inside if")
+        file_name = payload_dict["id"]+"_"+"123"+"_"+"date"+".txt"
+        print(file_name)
+        file_descriptor = open(file_name,"a")
+        file_descriptor.write(message.payload.decode())
+        file_descriptor.write("\n")
+        
+        file_descriptor.close()
     socketio.emit('mqtt_message', data=data)
 
 
@@ -85,13 +107,12 @@ def handle_logging(client, userdata, level, buf):
     # print(level, buf)
     pass
 
-@mqtt.on_topic("a")
-def handle_a(client, userdata, message):
-    # create log file and start recording
-    print('Received message on topic {}: {}'
-          .format(message.topic, message.payload.decode()))
+# @mqtt.on_topic("a")
+# def handle_a(client, userdata, message):
+#     # create log file and start recording
+#     print('Received message on topic {}: {}'
+#           .format(message.topic, message.payload.decode()))
     
-
 
 @mqtt.on_topic("lab/control/experimentToggle")
 def handle_experimentToggle(client, userdata, message):
@@ -99,13 +120,14 @@ def handle_experimentToggle(client, userdata, message):
     print('Received message on topic {}: {}'
           .format(message.topic, message.payload.decode()))
     received_payload = message.payload.decode();
-    print('                        line94')
+    print('                        line102')
     print(received_payload);
     received_payload = json.loads(received_payload)
     date = "date"; # replace with actual time
     device_id = received_payload['id'];
     experiment_counter = "123"; # replace 
-    open(device_id + "_" + experiment_counter + "_" + date,'x');
+    new_file = open(device_id + "_" + experiment_counter + "_" + date + ".txt",'x');
+    new_file.close()
 
 if __name__ == '__main__':
     mqtt.subscribe("lab/control/experimentToggle", qos);

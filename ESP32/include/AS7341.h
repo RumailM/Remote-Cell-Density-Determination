@@ -6,3 +6,4 @@
 
 bool initializeSensor(Adafruit_AS7341 &as7341);
 bool setGain(Adafruit_AS7341 &as7341, float gain);
+float getGain(Adafruit_AS7341 &as7341);

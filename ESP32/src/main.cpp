@@ -33,21 +33,8 @@ void setup() {
     delay(1);
   }
   Serial.println("SmartClamp v0.1.0\n");
-  
-  if (!as7341.begin()){
-    Serial.println("Could not find AS7341");
-    while (1) { delay(10); }
-  }
-  
-
-  // Set up the integration time step count
-  //  Total integration time will be `(ATIME + 1) * (ASTEP + 1) * 2.78µS`
-
-  as7341.setATIME(100);
-  as7341.setASTEP(999);
-
-  // Set up the ADC gain multiplier
-  as7341.setGain(AS7341_GAIN_256X);
+  initializeSensor(as7341);
+  printParameters(Serial, as7341);
 
   // Setup LED PWM Signal.
   setupLED();

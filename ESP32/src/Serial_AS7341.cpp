@@ -2,7 +2,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include <Serial_AS7341.h>
+#include <Serial_Processing.h>
+#include <AS7341.h>
 
 bool serialPrintBasicCounts(Stream &serialport, float_t counts[12]){
     
@@ -29,5 +30,18 @@ bool serialPrintBasicCounts(Stream &serialport, float_t counts[12]){
     serialport.println(counts[11]);
 
     serialport.println();
+    return true;
+}
+
+bool printParameters(Stream &Serial, Adafruit_AS7341 &as7341){
+    Serial.print("Sensor Gain: ");
+    Serial.println(getGain(as7341));
+    Serial.print("Sensor ATime: ");
+    Serial.println(as7341.getATIME());
+    Serial.print("Sensor AStep: ");
+    Serial.println(as7341.getASTEP());
+    Serial.print("Sensor Integration Time (ms): ");
+    Serial.println( (as7341.getATIME()+1) * (as7341.getASTEP()+1) * 2.78 * 0.001);
+    Serial.println();
     return true;
 }

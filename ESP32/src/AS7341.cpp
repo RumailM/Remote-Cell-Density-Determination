@@ -40,7 +40,7 @@ bool initializeSensor(Adafruit_AS7341 &as7341){
         as7341.setASTEP(999);
 
         // Set up the ADC gain multiplier
-        as7341.setGain(AS7341_GAIN_32X);
+        as7341.setGain(AS7341_GAIN_8X);
     return true;
 }
 
@@ -52,4 +52,45 @@ bool setGain(Adafruit_AS7341 &as7341, float gain){
         }
     }
     return false;
+}
+
+float getGain(Adafruit_AS7341 &as7341){
+    float gain_val = 0;
+    as7341_gain_t gain = as7341.getGain();
+    switch (gain) {
+    case AS7341_GAIN_0_5X:
+        gain_val = 0.5;
+        break;
+    case AS7341_GAIN_1X:
+        gain_val = 1;
+        break;
+    case AS7341_GAIN_2X:
+        gain_val = 2;
+        break;
+    case AS7341_GAIN_4X:
+        gain_val = 4;
+        break;
+    case AS7341_GAIN_8X:
+        gain_val = 8;
+        break;
+    case AS7341_GAIN_16X:
+        gain_val = 16;
+        break;
+    case AS7341_GAIN_32X:
+        gain_val = 32;
+        break;
+    case AS7341_GAIN_64X:
+        gain_val = 64;
+        break;
+    case AS7341_GAIN_128X:
+        gain_val = 128;
+        break;
+    case AS7341_GAIN_256X:
+        gain_val = 256;
+        break;
+    case AS7341_GAIN_512X:
+        gain_val = 512;
+        break;
+  }
+  return(gain_val);
 }

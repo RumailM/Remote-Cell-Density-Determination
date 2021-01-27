@@ -5,6 +5,7 @@
 #include <Led_Control.h>
 #include <Serial_Processing.h>
 #include <AS7341.h>
+#include <Serial_AS7341.h>
 
 const uint8_t SERIAL_BUFFER_LEN = 128;
 char serialBuffer[SERIAL_BUFFER_LEN];
@@ -46,11 +47,49 @@ void processSerialBuffer(Adafruit_AS7341 &as7341){
         setLightIntensity(getSerialIntArgument());
       }
     }
-    if( toupper(serialBuffer[bufferPos+1]) == 'S'){
+    if( toupper(serialBuffer[bufferPos+1]) == 'A'){
       if( toupper(serialBuffer[bufferPos+2]) == 'S'){
-        // SSS - Set Sensor Sensitivity
+        // SAS - Set AStep
         bufferPos += 3;
-        setGain(as7341 ,getSerialFloatArgument());
+        as7341.setASTEP(getSerialIntArgument());
+        Serial.print("Sensor AStep: ");
+        Serial.println(as7341.getASTEP());
+      }
+      if( toupper(serialBuffer[bufferPos+2]) == 'T'){
+        // SAT - Set ATime
+        bufferPos += 3;
+        as7341.setATIME(getSerialIntArgument());
+        Serial.print("Sensor ATime: ");
+        Serial.println(as7341.getATIME());
+      }
+    }
+    if( toupper(serialBuffer[bufferPos+1]) == 'S'){
+      if( toupper(serialBuffer[bufferPos+2]) == 'G'){
+        // SSG - Set Sensor Gain
+        float gain = getSerialFloatArgument();
+        if (!setGain(as7341 ,gain)){
+          Serial.print("Failed when attempting to set: ");
+          Serial.println(gain);
+        }
+        Serial.print("Sensor Gain: ");
+        Serial.println(getGain(as7341));
+      }
+    }
+  }
+
+  if(toupper(serialBuffer[bufferPos]) == 'G'){
+    if( toupper(serialBuffer[bufferPos+1]) == 'S'){
+      if( toupper(serialBuffer[bufferPos+2]) == 'P'){
+        // GSP - Get Sensor Parameters
+        Serial.print("Sensor Gain: ");
+        Serial.println(getGain(as7341));
+        Serial.print("Sensor ATime: ");
+        Serial.println(as7341.getATIME());
+        Serial.print("Sensor AStep: ");
+        Serial.println(as7341.getASTEP());
+        Serial.print("Sensor Integration Time (ms): ");
+        Serial.println( (as7341.getATIME()+1) * (as7341.getASTEP()+1) * 2.78 * 0.001);
+        Serial.println();
       }
     }
   }

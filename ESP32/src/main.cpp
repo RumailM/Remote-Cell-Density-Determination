@@ -13,6 +13,7 @@
 #include <Led_Control.h>
 #include <Serial_Processing.h>
 #include <Serial_AS7341.h>
+#include <AS7341.h>
 
 ///////////////////   CONSTANTS    ///////////////
 
@@ -77,5 +78,5 @@ void loop(void) {
 
     serialPrintBasicCounts(Serial, counts);
     lastMsecs = millis();
-  }else{read_SERIAL();}
+  }else{read_SERIAL(as7341);}
 }

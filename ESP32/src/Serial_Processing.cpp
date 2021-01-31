@@ -112,7 +112,6 @@ bool serialPrintBasicCounts(Stream &serialport, float_t counts[12]){
     serialport.println(counts[10]);
     serialport.print("NIR      : ");
     serialport.println(counts[11]);
-
     serialport.println();
     return true;
 }

@@ -41,11 +41,11 @@ bool Smartclamp_AS7341::initializeSensor(){
     }
     // Set up the integration time step count
     //  Total integration time will be `(ATIME + 1) * (ASTEP + 1) * 2.78µS`
-    Smartclamp_AS7341::enableSpectralMeasurement(false);
-    Smartclamp_AS7341::setATIME(DEFAULT_ATIME);
-    Smartclamp_AS7341::setASTEP(DEFAULT_ASTEP);
-    Smartclamp_AS7341::setGain(DEFAULT_GAIN);
-    Smartclamp_AS7341::enableSpectralMeasurement(true);
+    if (Smartclamp_AS7341::enableSpectralMeasurement(false)) Smartclamp_AS7341::as7341Info.sp_meas_en = false;
+    if (Smartclamp_AS7341::setATIME(DEFAULT_ATIME)) Smartclamp_AS7341::as7341Info.atime = DEFAULT_ATIME;
+    if (Smartclamp_AS7341::setASTEP(DEFAULT_ASTEP)) Smartclamp_AS7341::as7341Info.astep = DEFAULT_ASTEP;
+    if (Smartclamp_AS7341::setGain(DEFAULT_GAIN)) Smartclamp_AS7341::as7341Info.gain = DEFAULT_GAIN;
+    if (Smartclamp_AS7341::enableSpectralMeasurement(true)) Smartclamp_AS7341::as7341Info.sp_meas_en = true;
 
     return true;
 }
@@ -59,13 +59,13 @@ bool Smartclamp_AS7341::initializeSensor(){
  */
 bool Smartclamp_AS7341::printParameters(Stream &stream){
     stream.print("Sensor Gain: ");
-    stream.println(Smartclamp_AS7341::getGain());
+    stream.println(Smartclamp_AS7341::as7341Info.gain);
     stream.print("Sensor ATime: ");
-    stream.println(Smartclamp_AS7341::getATIME());
+    stream.println(Smartclamp_AS7341::as7341Info.atime);
     stream.print("Sensor AStep: ");
-    stream.println(Smartclamp_AS7341::getASTEP());
+    stream.println(Smartclamp_AS7341::as7341Info.astep);
     stream.print("Sensor Integration Time (ms): ");
-    stream.println( (Smartclamp_AS7341::getATIME()+1) * (Smartclamp_AS7341::getASTEP()+1) * 2.78 * 0.001);
+    stream.println( (Smartclamp_AS7341::as7341Info.atime+1) * (Smartclamp_AS7341::as7341Info.astep+1) * 2.78 * 0.001);
     stream.println();
     return true;
 }
@@ -80,7 +80,22 @@ bool Smartclamp_AS7341::spAgcEnable(bool enable_sp_agc){
       Adafruit_BusIO_Register(i2c_dev, AS7341_CFG8);
   Adafruit_BusIO_RegisterBits sp_agc_en =
       Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 2);
-  return sp_agc_en.write(enable_sp_agc);
+    sp_agc_en.write(enable_sp_agc);
+    Smartclamp_AS7341::as7341Info.sp_agc_en = Smartclamp_AS7341::getSpAgcEnable();
+  return Smartclamp_AS7341::as7341Info.sp_agc_en == enable_sp_agc;
+}
+
+/**
+ * @brief get the spectral automatic gain control state of the sensor
+ *
+ * @return true: on false: off
+ */
+bool Smartclamp_AS7341::getSpAgcEnable(){
+  Adafruit_BusIO_Register enable_sp_agc_reg =
+      Adafruit_BusIO_Register(i2c_dev, AS7341_CFG8);
+  Adafruit_BusIO_RegisterBits sp_agc_en =
+      Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 2);
+  return sp_agc_en.read();
 }
 
 /**
@@ -96,7 +111,9 @@ bool Smartclamp_AS7341::setLowAgcThreshold(as7341_agc_low_t low_threshold){
         Adafruit_BusIO_Register(i2c_dev, AS7341_CFG10, 1);
   Adafruit_BusIO_RegisterBits agc_low_threshold =
       Adafruit_BusIO_RegisterBits(&agc_threshold_reg, 2, 4);
-    return agc_low_threshold.write(low_threshold);
+      agc_low_threshold.write(low_threshold);
+    Smartclamp_AS7341::as7341Info.agc_low_th = Smartclamp_AS7341::getLowAgcThreshold();
+    return Smartclamp_AS7341::as7341Info.agc_low_th == low_threshold;
 }
 
 /**
@@ -125,7 +142,9 @@ bool Smartclamp_AS7341::setHighAgcThreshold(as7341_agc_high_t high_threshold){
         Adafruit_BusIO_Register(i2c_dev, AS7341_CFG10, 1);
   Adafruit_BusIO_RegisterBits agc_high_threshold =
       Adafruit_BusIO_RegisterBits(&agc_threshold_reg, 2, 6);
-    return agc_high_threshold.write(high_threshold);
+    agc_high_threshold.write(high_threshold);
+    Smartclamp_AS7341::as7341Info.agc_high_th = Smartclamp_AS7341::getHighAgcThreshold();
+    return as7341Info.agc_high_th == high_threshold;
 }
 
 /**

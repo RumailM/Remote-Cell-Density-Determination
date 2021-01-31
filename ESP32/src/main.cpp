@@ -3,12 +3,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <Arduino.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <FS.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_AS7341.h>
 
 #include <Led_Control.h>
 #include <Serial_Processing.h>

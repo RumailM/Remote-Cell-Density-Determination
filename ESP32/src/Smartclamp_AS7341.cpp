@@ -40,16 +40,25 @@ bool Smartclamp_AS7341::initializeSensor(){
     }
     // Set up the integration time step count
     //  Total integration time will be `(ATIME + 1) * (ASTEP + 1) * 2.78µS`
-    Smartclamp_AS7341::enableSpectralMeasurement(false);
-    Smartclamp_AS7341::setATIME(DEFAULT_ATIME);
-    Smartclamp_AS7341::setASTEP(DEFAULT_ASTEP);
-    Smartclamp_AS7341::setGain(DEFAULT_GAIN);
-    Smartclamp_AS7341::setSpAgcEnable(false);
-    // Smartclamp_AS7341::setLowAgcThreshold(DEFAULT_SP_AGS_LOW);
-    // Smartclamp_AS7341::setHighAgcThreshold(DEFAULT_SP_AGS_HIGH);
-    Smartclamp_AS7341::enableSpectralMeasurement(true);
+    enableSpectralMeasurement(false);
+    setATIME(DEFAULT_ATIME);
+    setASTEP(DEFAULT_ASTEP);
+    setGain(DEFAULT_GAIN);
+    setSpAgcEnable(false);
+    setLowAgcThreshold(DEFAULT_SP_AGS_LOW);
+    setHighAgcThreshold(DEFAULT_SP_AGS_HIGH);
+    enableSpectralMeasurement(true);
 
     return true;
+}
+
+void Smartclamp_AS7341::updateSensorInfo(){
+    as7341Info.gain = getGain();
+    as7341Info.atime = getATIME();
+    as7341Info.astep = getASTEP();
+    as7341Info.sp_agc_en = getSpAgcEnable();
+    as7341Info.agc_low_th = getLowAgcThreshold();
+    as7341Info.agc_high_th = getHighAgcThreshold();
 }
 
 /**
@@ -60,20 +69,21 @@ bool Smartclamp_AS7341::initializeSensor(){
  * @return true: success false: failure
  */
 bool Smartclamp_AS7341::printParameters(Stream &stream){
+    updateSensorInfo();
     stream.print("Sensor Gain: ");
-    stream.println(Smartclamp_AS7341::as7341Info.gain);
+    stream.println(as7341Info.gain);
     stream.print("Sensor ATime: ");
-    stream.println(Smartclamp_AS7341::as7341Info.atime);
+    stream.println(as7341Info.atime);
     stream.print("Sensor AStep: ");
-    stream.println(Smartclamp_AS7341::as7341Info.astep);
+    stream.println(as7341Info.astep);
     stream.print("Sensor Sp AGC Enable: ");
-    stream.println(Smartclamp_AS7341::as7341Info.sp_agc_en);
+    stream.println(as7341Info.sp_agc_en);
     stream.print("Sensor Sp AGC Low: ");
-    stream.println(Smartclamp_AS7341::as7341Info.agc_low_th);
+    stream.println(as7341Info.agc_low_th);
     stream.print("Sensor Sp AGC High: ");
-    stream.println(Smartclamp_AS7341::as7341Info.agc_high_th);
+    stream.println(as7341Info.agc_high_th);
     stream.print("Sensor Integration Time (ms): ");
-    stream.println( (Smartclamp_AS7341::as7341Info.atime+1) * (Smartclamp_AS7341::as7341Info.astep+1) * 2.78 * 0.001);
+    stream.println( (as7341Info.atime+1) * (as7341Info.astep+1) * 2.78 * 0.001);
     stream.println();
     return true;
 }
@@ -89,8 +99,8 @@ bool Smartclamp_AS7341::setSpAgcEnable(bool enable_sp_agc){
   Adafruit_BusIO_RegisterBits sp_agc_en =
       Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 2);
     sp_agc_en.write(enable_sp_agc);
-    Smartclamp_AS7341::as7341Info.sp_agc_en = Smartclamp_AS7341::getSpAgcEnable();
-  return Smartclamp_AS7341::as7341Info.sp_agc_en == enable_sp_agc;
+    as7341Info.sp_agc_en = getSpAgcEnable();
+  return as7341Info.sp_agc_en == enable_sp_agc;
 }
 
 /**
@@ -120,8 +130,8 @@ bool Smartclamp_AS7341::setLowAgcThreshold(as7341_agc_low_t low_threshold){
   Adafruit_BusIO_RegisterBits agc_low_threshold =
       Adafruit_BusIO_RegisterBits(&agc_threshold_reg, 2, 4);
       agc_low_threshold.write(low_threshold);
-    Smartclamp_AS7341::as7341Info.agc_low_th = Smartclamp_AS7341::getLowAgcThreshold();
-    return Smartclamp_AS7341::as7341Info.agc_low_th == low_threshold;
+    as7341Info.agc_low_th = getLowAgcThreshold();
+    return as7341Info.agc_low_th == low_threshold;
 }
 
 /**
@@ -151,7 +161,7 @@ bool Smartclamp_AS7341::setHighAgcThreshold(as7341_agc_high_t high_threshold){
   Adafruit_BusIO_RegisterBits agc_high_threshold =
       Adafruit_BusIO_RegisterBits(&agc_threshold_reg, 2, 6);
     agc_high_threshold.write(high_threshold);
-    Smartclamp_AS7341::as7341Info.agc_high_th = Smartclamp_AS7341::getHighAgcThreshold();
+    as7341Info.agc_high_th = getHighAgcThreshold();
     return as7341Info.agc_high_th == high_threshold;
 }
 

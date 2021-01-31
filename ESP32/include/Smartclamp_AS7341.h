@@ -85,6 +85,7 @@ class Smartclamp_AS7341 : public Adafruit_AS7341 {
     Smartclamp_AS7341();
     ~Smartclamp_AS7341();
 
+    void updateSensorInfo();
     bool setSpAgcEnable(bool enable_sp_agc);
     bool getSpAgcEnable();
     bool setLowAgcThreshold(as7341_agc_low_t low_threshold);

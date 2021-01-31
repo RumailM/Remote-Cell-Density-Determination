@@ -13,7 +13,6 @@
  *
  */
 
-
 #include <Smartclamp_AS7341.h>
 
 
@@ -41,11 +40,14 @@ bool Smartclamp_AS7341::initializeSensor(){
     }
     // Set up the integration time step count
     //  Total integration time will be `(ATIME + 1) * (ASTEP + 1) * 2.78µS`
-    if (Smartclamp_AS7341::enableSpectralMeasurement(false)) Smartclamp_AS7341::as7341Info.sp_meas_en = false;
-    if (Smartclamp_AS7341::setATIME(DEFAULT_ATIME)) Smartclamp_AS7341::as7341Info.atime = DEFAULT_ATIME;
-    if (Smartclamp_AS7341::setASTEP(DEFAULT_ASTEP)) Smartclamp_AS7341::as7341Info.astep = DEFAULT_ASTEP;
-    if (Smartclamp_AS7341::setGain(DEFAULT_GAIN)) Smartclamp_AS7341::as7341Info.gain = DEFAULT_GAIN;
-    if (Smartclamp_AS7341::enableSpectralMeasurement(true)) Smartclamp_AS7341::as7341Info.sp_meas_en = true;
+    Smartclamp_AS7341::enableSpectralMeasurement(false);
+    Smartclamp_AS7341::setATIME(DEFAULT_ATIME);
+    Smartclamp_AS7341::setASTEP(DEFAULT_ASTEP);
+    Smartclamp_AS7341::setGain(DEFAULT_GAIN);
+    Smartclamp_AS7341::setSpAgcEnable(false);
+    // Smartclamp_AS7341::setLowAgcThreshold(DEFAULT_SP_AGS_LOW);
+    // Smartclamp_AS7341::setHighAgcThreshold(DEFAULT_SP_AGS_HIGH);
+    Smartclamp_AS7341::enableSpectralMeasurement(true);
 
     return true;
 }
@@ -64,6 +66,12 @@ bool Smartclamp_AS7341::printParameters(Stream &stream){
     stream.println(Smartclamp_AS7341::as7341Info.atime);
     stream.print("Sensor AStep: ");
     stream.println(Smartclamp_AS7341::as7341Info.astep);
+    stream.print("Sensor Sp AGC Enable: ");
+    stream.println(Smartclamp_AS7341::as7341Info.sp_agc_en);
+    stream.print("Sensor Sp AGC Low: ");
+    stream.println(Smartclamp_AS7341::as7341Info.agc_low_th);
+    stream.print("Sensor Sp AGC High: ");
+    stream.println(Smartclamp_AS7341::as7341Info.agc_high_th);
     stream.print("Sensor Integration Time (ms): ");
     stream.println( (Smartclamp_AS7341::as7341Info.atime+1) * (Smartclamp_AS7341::as7341Info.astep+1) * 2.78 * 0.001);
     stream.println();
@@ -75,7 +83,7 @@ bool Smartclamp_AS7341::printParameters(Stream &stream){
  *
  * @param enable_sp_agc true: on false: off
  */
-bool Smartclamp_AS7341::spAgcEnable(bool enable_sp_agc){
+bool Smartclamp_AS7341::setSpAgcEnable(bool enable_sp_agc){
   Adafruit_BusIO_Register enable_sp_agc_reg =
       Adafruit_BusIO_Register(i2c_dev, AS7341_CFG8);
   Adafruit_BusIO_RegisterBits sp_agc_en =

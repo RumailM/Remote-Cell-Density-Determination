@@ -38,9 +38,6 @@
 #include <FS.h>
 #include <Adafruit_AS7341.h>
 
-const uint8_t DEFAULT_ATIME = 29;
-const uint16_t DEFAULT_ASTEP = 599;
-const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
 
 const float possibleGains[11] = {0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
 const as7341_gain_t AS7341_gain[11] = {AS7341_GAIN_0_5X, AS7341_GAIN_1X, AS7341_GAIN_2X, 
@@ -73,6 +70,13 @@ struct as7431_info_t{
     as7341_agc_low_t agc_low_th;
 };
 
+const uint8_t DEFAULT_ATIME = 29;
+const uint16_t DEFAULT_ASTEP = 599;
+const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
+const as7341_agc_low_t DEFAULT_SP_AGS_LOW = AS7341_AGS_LOW_25;
+const as7341_agc_high_t DEFAULT_SP_AGS_HIGH = AS7341_AGS_HIGH_75;
+
+
 class Smartclamp_AS7341 : public Adafruit_AS7341 {
     public:
 
@@ -81,7 +85,7 @@ class Smartclamp_AS7341 : public Adafruit_AS7341 {
     Smartclamp_AS7341();
     ~Smartclamp_AS7341();
 
-    bool spAgcEnable(bool enable_sp_agc);
+    bool setSpAgcEnable(bool enable_sp_agc);
     bool getSpAgcEnable();
     bool setLowAgcThreshold(as7341_agc_low_t low_threshold);
     as7341_agc_low_t getLowAgcThreshold();

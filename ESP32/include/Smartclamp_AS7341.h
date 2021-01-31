@@ -29,6 +29,9 @@
  *     v1.0 - First release
  */
 
+#ifndef _SMARTCLAMP_AS7341_H
+#define _SMARTCLAMP_AS7341_H
+
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
@@ -57,3 +60,5 @@ class Smartclamp_AS7341 : public Adafruit_AS7341 {
     bool printParameters(Stream &Serial);
 
 };
+
+#endif

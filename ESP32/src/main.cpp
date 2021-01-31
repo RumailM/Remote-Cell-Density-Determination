@@ -12,7 +12,6 @@
 
 #include <Led_Control.h>
 #include <Serial_Processing.h>
-#include <Serial_AS7341.h>
 #include <Smartclamp_AS7341.h>
 
 ///////////////////   CONSTANTS    ///////////////

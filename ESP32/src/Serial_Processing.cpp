@@ -1,10 +1,4 @@
-#include <Arduino.h>
-#include <Wire.h>
-#include <Adafruit_AS7341.h>
-
-#include <Led_Control.h>
 #include <Serial_Processing.h>
-#include <Smartclamp_AS7341.h>
 
 const uint8_t SERIAL_BUFFER_LEN = 128;
 char serialBuffer[SERIAL_BUFFER_LEN];
@@ -74,7 +68,7 @@ void processSerialBuffer(Smartclamp_AS7341 &as7341){
   }
 }
 
-void read_SERIAL(Adafruit_AS7341 &as7341){
+void read_SERIAL(Smartclamp_AS7341 &as7341){
   if (Serial.available() > 0) {
     // get incoming byte:
     serialBuffer[bufferEnd] = Serial.read();

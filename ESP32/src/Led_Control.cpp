@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <LED_Control.h>
 
 const uint8_t LED_PIN = 4;                          // PWM Pin

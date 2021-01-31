@@ -12,7 +12,7 @@
 
 #include <Led_Control.h>
 #include <Serial_Processing.h>
-#include <Serial_AS7341.h>
+#include <Smartclamp_AS7341.h>
 
 ///////////////////   CONSTANTS    ///////////////
 
@@ -21,7 +21,7 @@ const unsigned long READING_PERIOD = 1000;
 
 ///////////////////   GLOBAL VARIABLES    ///////////////
 
-Adafruit_AS7341 as7341;
+Smartclamp_AS7341 as7341;
 unsigned long lastMsecs = millis();
 
 ///////////////////   SETUP    ///////////////
@@ -32,21 +32,8 @@ void setup() {
     delay(1);
   }
   Serial.println("SmartClamp v0.1.0\n");
-  
-  if (!as7341.begin()){
-    Serial.println("Could not find AS7341");
-    while (1) { delay(10); }
-  }
-  
-
-  // Set up the integration time step count
-  //  Total integration time will be `(ATIME + 1) * (ASTEP + 1) * 2.78µS`
-
-  as7341.setATIME(100);
-  as7341.setASTEP(999);
-
-  // Set up the ADC gain multiplier
-  as7341.setGain(AS7341_GAIN_256X);
+  as7341.initializeSensor();
+  as7341.printParameters(Serial);
 
   // Setup LED PWM Signal.
   setupLED();
@@ -77,5 +64,5 @@ void loop(void) {
 
     serialPrintBasicCounts(Serial, counts);
     lastMsecs = millis();
-  }else{read_SERIAL();}
+  }else{read_SERIAL(as7341);}
 }

@@ -23,6 +23,10 @@ typedef enum {
 } as7341_gain_t;
 */
 
+const uint8_t DEFAULT_ATIME = 29;
+const uint8_t DEFAULT_ASTEP = 599;
+const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
+
 float possibleGains[10] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
 as7341_gain_t AS7341_gain[10] = {AS7341_GAIN_1X, AS7341_GAIN_2X, 
                             AS7341_GAIN_4X, AS7341_GAIN_8X, AS7341_GAIN_16X,
@@ -36,11 +40,12 @@ bool initializeSensor(Adafruit_AS7341 &as7341){
     }
         // Set up the integration time step count
         //  Total integration time will be `(ATIME + 1) * (ASTEP + 1) * 2.78µS`
-        as7341.setATIME(100);
-        as7341.setASTEP(999);
-
-        // Set up the ADC gain multiplier
-        as7341.setGain(AS7341_GAIN_0_5X);
+        as7341.enableSpectralMeasurement(false);
+        as7341.setATIME(DEFAULT_ATIME);
+        as7341.setASTEP(DEFAULT_ASTEP);
+        as7341.setGain(DEFAULT_GAIN);
+        as7341.enableSpectralMeasurement(true);
+        
     return true;
 }
 

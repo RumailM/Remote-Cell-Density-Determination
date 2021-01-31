@@ -13,7 +13,7 @@
 #include <Led_Control.h>
 #include <Serial_Processing.h>
 #include <Serial_AS7341.h>
-#include <AS7341.h>
+#include <Smartclamp_AS7341.h>
 
 ///////////////////   CONSTANTS    ///////////////
 
@@ -22,7 +22,7 @@ const unsigned long READING_PERIOD = 1000;
 
 ///////////////////   GLOBAL VARIABLES    ///////////////
 
-Adafruit_AS7341 as7341;
+Smartclamp_AS7341 as7341;
 unsigned long lastMsecs = millis();
 
 ///////////////////   SETUP    ///////////////
@@ -33,8 +33,8 @@ void setup() {
     delay(1);
   }
   Serial.println("SmartClamp v0.1.0\n");
-  initializeSensor(as7341);
-  printParameters(Serial, as7341);
+  as7341.initializeSensor();
+  as7341.printParameters(Serial);
 
   // Setup LED PWM Signal.
   setupLED();

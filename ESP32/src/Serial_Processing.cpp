@@ -40,18 +40,6 @@ void processSerialBuffer(Adafruit_AS7341 &as7341){
   }
 
   if( toupper(serialBuffer[bufferPos]) == 'S'){
-    if( toupper(serialBuffer[bufferPos+1]) == 'S'){
-      if( toupper(serialBuffer[bufferPos+2]) == 'G'){
-        // SSG - Set Sensor Gain
-        int gain = getSerialIntArgument();
-        if (!setGain(as7341 ,gain)){
-          Serial.print("Failed when attempting to set: ");
-          Serial.println(gain);
-        }
-        Serial.print("Sensor Gain: ");
-        Serial.println(getGain(as7341));
-      }
-    }
     if( toupper(serialBuffer[bufferPos+1]) == 'L'){
       if( toupper(serialBuffer[bufferPos+2]) == 'I'){
         // SLI - Set Light Intensity

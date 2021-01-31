@@ -29,6 +29,11 @@ Smartclamp_AS7341::Smartclamp_AS7341(void) {}
  */
 Smartclamp_AS7341::~Smartclamp_AS7341(void) {}
 
+/**
+ * @brief Initializes sensor with default values
+ * 
+ * @return true: success false: failure
+ */
 bool Smartclamp_AS7341::initializeSensor(){
     if (!Smartclamp_AS7341::begin()){
         Serial.println("Could not find AS7341");
@@ -45,15 +50,22 @@ bool Smartclamp_AS7341::initializeSensor(){
     return true;
 }
 
-bool Smartclamp_AS7341::printParameters(Stream &Serial){
-    Serial.print("Sensor Gain: ");
-    Serial.println(Smartclamp_AS7341::getGain());
-    Serial.print("Sensor ATime: ");
-    Serial.println(Smartclamp_AS7341::getATIME());
-    Serial.print("Sensor AStep: ");
-    Serial.println(Smartclamp_AS7341::getASTEP());
-    Serial.print("Sensor Integration Time (ms): ");
-    Serial.println( (Smartclamp_AS7341::getATIME()+1) * (Smartclamp_AS7341::getASTEP()+1) * 2.78 * 0.001);
-    Serial.println();
+/**
+ * @brief Prints out sensor Gain, ATime, AStep and Integration time to stream
+ *
+ * @param stream Pointer to stream object (ie. Serial object)
+ * 
+ * @return true: success false: failure
+ */
+bool Smartclamp_AS7341::printParameters(Stream &stream){
+    stream.print("Sensor Gain: ");
+    stream.println(Smartclamp_AS7341::getGain());
+    stream.print("Sensor ATime: ");
+    stream.println(Smartclamp_AS7341::getATIME());
+    stream.print("Sensor AStep: ");
+    stream.println(Smartclamp_AS7341::getASTEP());
+    stream.print("Sensor Integration Time (ms): ");
+    stream.println( (Smartclamp_AS7341::getATIME()+1) * (Smartclamp_AS7341::getASTEP()+1) * 2.78 * 0.001);
+    stream.println();
     return true;
 }

@@ -48,15 +48,31 @@ const as7341_gain_t AS7341_gain[11] = {AS7341_GAIN_0_5X, AS7341_GAIN_1X, AS7341_
                             AS7341_GAIN_32X, AS7341_GAIN_64X, AS7341_GAIN_128X,
                             AS7341_GAIN_256X, AS7341_GAIN_512X};
 
+typedef enum{
+    AS7341_AGS_LOW_12_5,
+    AS7341_AGS_LOW_25,
+    AS7341_AGS_LOW_37_5,
+    AS7341_AGS_LOW_50,
+}as7341_agc_low_t;
+
+typedef enum{
+    AS7341_AGS_HIGH_50,
+    AS7341_AGS_HIGH_62_5,
+    AS7341_AGS_HIGH_75,
+    AS7341_AGS_HIGH_87_5,
+}as7341_agc_high_t;
+
 class Smartclamp_AS7341 : public Adafruit_AS7341 {
     public:
     Smartclamp_AS7341();
     ~Smartclamp_AS7341();
 
-    bool setAgcThreshold(uint8_t low_threshold, uint8_t high_threshold);
-
+    bool spAgcEnable(bool enable_sp_agc);
+    bool setLowAgcThreshold(as7341_agc_low_t low_threshold);
+    as7341_agc_low_t getLowAgcThreshold();
+    bool setHighAgcThreshold(as7341_agc_high_t high_threshold);
+    as7341_agc_high_t getHighAgcThreshold();
     bool initializeSensor();
-
     bool printParameters(Stream &Serial);
 
 };

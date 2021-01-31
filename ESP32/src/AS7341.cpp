@@ -27,8 +27,8 @@ const uint8_t DEFAULT_ATIME = 29;
 const uint8_t DEFAULT_ASTEP = 599;
 const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
 
-float possibleGains[10] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
-as7341_gain_t AS7341_gain[10] = {AS7341_GAIN_1X, AS7341_GAIN_2X, 
+const float possibleGains[11] = {0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
+const as7341_gain_t AS7341_gain[11] = {AS7341_GAIN_0_5X, AS7341_GAIN_1X, AS7341_GAIN_2X, 
                             AS7341_GAIN_4X, AS7341_GAIN_8X, AS7341_GAIN_16X,
                             AS7341_GAIN_32X, AS7341_GAIN_64X, AS7341_GAIN_128X,
                             AS7341_GAIN_256X, AS7341_GAIN_512X};
@@ -45,7 +45,7 @@ bool initializeSensor(Adafruit_AS7341 &as7341){
         as7341.setASTEP(DEFAULT_ASTEP);
         as7341.setGain(DEFAULT_GAIN);
         as7341.enableSpectralMeasurement(true);
-        
+
     return true;
 }
 

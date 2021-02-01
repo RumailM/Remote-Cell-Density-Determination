@@ -60,8 +60,7 @@ bool Smartclamp_AS7341::initializeSensor(){
  */
 bool Smartclamp_AS7341::automaticGainContol(){
     enableSpAutoGainCtrl(true);
-    enableSpectralMeasurement(true); // Start integration
-    delayForData(0); 
+    delay(as7341Info.intTime);                  //NOTE: This needs to be changed once AVALID is fixed
     enableSpAutoGainCtrl(false);
     return true;
 }
@@ -74,6 +73,7 @@ void Smartclamp_AS7341::updateSensorInfo(){
     as7341Info.agc_low_th = getLowAgcThreshold();
     as7341Info.agc_high_th = getHighAgcThreshold();
     as7341Info.sp_int_en = getSaturationInterrupt();
+    as7341Info.intTime = (uint32_t)ceil((as7341Info.atime+1) * (as7341Info.astep+1) * 2.78 * 0.001);
 }
 
 /**
@@ -100,7 +100,7 @@ bool Smartclamp_AS7341::printParameters(Stream &stream){
     stream.print("Sensor Sp AGC High: ");
     stream.println(as7341Info.agc_high_th);
     stream.print("Sensor Integration Time (ms): ");
-    stream.println( (as7341Info.atime+1) * (as7341Info.astep+1) * 2.78 * 0.001);
+    stream.println(as7341Info.intTime);
     stream.println();
     return true;
 }
@@ -221,4 +221,18 @@ as7341_agc_high_t Smartclamp_AS7341::getHighAgcThreshold(){
   Adafruit_BusIO_RegisterBits agc_high_threshold =
       Adafruit_BusIO_RegisterBits(&agc_threshold_reg, 2, 6);
     return (as7341_agc_high_t)agc_high_threshold.read();
+}
+
+/**
+ * @brief Sets the Spectral and Flicker Detect Saturation Interrupt Enable register.
+ *
+ * @return (bool) sucessfully cleared?
+ */
+bool Smartclamp_AS7341::clearAValid(){
+  Adafruit_BusIO_Register enable_sp_agc_reg =
+      Adafruit_BusIO_Register(i2c_dev, AS7341_STATUS2);
+  Adafruit_BusIO_RegisterBits sp_agc_en =
+      Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 6);
+    sp_agc_en.write(1);
+    return true;
 }

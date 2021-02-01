@@ -65,6 +65,7 @@ struct as7431_info_t{
     as7341_gain_t gain;
     uint8_t atime;
     uint16_t astep;
+    uint32_t intTime;
     bool sp_int_en;
     bool sp_agc_en;
     as7341_agc_high_t agc_high_th;
@@ -74,7 +75,7 @@ struct as7431_info_t{
 const uint8_t DEFAULT_ATIME = 29;
 const uint16_t DEFAULT_ASTEP = 599;
 const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
-const as7341_agc_low_t DEFAULT_SP_AGS_LOW = AS7341_AGS_LOW_12_5;
+const as7341_agc_low_t DEFAULT_SP_AGS_LOW = AS7341_AGS_LOW_50;
 const as7341_agc_high_t DEFAULT_SP_AGS_HIGH = AS7341_AGS_HIGH_87_5;
 
 
@@ -98,6 +99,7 @@ class Smartclamp_AS7341 : public Adafruit_AS7341 {
     bool initializeSensor();
     bool printParameters(Stream &Serial);
     bool automaticGainContol();
+    bool clearAValid();
 
 };
 

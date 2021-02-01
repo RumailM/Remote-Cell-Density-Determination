@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include <Led_Control.h>
+#include <Smartclamp_LED.h>
 #include <Serial_Processing.h>
 #include <Smartclamp_AS7341.h>
 
@@ -60,7 +60,7 @@ void loop(void) {
 
     if(!debug)serialPrintBasicCounts(Serial, counts);
     else serialPrintRaw(Serial, readings);
-    
+
     as7341.printParameters(Serial);
     lastMsecs = millis();
   }else{read_SERIAL(as7341);}

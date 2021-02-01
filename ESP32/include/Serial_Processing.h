@@ -2,7 +2,7 @@
 #define _SERIAL_PROCESSING_H
 
 #include <Smartclamp_AS7341.h>
-#include <Led_Control.h>
+#include <Smartclamp_LED.h>
 
 unsigned int getSerialIntArgument();
 

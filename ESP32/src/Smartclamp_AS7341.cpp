@@ -46,8 +46,8 @@ bool Smartclamp_AS7341::initializeSensor(){
     setGain(DEFAULT_GAIN);
     enableSpAutoGainCtrl(true);        // true after debug
     enableSaturationInterrupt(false);
-    setLowAgcThreshold(DEFAULT_SP_AGS_LOW);
-    setHighAgcThreshold(DEFAULT_SP_AGS_HIGH);
+    setLowAgcThreshold(DEFAULT_SP_AGC_LOW);
+    setHighAgcThreshold(DEFAULT_SP_AGC_HIGH);
     enableSpectralMeasurement(true);
 
     return true;

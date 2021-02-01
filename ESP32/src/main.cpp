@@ -28,14 +28,11 @@ void setup()
   {
     delay(1);
   }
-  Serial.println("SmartClamp v0.1.0\n");
+  Serial.println("START");
   as7341.initializeSensor();
-  as7341.printParameters(Serial);
 
   // Setup LED PWM Signal.
   setupLED();
-
-  Serial.println("Done with setup");
 }
 
 ///////////////////   LOOP    ///////////////
@@ -50,7 +47,7 @@ void loop(void)
     as7341.automaticGainContol();
     if (!as7341.readAllChannels(readings))
     {
-      Serial.println("Error reading all channels!");
+      Serial.println("ERROR: Couldn't read all channels!");
       return;
     }
 

@@ -58,16 +58,12 @@ void processSerialBuffer(Smartclamp_AS7341 &as7341)
         // SAS - Set AStep
         bufferPos += 3;
         as7341.setASTEP(getSerialIntArgument());
-        Serial.print("Sensor AStep: ");
-        Serial.println(as7341.getASTEP());
       }
       if (toupper(serialBuffer[bufferPos + 2]) == 'T')
       {
         // SAT - Set ATime
         bufferPos += 3;
         as7341.setATIME(getSerialIntArgument());
-        Serial.print("Sensor ATime: ");
-        Serial.println(as7341.getATIME());
       }
     }
   }
@@ -91,6 +87,7 @@ void read_SERIAL(Smartclamp_AS7341 &as7341)
   {
     // get incoming byte:
     serialBuffer[bufferEnd] = Serial.read();
+    Serial.print("INPUT: ");
     Serial.print(serialBuffer[bufferEnd]);
 
     // min message length? -> process commands

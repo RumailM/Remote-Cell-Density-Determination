@@ -109,4 +109,4 @@ def handle_experimentToggle(client, userdata, message):
 
 if __name__ == '__main__':
     mqtt.subscribe("lab/control/experimentToggle", qos);
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    socketio.run(app, host='192.168.4.1', port=5000, use_reloader=False, debug=True)

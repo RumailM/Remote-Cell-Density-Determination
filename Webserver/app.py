@@ -119,16 +119,16 @@ def handle_experimentToggle(client, userdata, message):
     # create log file and start recording
     print('Received message on topic {}: {}'
           .format(message.topic, message.payload.decode()))
-    received_payload = message.payload.decode();
+    received_payload = message.payload.decode()
     print('                        line102')
-    print(received_payload);
+    print(received_payload)
     received_payload = json.loads(received_payload)
     date = "date"; # replace with actual time
-    device_id = received_payload['id'];
-    experiment_counter = "123"; # replace 
-    new_file = open(device_id + "_" + experiment_counter + "_" + date + ".txt",'x');
+    device_id = received_payload['id']
+    experiment_counter = "123" # replace 
+    new_file = open(device_id + "_" + experiment_counter + "_" + date + ".txt",'x')
     new_file.close()
 
 if __name__ == '__main__':
-    mqtt.subscribe("lab/control/experimentToggle", qos);
+    mqtt.subscribe("lab/control/experimentToggle", qos)
     socketio.run(app, host='192.168.4.1', port=5000, use_reloader=False, debug=True)

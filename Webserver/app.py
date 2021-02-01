@@ -126,45 +126,45 @@ def handle_logging(client, userdata, level, buf):
 
 
 @mqtt.on_topic("lab/data")
-    def handle_data(client, userdata, message):
-        
-        print('Received message on topic {}: {}'
-          .format(message.topic, message.payload.decode()))
+def handle_data(client, userdata, message):
+    
+    print('Received message on topic {}: {}'
+        .format(message.topic, message.payload.decode()))
 
-        print(message.payload.decode())
-        # print(payload)
-        payload_dict = json.loads(message.payload.decode())
-        print(payload_dict["msgType"])
-        print(type(payload_dict["msgType"]))
-        if payload_dict["msgType"] == "data":
-            print("inside if")
-            file_name = mac_addr_list[payload_dict["id"]]+"_"+"date"+".txt"
-            print(file_name)
-            file_descriptor = open(file_name,"a")
-            file_descriptor.write(message.payload.decode())
-            file_descriptor.write("\n")
-            file_descriptor.close()
+    print(message.payload.decode())
+    # print(payload)
+    payload_dict = json.loads(message.payload.decode())
+    print(payload_dict["msgType"])
+    print(type(payload_dict["msgType"]))
+    if payload_dict["msgType"] == "data":
+        print("inside if")
+        file_name = mac_addr_list[payload_dict["id"]]+"_"+"date"+".txt"
+        print(file_name)
+        file_descriptor = open(file_name,"a")
+        file_descriptor.write(message.payload.decode())
+        file_descriptor.write("\n")
+        file_descriptor.close()
 
 @mqtt.on_topic("lab/control/login")
-    def handle_login(client, userdata, message):
+def handle_login(client, userdata, message):
 
-        print('Received message on topic {}: {}'
-          .format(message.topic, message.payload.decode()))
-        
-        payload_dict = json.loads(message.payload.decode())
-        ret_id = push_mac(payload_dict["MAC"])
-        temp_dict = {"MAC":payload_dict,"msgType":"control","id":ret_id}
-        json_str = json.dumps(temp_dict)
-        mqtt.publish("lab/control/login", json_str, qos)
+    print('Received message on topic {}: {}'
+        .format(message.topic, message.payload.decode()))
+    
+    payload_dict = json.loads(message.payload.decode())
+    ret_id = push_mac(payload_dict["MAC"])
+    temp_dict = {"MAC":payload_dict,"msgType":"control","id":ret_id}
+    json_str = json.dumps(temp_dict)
+    mqtt.publish("lab/control/login", json_str, qos)
 
 @mqtt.on_topic("lab/control/logout")
-    def handle_login(client, userdata, message):
+def handle_login(client, userdata, message):
 
-        print('Received message on topic {}: {}'
-          .format(message.topic, message.payload.decode()))
-        
-        payload_dict = json.loads(message.payload.decode())
-        pop_mac(payload_dict["MAC"])
+    print('Received message on topic {}: {}'
+        .format(message.topic, message.payload.decode()))
+    
+    payload_dict = json.loads(message.payload.decode())
+    pop_mac(payload_dict["MAC"])
         
 
 @mqtt.on_topic("lab/control/experimentToggle")

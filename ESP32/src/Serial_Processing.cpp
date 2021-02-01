@@ -112,7 +112,33 @@ bool serialPrintBasicCounts(Stream &serialport, float_t counts[12]){
     serialport.println(counts[10]);
     serialport.print("NIR      : ");
     serialport.println(counts[11]);
+    serialport.println();
+    return true;
+}
 
+bool serialPrintRaw(Stream &serialport, uint16_t rawCounts[12]){
+    
+    serialport.print("F1 415nm : ");
+    serialport.println(rawCounts[0]);
+    serialport.print("F2 445nm : ");
+    serialport.println(rawCounts[1]);
+    serialport.print("F3 480nm : ");
+    serialport.println(rawCounts[2]);
+    serialport.print("F4 515nm : ");
+    serialport.println(rawCounts[3]);
+    serialport.print("F5 555nm : ");
+    // We skip the duplicates  
+    serialport.println(rawCounts[6]);
+    serialport.print("F6 590nm : ");
+    serialport.println(rawCounts[7]);
+    serialport.print("F7 630nm : ");
+    serialport.println(rawCounts[8]);
+    serialport.print("F8 680nm : ");
+    serialport.println(rawCounts[9]);
+    serialport.print("Clear    : ");
+    serialport.println(rawCounts[10]);
+    serialport.print("NIR      : ");
+    serialport.println(rawCounts[11]);
     serialport.println();
     return true;
 }

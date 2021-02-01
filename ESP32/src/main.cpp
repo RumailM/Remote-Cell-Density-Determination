@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include <Led_Control.h>
+#include <Smartclamp_LED.h>
 #include <Serial_Processing.h>
 #include <Smartclamp_AS7341.h>
 
@@ -17,6 +17,7 @@ const unsigned long READING_PERIOD = 1000;
 
 Smartclamp_AS7341 as7341;
 unsigned long lastMsecs = millis();
+bool debug = false;
 
 ///////////////////   SETUP    ///////////////
 
@@ -44,6 +45,7 @@ void loop(void) {
   uint16_t readings[12];
   float counts[12];
   if (millis() - lastMsecs > READING_PERIOD){
+    as7341.automaticGainContol();
     if (!as7341.readAllChannels(readings)){
       Serial.println("Error reading all channels!");
       return;
@@ -56,7 +58,10 @@ void loop(void) {
       counts[i] = as7341.toBasicCounts(readings[i]);
     }
 
-    serialPrintBasicCounts(Serial, counts);
+    if(!debug)serialPrintBasicCounts(Serial, counts);
+    else serialPrintRaw(Serial, readings);
+
+    as7341.printParameters(Serial);
     lastMsecs = millis();
   }else{read_SERIAL(as7341);}
 }

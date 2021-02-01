@@ -1,4 +1,4 @@
-#include <LED_Control.h>
+#include <SMARTCLAMP_LED.h>
 
 const uint8_t LED_PIN = 4;                          // PWM Pin
 const double LED_FREQ = 5000;                       // PWM Frequency

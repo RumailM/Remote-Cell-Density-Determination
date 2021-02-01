@@ -38,9 +38,6 @@
 #include <FS.h>
 #include <Adafruit_AS7341.h>
 
-const uint8_t DEFAULT_ATIME = 29;
-const uint16_t DEFAULT_ASTEP = 599;
-const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
 
 const float possibleGains[11] = {0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
 const as7341_gain_t AS7341_gain[11] = {AS7341_GAIN_0_5X, AS7341_GAIN_1X, AS7341_GAIN_2X, 
@@ -48,16 +45,61 @@ const as7341_gain_t AS7341_gain[11] = {AS7341_GAIN_0_5X, AS7341_GAIN_1X, AS7341_
                             AS7341_GAIN_32X, AS7341_GAIN_64X, AS7341_GAIN_128X,
                             AS7341_GAIN_256X, AS7341_GAIN_512X};
 
+
+typedef enum{
+    AS7341_AGC_LOW_12_5,
+    AS7341_AGC_LOW_25,
+    AS7341_AGC_LOW_37_5,
+    AS7341_AGC_LOW_50,
+}as7341_agc_low_t;
+
+typedef enum{
+    AS7341_AGC_HIGH_50,
+    AS7341_AGC_HIGH_62_5,
+    AS7341_AGC_HIGH_75,
+    AS7341_AGC_HIGH_87_5,
+}as7341_agc_high_t;
+
+struct as7431_info_t{
+    bool sp_meas_en;
+    as7341_gain_t gain;
+    uint8_t atime;
+    uint16_t astep;
+    uint32_t intTime;
+    bool sp_int_en;
+    bool sp_agc_en;
+    as7341_agc_high_t agc_high_th;
+    as7341_agc_low_t agc_low_th;
+};
+
+const uint8_t DEFAULT_ATIME = 29;
+const uint16_t DEFAULT_ASTEP = 599;
+const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
+const as7341_agc_low_t DEFAULT_SP_AGC_LOW = AS7341_AGC_LOW_25;
+const as7341_agc_high_t DEFAULT_SP_AGC_HIGH = AS7341_AGC_HIGH_75;
+
+
 class Smartclamp_AS7341 : public Adafruit_AS7341 {
     public:
+
+    as7431_info_t as7341Info;
+
     Smartclamp_AS7341();
     ~Smartclamp_AS7341();
 
-    bool setAgcThreshold(uint8_t low_threshold, uint8_t high_threshold);
-
+    void updateSensorInfo();
+    bool enableSpAutoGainCtrl(bool enable_sp_agc);
+    bool getSpAutoGainCtrl();
+    bool enableSaturationInterrupt(bool enable_asien);
+    bool getSaturationInterrupt();
+    bool setLowAgcThreshold(as7341_agc_low_t low_threshold);
+    as7341_agc_low_t getLowAgcThreshold();
+    bool setHighAgcThreshold(as7341_agc_high_t high_threshold);
+    as7341_agc_high_t getHighAgcThreshold();
     bool initializeSensor();
-
     bool printParameters(Stream &Serial);
+    bool automaticGainContol();
+    bool clearAValid();
 
 };
 

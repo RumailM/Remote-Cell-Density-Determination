@@ -1,5 +1,5 @@
-#ifndef _LED_CONTROL_H
-#define _LED_CONTROL_H
+#ifndef _SMARTCLAMP_LED_H
+#define _SMARTCLAMP_LED_H
 
 #include <Arduino.h>
 

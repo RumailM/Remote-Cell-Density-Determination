@@ -42,6 +42,34 @@ bootstrap = Bootstrap(app)
 qos = 2;
 
 
+#Parameters
+num_devices = 8;
+
+mac_addr_list = [None]*num_devices;
+experiment_start_time_list = [None]*num_devices;
+
+def push_mac(mac_str):
+    #Adds MAC Address and returns device ID, call when device logs in
+    id = -99;
+    for i in range(num_devices):
+        if i is None:
+            mac_addr_list[i] = mac_str
+            id = i
+            break
+    if id == -99:
+        print("Exceeded max Number of Connected Devices")
+    else
+        print("Succesfully cached MAC Address " + mac_str + " at id " + str(id))
+    return id
+
+def pop_mac(mac_str):
+    # Removes MAC Adress and frees up an ID, call when device logs out
+    for i in range(num_devices):
+        if mac_addr_list[i] == mac_str:
+            mac_addr_list[i] = None
+            print("Removed MAC Address at id " + str(i))
+
+
 @app.route('/')
 def index():
     return render_template('index.html')

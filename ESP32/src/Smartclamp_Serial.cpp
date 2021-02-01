@@ -1,4 +1,4 @@
-#include <Serial_Processing.h>
+#include <Smartclamp_Serial.h>
 
 const uint8_t SERIAL_BUFFER_LEN = 128;
 char serialBuffer[SERIAL_BUFFER_LEN];

@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include <Smartclamp_LED.h>
-#include <Serial_Processing.h>
+#include <Smartclamp_Serial.h>
 #include <Smartclamp_AS7341.h>
 
 ///////////////////   CONSTANTS    ///////////////

@@ -5,12 +5,10 @@
 
 bool setupLED();
 
-bool turnOnLight();
+void turnOnLight();
 
-bool turnOffLight();
+void turnOffLight();
 
 void setLightIntensity(uint8_t intensity);
-
-bool lightIsOn();
 
 #endif

@@ -56,7 +56,8 @@ void loop(void) {
       counts[i] = as7341.toBasicCounts(readings[i]);
     }
 
-    serialPrintBasicCounts(Serial, counts);
+    // serialPrintBasicCounts(Serial, counts);
+    serialPrintRaw(Serial, readings);
     as7341.printParameters(Serial);
     lastMsecs = millis();
   }else{read_SERIAL(as7341);}

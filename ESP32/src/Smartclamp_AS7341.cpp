@@ -44,7 +44,8 @@ bool Smartclamp_AS7341::initializeSensor(){
     setATIME(DEFAULT_ATIME);
     setASTEP(DEFAULT_ASTEP);
     setGain(DEFAULT_GAIN);
-    setSpAgcEnable(false);
+    enableSpAutoGainCtrl(true);
+    enableSaturationInterrupt(false);
     setLowAgcThreshold(DEFAULT_SP_AGS_LOW);
     setHighAgcThreshold(DEFAULT_SP_AGS_HIGH);
     enableSpectralMeasurement(true);
@@ -56,9 +57,10 @@ void Smartclamp_AS7341::updateSensorInfo(){
     as7341Info.gain = getGain();
     as7341Info.atime = getATIME();
     as7341Info.astep = getASTEP();
-    as7341Info.sp_agc_en = getSpAgcEnable();
+    as7341Info.sp_agc_en = getSpAutoGainCtrl();
     as7341Info.agc_low_th = getLowAgcThreshold();
     as7341Info.agc_high_th = getHighAgcThreshold();
+    as7341Info.sp_int_en = getSaturationInterrupt();
 }
 
 /**
@@ -76,6 +78,8 @@ bool Smartclamp_AS7341::printParameters(Stream &stream){
     stream.println(as7341Info.atime);
     stream.print("Sensor AStep: ");
     stream.println(as7341Info.astep);
+    stream.print("Sensor Sp Int Enable: ");
+    stream.println(as7341Info.sp_int_en);
     stream.print("Sensor Sp AGC Enable: ");
     stream.println(as7341Info.sp_agc_en);
     stream.print("Sensor Sp AGC Low: ");
@@ -93,13 +97,13 @@ bool Smartclamp_AS7341::printParameters(Stream &stream){
  *
  * @param enable_sp_agc true: on false: off
  */
-bool Smartclamp_AS7341::setSpAgcEnable(bool enable_sp_agc){
+bool Smartclamp_AS7341::enableSpAutoGainCtrl(bool enable_sp_agc){
   Adafruit_BusIO_Register enable_sp_agc_reg =
       Adafruit_BusIO_Register(i2c_dev, AS7341_CFG8);
   Adafruit_BusIO_RegisterBits sp_agc_en =
       Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 2);
     sp_agc_en.write(enable_sp_agc);
-    as7341Info.sp_agc_en = getSpAgcEnable();
+    as7341Info.sp_agc_en = getSpAutoGainCtrl();
   return as7341Info.sp_agc_en == enable_sp_agc;
 }
 
@@ -108,11 +112,39 @@ bool Smartclamp_AS7341::setSpAgcEnable(bool enable_sp_agc){
  *
  * @return true: on false: off
  */
-bool Smartclamp_AS7341::getSpAgcEnable(){
+bool Smartclamp_AS7341::getSpAutoGainCtrl(){
   Adafruit_BusIO_Register enable_sp_agc_reg =
       Adafruit_BusIO_Register(i2c_dev, AS7341_CFG8);
   Adafruit_BusIO_RegisterBits sp_agc_en =
       Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 2);
+  return sp_agc_en.read();
+}
+
+/**
+ * @brief Sets the Spectral and Flicker Detect Saturation Interrupt Enable register.
+ *
+ * @param enable_asien true: on false: off
+ */
+bool Smartclamp_AS7341::enableSaturationInterrupt(bool enable_asien){
+  Adafruit_BusIO_Register enable_sp_agc_reg =
+      Adafruit_BusIO_Register(i2c_dev, AS7341_INTENAB);
+  Adafruit_BusIO_RegisterBits sp_agc_en =
+      Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 7);
+    sp_agc_en.write(enable_asien);
+    as7341Info.sp_int_en = getSpAutoGainCtrl();
+  return as7341Info.sp_int_en == enable_asien;
+}
+
+/**
+ * @brief get the Spectral and Flicker Detect Saturation Interrupt Enable register.
+ *
+ * @return true: on false: off
+ */
+bool Smartclamp_AS7341::getSaturationInterrupt(){
+  Adafruit_BusIO_Register enable_sp_agc_reg =
+      Adafruit_BusIO_Register(i2c_dev, AS7341_INTENAB);
+  Adafruit_BusIO_RegisterBits sp_agc_en =
+      Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 7);
   return sp_agc_en.read();
 }
 

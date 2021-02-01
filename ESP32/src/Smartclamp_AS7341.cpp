@@ -89,21 +89,21 @@ void Smartclamp_AS7341::updateSensorInfo()
 bool Smartclamp_AS7341::printParameters(Stream &stream)
 {
     updateSensorInfo();
-    stream.print("Sensor Gain: ");
+    stream.print("Gain: ");
     stream.println(as7341Info.gain);
-    stream.print("Sensor ATime: ");
+    stream.print("ATime: ");
     stream.println(as7341Info.atime);
-    stream.print("Sensor AStep: ");
+    stream.print("AStep: ");
     stream.println(as7341Info.astep);
-    stream.print("Sensor Sp Int Enable: ");
+    stream.print("SpIntEn: ");
     stream.println(as7341Info.sp_int_en);
-    stream.print("Sensor Sp AGC Enable: ");
+    stream.print("SpAGCEn: ");
     stream.println(as7341Info.sp_agc_en);
-    stream.print("Sensor Sp AGC Low: ");
+    stream.print("SpAGCLowTh: ");
     stream.println(as7341Info.agc_low_th);
-    stream.print("Sensor Sp AGC High: ");
+    stream.print("SpAGCHighTh: ");
     stream.println(as7341Info.agc_high_th);
-    stream.print("Sensor Integration Time (ms): ");
+    stream.print("IntTime: ");
     stream.println(as7341Info.intTime);
     stream.println();
     return true;

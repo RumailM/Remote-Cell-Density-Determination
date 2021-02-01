@@ -4,6 +4,8 @@
 #include <Smartclamp_AS7341.h>
 #include <Smartclamp_LED.h>
 
+#define SERIAL_DECIMALS 5
+
 unsigned int getSerialIntArgument();
 
 unsigned long getSerialLongArgument();

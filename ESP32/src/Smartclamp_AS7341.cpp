@@ -44,12 +44,25 @@ bool Smartclamp_AS7341::initializeSensor(){
     setATIME(DEFAULT_ATIME);
     setASTEP(DEFAULT_ASTEP);
     setGain(DEFAULT_GAIN);
-    enableSpAutoGainCtrl(true);
+    enableSpAutoGainCtrl(true);        // true after debug
     enableSaturationInterrupt(false);
     setLowAgcThreshold(DEFAULT_SP_AGS_LOW);
     setHighAgcThreshold(DEFAULT_SP_AGS_HIGH);
     enableSpectralMeasurement(true);
 
+    return true;
+}
+
+/**
+ * @brief Performs a cycle of automatic gain control
+ * 
+ * @return true: gain was changes false: gain wasnt changed
+ */
+bool Smartclamp_AS7341::automaticGainContol(){
+    enableSpAutoGainCtrl(true);
+    enableSpectralMeasurement(true); // Start integration
+    delayForData(0); 
+    enableSpAutoGainCtrl(false);
     return true;
 }
 

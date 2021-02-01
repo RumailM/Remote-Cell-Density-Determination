@@ -44,6 +44,7 @@ void loop(void) {
   uint16_t readings[12];
   float counts[12];
   if (millis() - lastMsecs > READING_PERIOD){
+    as7341.automaticGainContol();
     if (!as7341.readAllChannels(readings)){
       Serial.println("Error reading all channels!");
       return;

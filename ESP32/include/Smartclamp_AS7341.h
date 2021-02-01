@@ -97,6 +97,7 @@ class Smartclamp_AS7341 : public Adafruit_AS7341 {
     as7341_agc_high_t getHighAgcThreshold();
     bool initializeSensor();
     bool printParameters(Stream &Serial);
+    bool automaticGainContol();
 
 };
 

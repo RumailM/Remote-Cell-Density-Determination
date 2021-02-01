@@ -58,7 +58,7 @@ def push_mac(mac_str):
             break
     if id == -99:
         print("Exceeded max Number of Connected Devices")
-    else
+    else:
         print("Succesfully cached MAC Address " + mac_str + " at id " + str(id))
     return id
 

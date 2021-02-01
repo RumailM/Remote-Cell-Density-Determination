@@ -75,8 +75,8 @@ struct as7431_info_t{
 const uint8_t DEFAULT_ATIME = 29;
 const uint16_t DEFAULT_ASTEP = 599;
 const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
-const as7341_agc_low_t DEFAULT_SP_AGS_LOW = AS7341_AGS_LOW_50;
-const as7341_agc_high_t DEFAULT_SP_AGS_HIGH = AS7341_AGS_HIGH_87_5;
+const as7341_agc_low_t DEFAULT_SP_AGS_LOW = AS7341_AGS_LOW_25;
+const as7341_agc_high_t DEFAULT_SP_AGS_HIGH = AS7341_AGS_HIGH_75;
 
 
 class Smartclamp_AS7341 : public Adafruit_AS7341 {

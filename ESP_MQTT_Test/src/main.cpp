@@ -9,7 +9,7 @@ const char* ssid = "NameOfNetwork";                 // Your personal network SSI
 const char* wifi_password = "AardvarkBadgerHedgehog"; // Your personal network password
 
 // MQTT
-const char* mqtt_server = "192.168.4.1";  // IP of the MQTT broker
+const char* mqtt_server = "192.168.0.110";  // IP of the MQTT broker
 const char* topic = "topic1";
 const char* mqtt_username = "smart"; // MQTT username
 const char* mqtt_password = "clamp"; // MQTT password

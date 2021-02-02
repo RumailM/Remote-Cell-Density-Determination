@@ -27,21 +27,19 @@ var last_time = 7;
       socket.emit('publish', data=data);
     });
 
-    $('#experiment_toggle').click(function(event) {
-      var topic = $('#topic_toggle').val();
-      var message = $('#message_toggle').val();
-      var qos = $('#qos_toggle').val();
-      var data = '{"topic": "' + topic + '", "message": "' + message + '", "qos": ' + qos + '}';
-      socket.emit('experiment_toggle', message);
+    $('#experiment_start').click(function(event) {
+      var message = $('#message_start').val();
+      var data = '{"id": "' + message + '"}';
+      socket.emit('experimentStart', data=data);
     });
 
-    $('#publish_to_a').click(function(event) {
-      var topic = $('#topic_a').val();
-      var message = $('#message_a').val();
-      var qos = $('#qos_a').val();
-      var data = '{"topic (a)": "' + topic + '", "message": "' + message + '", "qos": ' + qos + '}';
-      socket.emit('publish_to_a', message);
+    $('#experiment_stop').click(function(event) {
+      var message = $('#message_stop').val();
+      var data = '{"id": "' + message + '"}';
+      socket.emit('experimentStop', data=data);
     });
+
+  
 
     $('#subscribe').click(function(event) {
       var topic = $('#subscribe_topic').val();
@@ -132,128 +130,28 @@ var last_time = 7;
       <h1>Flask-MQTT Example</h1>
     </div>
   </div>
-  <div class="row">
+
+  
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Publish MQTT Message</h3>
+          <h3 class="panel-title">Publish MQTT Control Message on topic lab/control/experimentStart</h3>
         </div>
         <div class="panel-body">
           <div class="col-xs-12">
             <div class="row">
               <div class="form-horizontal">
+                
                 <div class="form-group">
-                  <label class="control-label col-xs-4">Topic: </label>
+                  <label class="control-label col-xs-4">id: </label>
                   <div class="col-xs-8">
-                    <input id="topic" class="form-control">
+                    <input id="message_start" class="form-control">
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Message: </label>
-                  <div class="col-xs-8">
-                    <input id="message" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Qos: </label>
-                  <div class="col-xs-8">
-                    <select id="qos" class="form-control">
-                      <option value=0>0</option>
-                      <option value=1>1</option>
-                      <option value=2>2</option>
-                    </select>
-                  </div> 
-                </div>
+                
                 <div class="form-group">
                   <div class="col-xs-8 col-xs-offset-4">
-                    <button id="publish" class="btn btn-primary">Publish</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="col-xs-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Publish MQTT Control Message</h3>
-        </div>
-        <div class="panel-body">
-          <div class="col-xs-12">
-            <div class="row">
-              <div class="form-horizontal">
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Topic: </label>
-                  <div class="col-xs-8">
-                    <input id="topic_toggle" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Message: </label>
-                  <div class="col-xs-8">
-                    <input id="message_toggle" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Qos: </label>
-                  <div class="col-xs-8">
-                    <select id="qos_toggle" class="form-control">
-                      <option value=0>0</option>
-                      <option value=1>1</option>
-                      <option value=2>2</option>
-                    </select>
-                  </div> 
-                </div>
-                <div class="form-group">
-                  <div class="col-xs-8 col-xs-offset-4">
-                    <button id="experiment_toggle" class="btn btn-primary">Publish</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xs-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Publish MQTT A Message</h3>
-        </div>
-        <div class="panel-body">
-          <div class="col-xs-12">
-            <div class="row">
-              <div class="form-horizontal">
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Topic: </label>
-                  <div class="col-xs-8">
-                    <input id="topic_a" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Message: </label>
-                  <div class="col-xs-8">
-                    <input id="message_a" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Qos: </label>
-                  <div class="col-xs-8">
-                    <select id="qos_a" class="form-control">
-                      <option value=0>0</option>
-                      <option value=1>1</option>
-                      <option value=2>2</option>
-                    </select>
-                  </div> 
-                </div>
-                <div class="form-group">
-                  <div class="col-xs-8 col-xs-offset-4">
-                    <button id="publish_to_a" class="btn btn-primary">Publish</button>
+                    <button id="experiment_start" class="btn btn-primary">Publish</button>
                   </div>
                 </div>
               </div>
@@ -265,8 +163,36 @@ var last_time = 7;
 
 
 
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Publish MQTT Control Message on topic lab/control/experimentStop</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="form-horizontal">
+                
+                <div class="form-group">
+                  <label class="control-label col-xs-4">id: </label>
+                  <div class="col-xs-8">
+                    <input id="message_stop" class="form-control">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-xs-8 col-xs-offset-4">
+                    <button id="experiment_stop" class="btn btn-primary">Publish</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-
+    
 
     <div class="col-xs-6">
       <div class="panel panel-default">

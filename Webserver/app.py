@@ -80,20 +80,15 @@ def handle_publish(json_str):
     data = json.loads(json_str)
     mqtt.publish(data['topic'], data['message'], data['qos'])
 
-@socketio.on('experiment_toggle')
-def handle_publish(json_str):
-    data = json.loads(json_str)
-    print("this works??")
-    
-    temp_dict = {"id":data["id"],"msgType":"control","toggle":"1"}
-    json_str_temp = json.dumps(temp_dict)
-    mqtt.publish("lab/control/experimentToggle", json_str_temp, qos)
 
-@socketio.on('publish_to_a')
-def handle_publish(json_str):
-    # data = json.loads(json_str)
-    # print("this works??")
-    mqtt.publish("a", json_str, qos)
+
+@socketio.on('experimentStart')
+def handle_experimentStart(json_str):   
+    mqtt.publish("lab/control/experimentStart", json_str, qos)
+
+@socketio.on('experimentStop')
+def handle_experimentStop(json_str):
+    mqtt.publish("lab/control/experimentStop", json_str, qos)
 
 
 @socketio.on('subscribe')
@@ -186,5 +181,6 @@ if __name__ == '__main__':
     mqtt.subscribe("lab/control/login", qos)
     mqtt.subscribe("lab/control/logout", qos)
     mqtt.subscribe("lab/data", qos)
-    mqtt.subscribe("lab/control/experimentToggle", qos)
-    socketio.run(app, host='192.168.0.110', port=5000, use_reloader=False, debug=True)
+    mqtt.subscribe("lab/control/experimentStart", qos)
+    mqtt.subscribe("lab/control/experimentStop", qos)
+    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)

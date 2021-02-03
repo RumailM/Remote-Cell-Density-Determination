@@ -1,159 +1,181 @@
 #include <Arduino.h>
 #include "PubSubClient.h" // Connect and publish to the MQTT broker
-
-// Code for the ESP32
 #include "WiFi.h" // Enables the ESP32 to connect to the local network (via WiFi)
 
 // WiFi
-const char* ssid = "NameOfNetwork";                 // Your personal network SSID
-const char* wifi_password = "AardvarkBadgerHedgehog"; // Your personal network password
+const char* ssid = "NameOfNetwork";                     // Raspberry Pi network SSID
+const char* wifi_password = "AardvarkBadgerHedgehog";   // Raspberry Pi network password
+byte mac_address[6];                                    // ESP32 MAC Address
+String macAddress;
 
 // MQTT
 const char* mqtt_server = "192.168.0.110";  // IP of the MQTT broker
-const char* topic = "topic1";
 const char* mqtt_username = "smart"; // MQTT username
 const char* mqtt_password = "clamp"; // MQTT password
-const char* clientID = "client_livingroom"; // MQTT client ID
+const char* clientID = ""; // MQTT client ID
+int identifier;
+
+// MQTT Topics
+const char* topic_login = "lab/control/login";
+const char* topic_experiment_toggle = "lab/control/experimentToggle";
+const char* topic_experiment_data = "lab/data";
+
+// Flags
+bool flag_identification = false;
+
+// Timing
+const unsigned long period = 2000;
+unsigned long start_millis, current_millis;
 
 // Initialise the WiFi and MQTT Client objects
 WiFiClient wifiClient;
 // 1883 is the listener port for the Broker
 PubSubClient client(mqtt_server, 1883, wifiClient); 
 
+// Custom function to connect to WiFi
+void connect_wifi()
+{
+    Serial.print("Connecting to ");
+    Serial.println(ssid);
+
+    // Connect to the WiFi
+    WiFi.begin(ssid, wifi_password);
+
+    // Wait until the connection has been confirmed before continuing
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
+    }
+
+    WiFi.macAddress(mac_address);
+    macAddress = WiFi.macAddress();
+
+    // Debugging - Output the IP Address and MAC Address
+    Serial.println("WiFi connected");
+
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+
+    Serial.print("MAC address: ");
+    Serial.println(macAddress.c_str());
+}
+
 // Custom function to connect to the MQTT broker via WiFi
 void connect_MQTT()
 {
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
-  // Connect to the WiFi
-  WiFi.begin(ssid, wifi_password);
-
-  // Wait until the connection has been confirmed before continuing
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  // Debugging - Output the IP Address of the ESP8266
-  Serial.println("WiFi connected");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  // Connect to MQTT Broker
-  // client.connect returns a boolean value to let us know if the connection was successful.
-  // If the connection is failing, make sure you are using the correct MQTT Username and Password (Setup Earlier in the Instructable)
-  if (client.connect(clientID, mqtt_username, mqtt_password)) {
-    Serial.println("Connected to MQTT Broker!");
-  }
-  else {
-    Serial.println("Connection to MQTT Broker failed...");
-  }
+    // Connect to MQTT Broker
+    // client.connect returns a boolean value to let us know if the connection was successful.
+    // If the connection is failing, make sure you are using the correct MQTT Username and Password
+    if (client.connect(clientID, mqtt_username, mqtt_password))
+    {
+        Serial.println("Connected to MQTT Broker!");
+    }
+    else
+    {
+        Serial.println("Connection to MQTT Broker failed...");
+    }
 }
 
+// Callback function for subscribed topics
+void callback(char* topic, byte* payload, unsigned int length)
+{
+    Serial.print("Message arrived in topic: ");
+    Serial.println(topic);
 
-void setup() {
-  Serial.begin(115200);
-  connect_MQTT();
-  Serial.setTimeout(2000);
-}
+    Serial.print("Message:");
+    for (int i = 0; i < length; i++)
+    {
+        Serial.print((char)payload[i]);
+    }
 
-void loop() {
-
-  // PUBLISH to the MQTT Broker
-  if (client.publish(topic, "Hello World!")) {
-    Serial.println("String sent!");
-  }
-  // Again, client.publish will return a boolean value depending on whether it succeded or not.
-  // If the message failed to send, we will try again, as the connection may have broken.
-  else {
-    Serial.println("String failed to send. Reconnecting to MQTT Broker and trying again");
-    client.connect(clientID, mqtt_username, mqtt_password);
-    delay(10); // This delay ensures that client.publish doesn't clash with the client.connect call
-    client.publish(topic, "Hello World!");
-  }
-
-  // client.disconnect();  // disconnect from the MQTT broker
-  delay(5*1000);
-}
-
-/*
-#include <WiFi.h>
- 
-const char* ssid = "NameOfNetwork";
-const char* password =  "AardvarkBadgerHedgehog";
- 
-String translateEncryptionType(wifi_auth_mode_t encryptionType) {
- 
-  switch (encryptionType) {
-    case (WIFI_AUTH_OPEN):
-      return "Open";
-    case (WIFI_AUTH_WEP):
-      return "WEP";
-    case (WIFI_AUTH_WPA_PSK):
-      return "WPA_PSK";
-    case (WIFI_AUTH_WPA2_PSK):
-      return "WPA2_PSK";
-    case (WIFI_AUTH_WPA_WPA2_PSK):
-      return "WPA_WPA2_PSK";
-    case (WIFI_AUTH_WPA2_ENTERPRISE):
-      return "WPA2_ENTERPRISE";
-  }
-}
- 
-void scanNetworks() {
- 
-  int numberOfNetworks = WiFi.scanNetworks();
- 
-  Serial.print("Number of networks found: ");
-  Serial.println(numberOfNetworks);
- 
-  for (int i = 0; i < numberOfNetworks; i++) {
- 
-    Serial.print("Network name: ");
-    Serial.println(WiFi.SSID(i));
- 
-    Serial.print("Signal strength: ");
-    Serial.println(WiFi.RSSI(i));
- 
-    Serial.print("MAC address: ");
-    Serial.println(WiFi.BSSIDstr(i));
- 
-    Serial.print("Encryption type: ");
-    String encryptionTypeDescription = translateEncryptionType(WiFi.encryptionType(i));
-    Serial.println(encryptionTypeDescription);
+    Serial.println();
     Serial.println("-----------------------");
- 
-  }
-}
- 
-void connectToNetwork() {
-  WiFi.begin(ssid, password);
- 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Establishing connection to WiFi..");
-  }
- 
-  Serial.println("Connected to network");
- 
-}
- 
-void setup() {
- 
-  Serial.begin(115200);
- 
-  scanNetworks();
-  connectToNetwork();
- 
-  Serial.println(WiFi.macAddress());
-  Serial.println(WiFi.localIP());
- 
-  WiFi.disconnect(true);
-  Serial.println(WiFi.localIP());
- 
-}
- 
-void loop() {}
 
-*/
+    // Login Topic Callback
+    if (strcmp(topic, topic_login) == 0)
+    {
+        // Assign unique identifier and unsub from login topic
+        identifier = (int)(char)payload[1];
+        if (client.unsubscribe(topic_login))
+        {
+            Serial.println("Unsubscribed from login topic!");
+        }
+        else
+        {
+            Serial.println("Failed to unsubscribe from login topic.");
+        }
+
+        // Sub to experimentToggle topic
+        if (client.subscribe(topic_experiment_toggle))
+        {
+            Serial.println("Subscribed to experimentToggle topic!");
+        }
+        else
+        {
+            Serial.println("Failed to subscribe to experimentToggle topic.");
+        }
+
+        // Raise identification flag
+        flag_identification = true;
+    }
+}
+
+// Custom function to obtain ID from Raspberry Pi
+void identify_handshake()
+{
+    bool flag_handshake = false;
+    while (!flag_handshake)
+    {
+        if (client.subscribe(topic_login))
+        {
+            Serial.println("Subscribed to login topic!");
+        }
+        else
+        {
+            Serial.println("Failed to subscribe to login topic.");
+        }
+
+        if (client.publish(topic_login, macAddress.c_str()))
+        {
+            Serial.println("MAC sent!");
+            flag_handshake = true;
+        }
+        else
+        {
+            Serial.println("String failed to send. Reconnecting to MQTT Broker and trying again");
+            connect_MQTT();
+        }
+    }
+    client.setCallback(callback);
+}
+
+
+void setup() 
+{
+    Serial.begin(115200);
+    connect_wifi();
+    connect_MQTT();
+    identify_handshake();
+    Serial.setTimeout(2000);
+    start_millis = millis();
+}
+
+void loop()
+{
+    current_millis = millis();
+    if (flag_identification && current_millis - start_millis >= period)
+    {
+        Serial.print("Identifier: ");
+        Serial.println(identifier);
+        if (client.publish(topic_experiment_toggle, "Hello World!"))
+        {
+            Serial.println("Hello sent!");
+        }
+        else
+        {
+            Serial.println("Hello failed to send. Reconnecting to MQTT Broker and trying again");
+            connect_MQTT();
+        }
+    }
+}

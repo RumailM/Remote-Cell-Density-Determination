@@ -111,7 +111,7 @@ bool Smartclamp_AS7341::clearAValid()
     return true;
 }
 
-bool Smartclamp_AS7341::getAValid(){return true;}
+
 
 /**
  * @brief Sets the spectral automatic gain control state of the sensor

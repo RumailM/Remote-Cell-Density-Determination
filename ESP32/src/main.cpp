@@ -11,7 +11,9 @@
 ///////////////////   CONSTANTS    ///////////////
 
 const String SMARTCLAMP_VERSION = "0.15";
-const unsigned long READING_PERIOD = 1000;
+const unsigned long SERIAL_DELAY = 227;
+const unsigned long TARGET_PERIOD = 500;
+const unsigned long READING_PERIOD = TARGET_PERIOD - SERIAL_DELAY;
 
 ///////////////////   GLOBAL VARIABLES    ///////////////
 

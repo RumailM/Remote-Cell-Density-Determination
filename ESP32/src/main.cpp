@@ -19,7 +19,7 @@ const unsigned long READING_PERIOD = TARGET_PERIOD - SERIAL_DELAY;
 
 Smartclamp_AS7341 as7341;
 unsigned long lastMsecs = millis();
-bool debug = false;
+bool rawCountsMode = false;
 
 ///////////////////   SETUP    ///////////////
 
@@ -53,6 +53,7 @@ void loop(void)
       return;
     }
 
+    if (!rawCountsMode){
     for (uint8_t i = 0; i < 12; i++)
     {
       if (i == 4 || i == 5)
@@ -61,9 +62,10 @@ void loop(void)
       // (indices 4 and 5)
       counts[i] = as7341.toBasicCounts(readings[i]);
     }
+    }
 
-    if (!debug)
-      serialPrintBasicCounts(Serial, counts);
+    if (!rawCountsMode)
+      serialAllReadings(Serial, counts);
     else
       serialPrintRaw(Serial, readings);
 

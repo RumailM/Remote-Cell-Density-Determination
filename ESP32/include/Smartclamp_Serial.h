@@ -16,7 +16,7 @@ void processSerialBuffer(Smartclamp_AS7341 &as7341);
 
 void read_SERIAL(Smartclamp_AS7341 &as7341);
 
-bool serialPrintBasicCounts(Stream &serialport, float_t counts[12]);
+bool serialAllReadings(Stream &serialport, float_t counts[12]);
 
 bool serialPrintRaw(Stream &serialport, uint16_t rawCounts[12]);
 

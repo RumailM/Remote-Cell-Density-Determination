@@ -106,7 +106,34 @@ void read_SERIAL(Smartclamp_AS7341 &as7341)
   }
 }
 
-bool serialPrintBasicCounts(Stream &serialport, float_t counts[12])
+bool serialAllReadings(Stream &serialport, float_t counts[12])
+{
+
+  serialport.print("415nm: ");
+  serialport.println(counts[0], SERIAL_DECIMALS);
+  serialport.print("445nm: ");
+  serialport.println(counts[1], SERIAL_DECIMALS);
+  serialport.print("480nm: ");
+  serialport.println(counts[2], SERIAL_DECIMALS);
+  serialport.print("515nm: ");
+  serialport.println(counts[3], SERIAL_DECIMALS);
+  serialport.print("555nm: ");
+  // We skip the duplicates
+  serialport.println(counts[6], SERIAL_DECIMALS);
+  serialport.print("590nm: ");
+  serialport.println(counts[7], SERIAL_DECIMALS);
+  serialport.print("630nm: ");
+  serialport.println(counts[8], SERIAL_DECIMALS);
+  serialport.print("680nm: ");
+  serialport.println(counts[9], SERIAL_DECIMALS);
+  serialport.print("Clear: ");
+  serialport.println(counts[10], SERIAL_DECIMALS);
+  serialport.print("NIR: ");
+  serialport.println(counts[11], SERIAL_DECIMALS);
+  return true;
+}
+
+bool serialAllReadings(Stream &serialport, float_t counts[12])
 {
 
   serialport.print("415nm: ");
@@ -157,5 +184,39 @@ bool serialPrintRaw(Stream &serialport, uint16_t rawCounts[12])
   serialport.println(rawCounts[10]);
   serialport.print("NIR: ");
   serialport.println(rawCounts[11]);
+  return true;
+}
+
+bool serialHighReadings(Stream &serialport, float_t counts[12])
+{
+  serialport.println(counts[6], SERIAL_DECIMALS);
+  serialport.print("590nm: ");
+  serialport.println(counts[7], SERIAL_DECIMALS);
+  serialport.print("630nm: ");
+  serialport.println(counts[8], SERIAL_DECIMALS);
+  serialport.print("680nm: ");
+  serialport.println(counts[9], SERIAL_DECIMALS);
+  serialport.print("Clear: ");
+  serialport.println(counts[10], SERIAL_DECIMALS);
+  serialport.print("NIR: ");
+  serialport.println(counts[11], SERIAL_DECIMALS);
+  return true;
+}
+
+bool serialLowReadings(Stream &serialport, float_t counts[12])
+{
+
+  serialport.print("415nm: ");
+  serialport.println(counts[0], SERIAL_DECIMALS);
+  serialport.print("445nm: ");
+  serialport.println(counts[1], SERIAL_DECIMALS);
+  serialport.print("480nm: ");
+  serialport.println(counts[2], SERIAL_DECIMALS);
+  serialport.print("515nm: ");
+  serialport.println(counts[3], SERIAL_DECIMALS);
+  serialport.print("Clear: ");
+  serialport.println(counts[4], SERIAL_DECIMALS);
+  serialport.print("NIR: ");
+  serialport.println(counts[5], SERIAL_DECIMALS);
   return true;
 }

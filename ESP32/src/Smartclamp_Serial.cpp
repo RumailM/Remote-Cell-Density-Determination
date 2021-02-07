@@ -160,7 +160,7 @@ bool serialAllRaw(Stream &serialport, uint16_t rawCounts[12])
   return true;
 }
 
-bool serialHighReadings(Stream &serialport, float_t counts[12])
+bool serialHighCounts(Stream &serialport, float_t counts[12])
 {
   serialport.println(counts[6], SERIAL_DECIMALS);
   serialport.print("590nm: ");
@@ -176,7 +176,7 @@ bool serialHighReadings(Stream &serialport, float_t counts[12])
   return true;
 }
 
-bool serialLowReadings(Stream &serialport, float_t counts[12])
+bool serialLowCounts(Stream &serialport, float_t counts[12])
 {
 
   serialport.print("415nm: ");

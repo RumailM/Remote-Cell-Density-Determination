@@ -79,7 +79,7 @@ bool Smartclamp_AS7341::readLowChannels(uint16_t *readings_buffer)
 
     setSMUXLowChannels(true);             // Configure SMUX to read low channels
     enableSpectralMeasurement(true);      // Start integration
-    delayForData(as7341Info.intTime + 5); // I'll wait for you for all time
+    delayForData(0); // I'll wait for you for all time
 
     Adafruit_BusIO_Register channel_data_reg =
         Adafruit_BusIO_Register(i2c_dev, AS7341_CH0_DATA_L, 2);
@@ -100,7 +100,7 @@ bool Smartclamp_AS7341::readHighChannels(uint16_t *readings_buffer)
 
     setSMUXLowChannels(false);            // Configure SMUX to read high channels
     enableSpectralMeasurement(true);      // Start integration
-    delayForData(as7341Info.intTime + 5); // I'll wait for you for all time
+    delayForData(0); // I'll wait for you for all time
 
     Adafruit_BusIO_Register channel_data_reg =
         Adafruit_BusIO_Register(i2c_dev, AS7341_CH0_DATA_L, 2);
@@ -302,7 +302,7 @@ bool Smartclamp_AS7341::setSMUXCommand(as7341_smux_cmd_t command)
     return smux_command_bits.write(command);
 }
 
-bool Adafruit_AS7341::enableSMUX(void)
+bool Smartclamp_AS7341::enableSMUX(void)
 {
 
     Adafruit_BusIO_Register enable_reg =

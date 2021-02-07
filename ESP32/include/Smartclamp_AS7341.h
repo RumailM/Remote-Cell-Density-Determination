@@ -83,11 +83,9 @@ class Smartclamp_AS7341 : public Adafruit_AS7341
 {
 
 private:
-
     bool setSMUXCommand(as7341_smux_cmd_t command);
     void setSMUXLowChannels(bool f1_f4);
     bool enableSMUX(void);
-    
 
 public:
     as7431_info_t as7341Info;

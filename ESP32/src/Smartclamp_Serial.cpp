@@ -106,7 +106,7 @@ void read_SERIAL(Smartclamp_AS7341 &as7341)
   }
 }
 
-bool serialAllReadings(Stream &serialport, float_t counts[12])
+bool serialAllCounts(Stream &serialport, float_t counts[12])
 {
 
   serialport.print("415nm: ");
@@ -133,7 +133,7 @@ bool serialAllReadings(Stream &serialport, float_t counts[12])
   return true;
 }
 
-bool serialAllReadings(Stream &serialport, float_t counts[12])
+bool serialAllCounts(Stream &serialport, float_t counts[12])
 {
 
   serialport.print("415nm: ");
@@ -160,7 +160,7 @@ bool serialAllReadings(Stream &serialport, float_t counts[12])
   return true;
 }
 
-bool serialPrintRaw(Stream &serialport, uint16_t rawCounts[12])
+bool serialAllRaw(Stream &serialport, uint16_t rawCounts[12])
 {
 
   serialport.print("415nm: ");
@@ -218,5 +218,40 @@ bool serialLowReadings(Stream &serialport, float_t counts[12])
   serialport.println(counts[4], SERIAL_DECIMALS);
   serialport.print("NIR: ");
   serialport.println(counts[5], SERIAL_DECIMALS);
+  return true;
+}
+
+bool serialHighRaw(Stream &serialport, uint16_t rawCounts[12])
+{
+  serialport.print("555nm: ");
+  serialport.println(rawCounts[6]);
+  serialport.print("590nm: ");
+  serialport.println(rawCounts[7]);
+  serialport.print("630nm: ");
+  serialport.println(rawCounts[8]);
+  serialport.print("680nm: ");
+  serialport.println(rawCounts[9]);
+  serialport.print("Clear: ");
+  serialport.println(rawCounts[10]);
+  serialport.print("NIR: ");
+  serialport.println(rawCounts[11]);
+  return true;
+}
+
+bool serialLowRaw(Stream &serialport, uint16_t rawCounts[12])
+{
+
+  serialport.print("415nm: ");
+  serialport.println(rawCounts[0]);
+  serialport.print("445nm: ");
+  serialport.println(rawCounts[1]);
+  serialport.print("480nm: ");
+  serialport.println(rawCounts[2]);
+  serialport.print("515nm: ");
+  serialport.println(rawCounts[3]);
+  serialport.print("Clear: ");
+  serialport.println(rawCounts[4]);
+  serialport.print("NIR: ");
+  serialport.println(rawCounts[5]);
   return true;
 }

@@ -65,9 +65,9 @@ void loop(void)
     }
 
     if (!rawCountsMode)
-      serialAllReadings(Serial, counts);
+      serialAllCounts(Serial, counts);
     else
-      serialPrintRaw(Serial, readings);
+      serialAllRaw(Serial, readings);
 
     as7341.printParameters(Serial);
     lastMsecs = millis();

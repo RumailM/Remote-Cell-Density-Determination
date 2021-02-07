@@ -81,6 +81,12 @@ const as7341_agc_high_t DEFAULT_SP_AGC_HIGH = AS7341_AGC_HIGH_75;
 
 class Smartclamp_AS7341 : public Adafruit_AS7341
 {
+
+private:
+    bool setSMUXCommand(as7341_smux_cmd_t command);
+    void setSMUXLowChannels(bool f1_f4);
+    bool enableSMUX(void);
+
 public:
     as7431_info_t as7341Info;
 
@@ -89,6 +95,8 @@ public:
 
     bool initializeSensor();
     void updateSensorInfo();
+    bool readLowChannels(uint16_t *readings_buffer);
+    bool readHighChannels(uint16_t *readings_buffer);
     bool printParameters(Stream &Serial);
     bool enableSpAutoGainCtrl(bool enable_sp_agc);
     bool getSpAutoGainCtrl();

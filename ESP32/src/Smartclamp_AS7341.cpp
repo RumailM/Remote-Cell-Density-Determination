@@ -67,6 +67,48 @@ void Smartclamp_AS7341::updateSensorInfo()
 }
 
 /**
+ * @brief fills the provided buffer with the current measurements for Spectral
+ * channels F1-4, Clear and NIR
+ *
+ * @param readings_buffer Pointer to a buffer of length 10 or more to fill with
+ * sensor data
+ * @return true: success false: failure
+ */
+bool Smartclamp_AS7341::readLowChannels(uint16_t *readings_buffer)
+{
+
+    setSMUXLowChannels(true);             // Configure SMUX to read low channels
+    enableSpectralMeasurement(true);      // Start integration
+    delayForData(0); // I'll wait for you for all time
+
+    Adafruit_BusIO_Register channel_data_reg =
+        Adafruit_BusIO_Register(i2c_dev, AS7341_CH0_DATA_L, 2);
+
+    return channel_data_reg.read((uint8_t *)&readings_buffer, 12);
+}
+
+/**
+ * @brief fills the provided buffer with the current measurements for Spectral
+ * channels F5-8, Clear and NIR
+ *
+ * @param readings_buffer Pointer to a buffer of length 10 or more to fill with
+ * sensor data
+ * @return true: success false: failure
+ */
+bool Smartclamp_AS7341::readHighChannels(uint16_t *readings_buffer)
+{
+
+    setSMUXLowChannels(false);            // Configure SMUX to read high channels
+    enableSpectralMeasurement(true);      // Start integration
+    delayForData(0); // I'll wait for you for all time
+
+    Adafruit_BusIO_Register channel_data_reg =
+        Adafruit_BusIO_Register(i2c_dev, AS7341_CH0_DATA_L, 2);
+
+    return channel_data_reg.read((uint8_t *)&readings_buffer[6], 12);
+}
+
+/**
  * @brief Prints out sensor Gain, ATime, AStep and Integration time to stream
  *
  * @param stream Pointer to stream object (ie. Serial object)
@@ -233,4 +275,52 @@ as7341_agc_high_t Smartclamp_AS7341::getHighAgcThreshold()
     Adafruit_BusIO_RegisterBits agc_high_threshold =
         Adafruit_BusIO_RegisterBits(&agc_threshold_reg, 2, 6);
     return (as7341_agc_high_t)agc_high_threshold.read();
+}
+
+void Smartclamp_AS7341::setSMUXLowChannels(bool f1_f4)
+{
+    enableSpectralMeasurement(false);
+    setSMUXCommand(AS7341_SMUX_CMD_WRITE);
+    if (f1_f4)
+    {
+        setup_F1F4_Clear_NIR();
+    }
+    else
+    {
+        setup_F5F8_Clear_NIR();
+    }
+    enableSMUX();
+}
+
+bool Smartclamp_AS7341::setSMUXCommand(as7341_smux_cmd_t command)
+{
+    Adafruit_BusIO_Register cfg6_reg =
+        Adafruit_BusIO_Register(i2c_dev, AS7341_CFG6);
+    Adafruit_BusIO_RegisterBits smux_command_bits =
+        Adafruit_BusIO_RegisterBits(&cfg6_reg, 2, 3);
+
+    return smux_command_bits.write(command);
+}
+
+bool Smartclamp_AS7341::enableSMUX(void)
+{
+
+    Adafruit_BusIO_Register enable_reg =
+        Adafruit_BusIO_Register(i2c_dev, AS7341_ENABLE);
+    Adafruit_BusIO_RegisterBits smux_enable_bit =
+        Adafruit_BusIO_RegisterBits(&enable_reg, 1, 4);
+    bool success = smux_enable_bit.write(true);
+
+    int timeOut = 1000; // Arbitrary value, but if it takes 1000 milliseconds then
+                        // something is wrong
+    int count = 0;
+    while (smux_enable_bit.read() && count < timeOut)
+    {
+        delay(1);
+        count++;
+    }
+    if (count >= timeOut)
+        return false;
+    else
+        return success;
 }

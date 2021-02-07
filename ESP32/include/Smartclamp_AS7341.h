@@ -90,7 +90,6 @@ public:
     bool initializeSensor();
     void updateSensorInfo();
     bool printParameters(Stream &Serial);
-    bool clearAValid();
     bool enableSpAutoGainCtrl(bool enable_sp_agc);
     bool getSpAutoGainCtrl();
     bool enableSaturationInterrupt(bool enable_asien);

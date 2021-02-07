@@ -87,19 +87,18 @@ public:
     Smartclamp_AS7341();
     ~Smartclamp_AS7341();
 
+    bool initializeSensor();
     void updateSensorInfo();
+    bool printParameters(Stream &Serial);
     bool enableSpAutoGainCtrl(bool enable_sp_agc);
     bool getSpAutoGainCtrl();
     bool enableSaturationInterrupt(bool enable_asien);
     bool getSaturationInterrupt();
+    bool automaticGainContol();
     bool setLowAgcThreshold(as7341_agc_low_t low_threshold);
     as7341_agc_low_t getLowAgcThreshold();
     bool setHighAgcThreshold(as7341_agc_high_t high_threshold);
     as7341_agc_high_t getHighAgcThreshold();
-    bool initializeSensor();
-    bool printParameters(Stream &Serial);
-    bool automaticGainContol();
-    bool clearAValid();
 };
 
 #endif

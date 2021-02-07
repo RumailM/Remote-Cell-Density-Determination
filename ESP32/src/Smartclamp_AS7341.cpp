@@ -54,19 +54,6 @@ bool Smartclamp_AS7341::initializeSensor()
     return true;
 }
 
-/**
- * @brief Performs a cycle of automatic gain control
- * 
- * @return true: gain was changes false: gain wasnt changed
- */
-bool Smartclamp_AS7341::automaticGainContol()
-{
-    enableSpAutoGainCtrl(true);
-    delay(as7341Info.intTime); //NOTE: This needs to be changed once AVALID is fixed
-    enableSpAutoGainCtrl(false);
-    return true;
-}
-
 void Smartclamp_AS7341::updateSensorInfo()
 {
     as7341Info.gain = getGain();
@@ -108,6 +95,23 @@ bool Smartclamp_AS7341::printParameters(Stream &stream)
     stream.println();
     return true;
 }
+
+/**
+ * @brief Sets the Spectral and Flicker Detect Saturation Interrupt Enable register.
+ *
+ * @return (bool) sucessfully cleared?
+ */
+bool Smartclamp_AS7341::clearAValid()
+{
+    Adafruit_BusIO_Register enable_sp_agc_reg =
+        Adafruit_BusIO_Register(i2c_dev, AS7341_STATUS2);
+    Adafruit_BusIO_RegisterBits sp_agc_en =
+        Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 6);
+    sp_agc_en.write(1);
+    return true;
+}
+
+bool Smartclamp_AS7341::getAValid(){return true;}
 
 /**
  * @brief Sets the spectral automatic gain control state of the sensor
@@ -167,6 +171,19 @@ bool Smartclamp_AS7341::getSaturationInterrupt()
     Adafruit_BusIO_RegisterBits sp_agc_en =
         Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 7);
     return sp_agc_en.read();
+}
+
+/**
+ * @brief Performs a cycle of automatic gain control
+ * 
+ * @return true: gain was changes false: gain wasnt changed
+ */
+bool Smartclamp_AS7341::automaticGainContol()
+{
+    enableSpAutoGainCtrl(true);
+    delay(as7341Info.intTime); //NOTE: This needs to be changed once AVALID is fixed
+    enableSpAutoGainCtrl(false);
+    return true;
 }
 
 /**
@@ -233,19 +250,4 @@ as7341_agc_high_t Smartclamp_AS7341::getHighAgcThreshold()
     Adafruit_BusIO_RegisterBits agc_high_threshold =
         Adafruit_BusIO_RegisterBits(&agc_threshold_reg, 2, 6);
     return (as7341_agc_high_t)agc_high_threshold.read();
-}
-
-/**
- * @brief Sets the Spectral and Flicker Detect Saturation Interrupt Enable register.
- *
- * @return (bool) sucessfully cleared?
- */
-bool Smartclamp_AS7341::clearAValid()
-{
-    Adafruit_BusIO_Register enable_sp_agc_reg =
-        Adafruit_BusIO_Register(i2c_dev, AS7341_STATUS2);
-    Adafruit_BusIO_RegisterBits sp_agc_en =
-        Adafruit_BusIO_RegisterBits(&enable_sp_agc_reg, 1, 6);
-    sp_agc_en.write(1);
-    return true;
 }

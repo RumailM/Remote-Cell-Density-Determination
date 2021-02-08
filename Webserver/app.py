@@ -39,7 +39,7 @@ mqtt = Mqtt(app)
 socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
 
-qos = 2;
+qos = 0;
 
 
 #Parameters
@@ -146,11 +146,16 @@ def handle_login(client, userdata, message):
     print('Received message on topic {}: {}'
         .format(message.topic, message.payload.decode()))
     
+    print(message.payload.decode())
+    print(type(message.payload.decode()))
+
     payload_dict = json.loads(message.payload.decode())
+    print(payload(payload_dict["MAC"]))
+    print(type(payload(payload_dict["MAC"])))
     ret_id = push_mac(payload_dict["MAC"])
-    temp_dict = {"MAC":payload_dict,"msgType":"control","id":ret_id}
+    temp_dict = {"MAC":payload_dict["MAC"],"msgType":"control","id":ret_id}
     json_str = json.dumps(temp_dict)
-    mqtt.publish("lab/control/login", json_str, qos)
+    mqtt.publish("lab/control/loginResponse", json_str, qos)
 
 @mqtt.on_topic("lab/control/logout")
 def handle_login(client, userdata, message):

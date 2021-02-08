@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "PubSubClient.h" // Connect and publish to the MQTT broker
 #include "WiFi.h" // Enables the ESP32 to connect to the local network (via WiFi)
+#include <ArduinoJson.h> // Enables JSON serialization and deserialization
 
 // WiFi
 const char* ssid = "NameOfNetwork";                     // Raspberry Pi network SSID
@@ -17,8 +18,12 @@ int identifier;
 
 // MQTT Topics
 const char* topic_login = "lab/control/login";
+const char* topic_login_response = "lab/control/loginResponse";
 const char* topic_experiment_toggle = "lab/control/experimentToggle";
 const char* topic_experiment_data = "lab/data";
+
+// JSON Message
+char concatenation [50];
 
 // Flags
 bool flag_identification = false;
@@ -59,6 +64,9 @@ void connect_wifi()
 
     Serial.print("MAC address: ");
     Serial.println(macAddress.c_str());
+    
+    sprintf(concatenation, "{\"MAC\":\"%s\"}", macAddress.c_str());
+    Serial.println(concatenation);
 }
 
 // Custom function to connect to the MQTT broker via WiFi
@@ -93,17 +101,18 @@ void callback(char* topic, byte* payload, unsigned int length)
     Serial.println("-----------------------");
 
     // Login Topic Callback
-    if (strcmp(topic, topic_login) == 0)
+    if (strcmp(topic, topic_login_response) == 0)
     {
         // Assign unique identifier and unsub from login topic
         identifier = (int)(char)payload[1];
-        if (client.unsubscribe(topic_login))
+        Serial.println(identifier);
+        if (client.unsubscribe(topic_login_response))
         {
-            Serial.println("Unsubscribed from login topic!");
+            Serial.println("Unsubscribed from login response topic!");
         }
         else
         {
-            Serial.println("Failed to unsubscribe from login topic.");
+            Serial.println("Failed to unsubscribe from login response topic.");
         }
 
         // Sub to experimentToggle topic
@@ -124,19 +133,20 @@ void callback(char* topic, byte* payload, unsigned int length)
 // Custom function to obtain ID from Raspberry Pi
 void identify_handshake()
 {
+    client.setCallback(callback);
     bool flag_handshake = false;
     while (!flag_handshake)
     {
-        if (client.subscribe(topic_login))
+        if (client.subscribe(topic_login_response))
         {
-            Serial.println("Subscribed to login topic!");
+            Serial.println("Subscribed to login response topic!");
         }
         else
         {
-            Serial.println("Failed to subscribe to login topic.");
+            Serial.println("Failed to subscribe to login response topic.");
         }
 
-        if (client.publish(topic_login, macAddress.c_str()))
+        if (client.publish(topic_login, concatenation))
         {
             Serial.println("MAC sent!");
             flag_handshake = true;

@@ -6,7 +6,6 @@
 // WiFi
 const char* ssid = "NameOfNetwork";                     // Raspberry Pi network SSID
 const char* wifi_password = "AardvarkBadgerHedgehog";   // Raspberry Pi network password
-byte mac_address[6];                                    // ESP32 MAC Address
 String macAddress;
 
 // MQTT
@@ -24,10 +23,10 @@ const char* topic_experiment_stop = "lab/control/experimentStop";
 const char* topic_experiment_data = "lab/data";
 
 // JSON Message
-char concatenation [50];
+// char concatenation [50];
 
 // Flags
-bool flag_identification = false, flag_start = false;
+bool flag_handshake = false, flag_identification = false, flag_start = false;
 
 // Timing
 const unsigned long period = 2000;
@@ -56,7 +55,7 @@ void connect_wifi()
         Serial.print(".");
     }
 
-    WiFi.macAddress(mac_address);
+    // Get MAC Address
     macAddress = WiFi.macAddress();
 
     // Debugging - Output the IP Address and MAC Address
@@ -67,9 +66,6 @@ void connect_wifi()
 
     Serial.print("MAC address: ");
     Serial.println(macAddress.c_str());
-    
-    sprintf(concatenation, "{\"MAC\":\"%s\"}", macAddress.c_str());
-    Serial.println(concatenation);
 }
 
 // Custom function to connect to the MQTT broker via WiFi
@@ -93,36 +89,39 @@ void connect_MQTT()
 // Custom function to obtain ID from Raspberry Pi
 void identify_handshake()
 {
-    bool flag_handshake = false;
-    while (!flag_handshake)
-    {
-        if (client.subscribe(topic_login_response))
-        {
-            Serial.println("Subscribed to login response topic!");
-        }
-        else
-        {
-            Serial.println("Failed to subscribe to login response topic.");
-        }
+    // sprintf(concatenation, "{\"MAC\":\"%s\"}", macAddress.c_str());
+    // Serial.println(concatenation);
 
-        if (client.publish(topic_login, concatenation))
-        {
-            Serial.println("MAC sent!");
-            flag_handshake = true;
-        }
-        else
-        {
-            Serial.println("String failed to send. Reconnecting to MQTT Broker and trying again");
-            connect_MQTT();
-        }
+    StaticJsonDocument<256> doc;
+    doc["MAC"] = macAddress.c_str();
+
+    char buffer[256];
+    size_t n = serializeJson(doc, buffer);  
+    
+    if (client.subscribe(topic_login_response))
+    {
+        Serial.println("Subscribed to login response topic!");
+    }
+    else
+    {
+        Serial.println("Failed to subscribe to login response topic.");
     }
 
-    Serial.println("I am done.");
+    if (client.publish(topic_login, buffer, n))
+    {
+        Serial.println("MAC sent!");
+    }
+    else
+    {
+        Serial.println("String failed to send. Reconnecting to MQTT Broker and trying again");
+        connect_MQTT();
+    }
 }
 
 void callback_login_response(char* topic, byte* payload, unsigned int length)
 {
-    Serial.println("Response received.");
+    flag_handshake = true;
+    Serial.println("Login Response received.");
     
     StaticJsonDocument<256> doc;
     DeserializationError err = deserializeJson(doc, payload, length);
@@ -227,7 +226,7 @@ void callback_experiment_stop(char* topic, byte* payload, unsigned int length)
         }
 
         // Check identifier
-        if (identifier == doc["id"])
+        if (identifier == (int) doc["id"])
         {
             // Unsub from experiment stop topic
             if (client.unsubscribe(topic_experiment_stop))
@@ -253,7 +252,7 @@ void callback_experiment_stop(char* topic, byte* payload, unsigned int length)
             flag_start = false;
         }
 
-        Serial.println("Experiment successfully started!");
+        Serial.println("Experiment successfully stopped!");
     }
 }
 
@@ -298,9 +297,11 @@ void callback(char* topic, byte* payload, unsigned int length)
 void setup() 
 {
     Serial.begin(115200);
+    identifier = -99;
+
     connect_wifi();
     connect_MQTT();
-    identify_handshake();
+
     Serial.setTimeout(2000);
     start_millis = millis();
 }
@@ -308,6 +309,7 @@ void setup()
 void loop()
 {
     client.loop();
+
     current_millis = millis();
     if (current_millis - start_millis >= period)
     {
@@ -317,7 +319,12 @@ void loop()
         Serial.print(flag_identification);
         Serial.print(", flag_start: ");
         Serial.println(flag_start);
-        if (flag_identification && flag_start)
+
+        if(!flag_handshake)
+        {
+            identify_handshake();
+        }
+        else if (flag_identification && flag_start)
         {
             StaticJsonDocument<256> doc;
             doc["id"] = identifier;

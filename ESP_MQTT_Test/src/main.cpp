@@ -179,8 +179,10 @@ void callback_experiment_start(char* topic, byte* payload, unsigned int length)
             return;
         }
 
+        Serial.println(identifier);
+
         // Check identifier
-        if (identifier == doc["id"])
+        if (identifier == (int) doc["id"])
         {
             // Unsub from experiment start topic
             if (client.unsubscribe(topic_experiment_start))
@@ -268,35 +270,30 @@ void callback_default(char* topic, byte* payload, unsigned int length)
     }
 }
 
+// Callback function for subscribed topics
 void callback(char* topic, byte* payload, unsigned int length)
 {
-    Serial.println("Hello World!");
+    Serial.print("Message arrived in topic: ");
+    Serial.println(topic);
+
+    // Topic Callback Functions
+    if (strcmp(topic, topic_login_response) == 0)
+    {
+        callback_login_response(topic, payload, length);
+    }
+    else if (strcmp(topic, topic_experiment_start) == 0)
+    {
+        callback_experiment_start(topic, payload, length);
+    }
+    else if (strcmp(topic, topic_experiment_stop) == 0)
+    {
+        callback_experiment_stop(topic, payload, length);
+    }
+    else
+    {
+        callback_default(topic, payload, length);
+    }
 }
-
-// // Callback function for subscribed topics
-// void callback(char* topic, byte* payload, unsigned int length)
-// {
-//     Serial.print("Message arrived in topic: ");
-//     Serial.println(topic);
-
-//     // Topic Callback Functions
-//     if (strcmp(topic, topic_login_response) == 0)
-//     {
-//         callback_login_response(topic, payload, length);
-//     }
-//     else if (strcmp(topic, topic_experiment_start) == 0)
-//     {
-//         callback_experiment_start(topic, payload, length);
-//     }
-//     else if (strcmp(topic, topic_experiment_stop) == 0)
-//     {
-//         callback_experiment_stop(topic, payload, length);
-//     }
-//     else
-//     {
-//         callback_default(topic, payload, length);
-//     }
-// }
 
 void setup() 
 {
@@ -310,19 +307,43 @@ void setup()
 
 void loop()
 {
+    client.loop();
     current_millis = millis();
-    if (flag_identification && flag_start && current_millis - start_millis >= period)
+    if (current_millis - start_millis >= period)
     {
-        Serial.print("Identifier: ");
-        Serial.println(identifier);
-        if (client.publish(topic_experiment_data, "Hello World!"))
+        Serial.print("Main Loop. Identifier: ");
+        Serial.print(identifier);
+        Serial.print(", flag_identification: ");
+        Serial.print(flag_identification);
+        Serial.print(", flag_start: ");
+        Serial.println(flag_start);
+        if (flag_identification && flag_start)
         {
-            Serial.println("Data sent!");
+            StaticJsonDocument<256> doc;
+            doc["id"] = identifier;
+            doc["timestamp"] = current_millis;
+            
+            JsonArray data = doc.createNestedArray("data");
+            data.add(current_millis);
+            data.add(start_millis);
+            data.add(current_millis);
+            data.add(start_millis);
+            data.add(current_millis);
+            data.add(start_millis);
+
+            char buffer[256];
+            size_t n = serializeJson(doc, buffer);  
+            
+            if (client.publish(topic_experiment_data, buffer, n))
+            {
+                Serial.println("Data sent!");
+            }
+            else
+            {
+                Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");
+                connect_MQTT();
+            }
         }
-        else
-        {
-            Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");
-            connect_MQTT();
-        }
+        start_millis = current_millis;
     }
 }

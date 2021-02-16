@@ -150,10 +150,10 @@ def handle_login(client, userdata, message):
     print(type(message.payload.decode()))
 
     payload_dict = json.loads(message.payload.decode())
-    print(payload(payload_dict["MAC"]))
-    print(type(payload(payload_dict["MAC"])))
+    print(payload_dict["MAC"])
+    print(type(payload_dict["MAC"]))
     ret_id = push_mac(payload_dict["MAC"])
-    temp_dict = {"MAC":payload_dict["MAC"],"msgType":"control","id":ret_id}
+    temp_dict = {"MAC":payload_dict["MAC"],"id":ret_id}
     json_str = json.dumps(temp_dict)
     mqtt.publish("lab/control/loginResponse", json_str, qos)
 
@@ -167,8 +167,8 @@ def handle_login(client, userdata, message):
     pop_mac(payload_dict["MAC"])
         
 
-@mqtt.on_topic("lab/control/experimentToggle")
-def handle_experimentToggle(client, userdata, message):
+@mqtt.on_topic("lab/control/experimentStart")
+def handle_experimentStart(client, userdata, message):
     # create log file and start recording
 
     print('Received message on topic {}: {}'

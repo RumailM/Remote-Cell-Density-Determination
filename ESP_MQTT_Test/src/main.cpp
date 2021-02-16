@@ -10,7 +10,7 @@ byte mac_address[6];                                    // ESP32 MAC Address
 String macAddress;
 
 // MQTT
-const char* mqtt_server = "192.168.0.110";  // IP of the MQTT broker
+const char* mqtt_server = "192.168.4.1";  // IP of the MQTT broker
 const char* mqtt_username = "smart"; // MQTT username
 const char* mqtt_password = "clamp"; // MQTT password
 const char* clientID = ""; // MQTT client ID
@@ -19,14 +19,15 @@ int identifier;
 // MQTT Topics
 const char* topic_login = "lab/control/login";
 const char* topic_login_response = "lab/control/loginResponse";
-const char* topic_experiment_toggle = "lab/control/experimentToggle";
+const char* topic_experiment_start = "lab/control/experimentStart";
+const char* topic_experiment_stop = "lab/control/experimentStop";
 const char* topic_experiment_data = "lab/data";
 
 // JSON Message
 char concatenation [50];
 
 // Flags
-bool flag_identification = false;
+bool flag_identification = false, flag_start = false;
 
 // Timing
 const unsigned long period = 2000;
@@ -36,6 +37,8 @@ unsigned long start_millis, current_millis;
 WiFiClient wifiClient;
 // 1883 is the listener port for the Broker
 PubSubClient client(mqtt_server, 1883, wifiClient); 
+
+void callback(char* topic, byte* payload, unsigned int length);
 
 // Custom function to connect to WiFi
 void connect_wifi()
@@ -78,6 +81,7 @@ void connect_MQTT()
     if (client.connect(clientID, mqtt_username, mqtt_password))
     {
         Serial.println("Connected to MQTT Broker!");
+        client.setCallback(callback);
     }
     else
     {
@@ -85,55 +89,10 @@ void connect_MQTT()
     }
 }
 
-// Callback function for subscribed topics
-void callback(char* topic, byte* payload, unsigned int length)
-{
-    Serial.print("Message arrived in topic: ");
-    Serial.println(topic);
-
-    Serial.print("Message:");
-    for (int i = 0; i < length; i++)
-    {
-        Serial.print((char)payload[i]);
-    }
-
-    Serial.println();
-    Serial.println("-----------------------");
-
-    // Login Topic Callback
-    if (strcmp(topic, topic_login_response) == 0)
-    {
-        // Assign unique identifier and unsub from login topic
-        identifier = (int)(char)payload[1];
-        Serial.println(identifier);
-        if (client.unsubscribe(topic_login_response))
-        {
-            Serial.println("Unsubscribed from login response topic!");
-        }
-        else
-        {
-            Serial.println("Failed to unsubscribe from login response topic.");
-        }
-
-        // Sub to experimentToggle topic
-        if (client.subscribe(topic_experiment_toggle))
-        {
-            Serial.println("Subscribed to experimentToggle topic!");
-        }
-        else
-        {
-            Serial.println("Failed to subscribe to experimentToggle topic.");
-        }
-
-        // Raise identification flag
-        flag_identification = true;
-    }
-}
 
 // Custom function to obtain ID from Raspberry Pi
 void identify_handshake()
 {
-    client.setCallback(callback);
     bool flag_handshake = false;
     while (!flag_handshake)
     {
@@ -157,9 +116,187 @@ void identify_handshake()
             connect_MQTT();
         }
     }
-    client.setCallback(callback);
+
+    Serial.println("I am done.");
 }
 
+void callback_login_response(char* topic, byte* payload, unsigned int length)
+{
+    Serial.println("Response received.");
+    
+    StaticJsonDocument<256> doc;
+    DeserializationError err = deserializeJson(doc, payload, length);
+
+    if (err)
+    {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(err.f_str());
+        return;
+    }
+    
+    const char* mac = doc["MAC"];
+
+    if (strcmp(macAddress.c_str(), mac) == 0)
+    {
+        // Assign unique identifier and unsub from login topic
+        identifier = doc["id"];
+        Serial.println(identifier);
+        if (client.unsubscribe(topic_login_response))
+        {
+            Serial.println("Unsubscribed from loginResponse topic!");
+        }
+        else
+        {
+            Serial.println("Failed to unsubscribe from loginResponse topic.");
+        }
+
+        // Sub to experimentToggle topic
+        if (client.subscribe(topic_experiment_start))
+        {
+            Serial.println("Subscribed to experimentStart topic!");
+        }
+        else
+        {
+            Serial.println("Failed to subscribe to experimentStart topic.");
+        }
+
+        // Raise identification flag
+        flag_identification = true;
+    }
+}
+
+void callback_experiment_start(char* topic, byte* payload, unsigned int length)
+{
+    if (flag_identification)
+    {
+        StaticJsonDocument<256> doc;
+        DeserializationError err = deserializeJson(doc, payload, length);
+
+        if (err)
+        {
+            Serial.print(F("deserializeJson() failed: "));
+            Serial.println(err.f_str());
+            return;
+        }
+
+        // Check identifier
+        if (identifier == doc["id"])
+        {
+            // Unsub from experiment start topic
+            if (client.unsubscribe(topic_experiment_start))
+            {
+                Serial.println("Unsubscribed from experimentStart topic!");
+            }
+            else
+            {
+                Serial.println("Failed to unsubscribe from experimentStart topic.");
+            }
+
+            // Sub to experiment stop topic
+            if (client.subscribe(topic_experiment_stop))
+            {
+                Serial.println("Subscribed to experimentStop topic!");
+            }
+            else
+            {
+                Serial.println("Failed to subscribe to experimentStop topic.");
+            }
+
+            // Raise flag_start
+            flag_start = true;
+        }
+
+        Serial.println("Experiment successfully started!");
+    }
+}
+
+void callback_experiment_stop(char* topic, byte* payload, unsigned int length)
+{
+    if (flag_start)
+    {
+        StaticJsonDocument<256> doc;
+        DeserializationError err = deserializeJson(doc, payload, length);
+
+        if (err)
+        {
+            Serial.print(F("deserializeJson() failed: "));
+            Serial.println(err.f_str());
+            return;
+        }
+
+        // Check identifier
+        if (identifier == doc["id"])
+        {
+            // Unsub from experiment stop topic
+            if (client.unsubscribe(topic_experiment_stop))
+            {
+                Serial.println("Unsubscribed from experimentStop topic!");
+            }
+            else
+            {
+                Serial.println("Failed to unsubscribe from experimentStop topic.");
+            }
+
+            // Sub to experiment start topic
+            if (client.subscribe(topic_experiment_start))
+            {
+                Serial.println("Subscribed to experimentStart topic!");
+            }
+            else
+            {
+                Serial.println("Failed to subscribe to experimentStart topic.");
+            }
+
+            // Raise flag_start
+            flag_start = false;
+        }
+
+        Serial.println("Experiment successfully started!");
+    }
+}
+
+void callback_default(char* topic, byte* payload, unsigned int length)
+{
+    StaticJsonDocument<256> doc;
+    DeserializationError err = deserializeJson(doc, payload, length);
+
+    if (err)
+    {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(err.f_str());
+        return;
+    }
+}
+
+void callback(char* topic, byte* payload, unsigned int length)
+{
+    Serial.println("Hello World!");
+}
+
+// // Callback function for subscribed topics
+// void callback(char* topic, byte* payload, unsigned int length)
+// {
+//     Serial.print("Message arrived in topic: ");
+//     Serial.println(topic);
+
+//     // Topic Callback Functions
+//     if (strcmp(topic, topic_login_response) == 0)
+//     {
+//         callback_login_response(topic, payload, length);
+//     }
+//     else if (strcmp(topic, topic_experiment_start) == 0)
+//     {
+//         callback_experiment_start(topic, payload, length);
+//     }
+//     else if (strcmp(topic, topic_experiment_stop) == 0)
+//     {
+//         callback_experiment_stop(topic, payload, length);
+//     }
+//     else
+//     {
+//         callback_default(topic, payload, length);
+//     }
+// }
 
 void setup() 
 {
@@ -174,17 +311,17 @@ void setup()
 void loop()
 {
     current_millis = millis();
-    if (flag_identification && current_millis - start_millis >= period)
+    if (flag_identification && flag_start && current_millis - start_millis >= period)
     {
         Serial.print("Identifier: ");
         Serial.println(identifier);
-        if (client.publish(topic_experiment_toggle, "Hello World!"))
+        if (client.publish(topic_experiment_data, "Hello World!"))
         {
-            Serial.println("Hello sent!");
+            Serial.println("Data sent!");
         }
         else
         {
-            Serial.println("Hello failed to send. Reconnecting to MQTT Broker and trying again");
+            Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");
             connect_MQTT();
         }
     }

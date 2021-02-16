@@ -155,7 +155,8 @@ def handle_login(client, userdata, message):
     ret_id = push_mac(payload_dict["MAC"])
     temp_dict = {"MAC":payload_dict["MAC"],"id":ret_id}
     json_str = json.dumps(temp_dict)
-    mqtt.publish("lab/control/loginResponse", json_str, qos)
+    # mqtt.publish("lab/control/loginResponse", json_str, qos)
+    mqtt.publish("lab/control/loginResponse", "anything", qos)
 
 @mqtt.on_topic("lab/control/logout")
 def handle_login(client, userdata, message):

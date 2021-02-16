@@ -11,6 +11,7 @@ from flask import Flask, render_template
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
+from datetime import datetime
 
 eventlet.monkey_patch()
 
@@ -129,16 +130,14 @@ def handle_data(client, userdata, message):
     print(message.payload.decode())
     # print(payload)
     payload_dict = json.loads(message.payload.decode())
-    print(payload_dict["msgType"])
-    print(type(payload_dict["msgType"]))
-    if payload_dict["msgType"] == "data":
-        print("inside if")
-        file_name = mac_addr_list[payload_dict["id"]]+"_"+"date"+".txt"
-        print(file_name)
-        file_descriptor = open(file_name,"a")
-        file_descriptor.write(message.payload.decode())
-        file_descriptor.write("\n")
-        file_descriptor.close()
+    date = experiment_start_time_list[int(payload_dict['id'])]
+    
+    file_name = mac_addr_list[int(payload_dict["id"])]+"_"+date+".txt"
+    print(file_name)
+    file_descriptor = open(file_name,"a")
+    file_descriptor.write(message.payload.decode())
+    file_descriptor.write("\n")
+    file_descriptor.close()
 
 @mqtt.on_topic("lab/control/login")
 def handle_login(client, userdata, message):
@@ -156,10 +155,10 @@ def handle_login(client, userdata, message):
     temp_dict = {"MAC":payload_dict["MAC"],"id":ret_id}
     json_str = json.dumps(temp_dict)
     # mqtt.publish("lab/control/loginResponse", json_str, qos)
-    mqtt.publish("lab/control/loginResponse", "anything", qos)
+    mqtt.publish("lab/control/loginResponse", json_str, qos)
 
 @mqtt.on_topic("lab/control/logout")
-def handle_login(client, userdata, message):
+def _login(client, userdata, message):
 
     print('Received message on topic {}: {}'
         .format(message.topic, message.payload.decode()))
@@ -176,10 +175,13 @@ def handle_experimentStart(client, userdata, message):
           .format(message.topic, message.payload.decode()))
 
     received_payload = message.payload.decode()
-    print('                        line102')
-    print(received_payload)
+    
+
     received_payload = json.loads(received_payload)
-    device_mac = mac_addr_list[received_payload['id']]
+    now = datetime.now()
+    date = now.strftime("%d_%m_%Y_%H_%M_%S")
+    experiment_start_time_list[int(received_payload['id'])] = date
+    device_mac = mac_addr_list[int(received_payload['id'])]
     new_file = open(device_mac + "_" + date + ".txt",'x')
     new_file.close()
 

@@ -22,9 +22,6 @@ const char* topic_experiment_start = "lab/control/experimentStart";
 const char* topic_experiment_stop = "lab/control/experimentStop";
 const char* topic_experiment_data = "lab/data";
 
-// JSON Message
-// char concatenation [50];
-
 // Flags
 bool flag_handshake = false, flag_identification = false, flag_start = false;
 
@@ -89,8 +86,6 @@ void connect_MQTT()
 // Custom function to obtain ID from Raspberry Pi
 void identify_handshake()
 {
-    // sprintf(concatenation, "{\"MAC\":\"%s\"}", macAddress.c_str());
-    // Serial.println(concatenation);
 
     StaticJsonDocument<256> doc;
     doc["MAC"] = macAddress.c_str();

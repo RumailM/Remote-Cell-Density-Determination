@@ -51,7 +51,7 @@ void loop(void)
     client.loop();
 
     current_millis = millis();
-    if (current_millis - start_millis > TARGET_PERIOD)
+    if (current_millis - start_millis > READING_PERIOD)
     {
         // Serial.print("Main Loop. Identifier: ");
         // Serial.print(identifier);
@@ -72,6 +72,7 @@ void loop(void)
             if (cnt_agc > AGC_FREQUENCY)
             {
                 as7341.automaticGainContol();
+                cnt_agc = 0;
             }
             cnt_agc++;
 
@@ -114,8 +115,8 @@ void loop(void)
 
             JsonArray parameters = doc.createNestedArray("parameters");
             parameters.add(as7341.as7341Info.gain);
-            // parameters.add(as7341.as7341Info.atime);
-            // parameters.add(as7341.as7341Info.astep);
+            parameters.add(as7341.as7341Info.atime);
+            parameters.add(as7341.as7341Info.astep);
             // parameters.add(as7341.as7341Info.sp_int_en);
             // parameters.add(as7341.as7341Info.sp_agc_en);
             // parameters.add(as7341.as7341Info.agc_low_th);

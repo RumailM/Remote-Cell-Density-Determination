@@ -344,14 +344,14 @@ void loop(void)
     client.loop();
 
     current_millis = millis();
-    if (current_millis - lastMsecs > 50)
+    if (current_millis - lastMsecs > TARGET_PERIOD)
     {
-        Serial.print("Main Loop. Identifier: ");
-        Serial.print(identifier);
-        Serial.print(", flag_identification: ");
-        Serial.print(flag_identification);
-        Serial.print(", flag_start: ");
-        Serial.println(flag_start);
+        // Serial.print("Main Loop. Identifier: ");
+        // Serial.print(identifier);
+        // Serial.print(", flag_identification: ");
+        // Serial.print(flag_identification);
+        // Serial.print(", flag_start: ");
+        // Serial.println(flag_start);
 
         if(!flag_handshake)
         {
@@ -368,7 +368,7 @@ void loop(void)
             }
             cnt_agc++;
 
-            if (!as7341.readHighChannels(readings))
+            if (!as7341.readAllChannels(readings))
             {
                 Serial.println("ERROR: Couldn't read all channels!");
                 return;
@@ -387,9 +387,9 @@ void loop(void)
             }
 
             if (!rawCountsMode)
-                serialHighCounts(Serial, counts);
+                serialAllCounts(Serial, counts);
             else
-                serialHighRaw(Serial, readings);
+                serialAllRaw(Serial, readings);
 
             as7341.printParameters(Serial);
 
@@ -397,13 +397,22 @@ void loop(void)
             doc["id"] = identifier;
             doc["timestamp"] = current_millis;
             
-            JsonArray data = doc.createNestedArray("data");
+            JsonArray data = doc.createNestedArray("readings");
             
             for (int i = 0; i < 12; i++)
             {
                 data.add(readings[i]);
             }
             data.add(count++);
+
+            JsonArray parameters = doc.createNestedArray("parameters");
+            parameters.add(as7341.as7341Info.gain);
+            // parameters.add(as7341.as7341Info.atime);
+            // parameters.add(as7341.as7341Info.astep);
+            // parameters.add(as7341.as7341Info.sp_int_en);
+            // parameters.add(as7341.as7341Info.sp_agc_en);
+            // parameters.add(as7341.as7341Info.agc_low_th);
+            // parameters.add(as7341.as7341Info.agc_high_th);
 
             Serial.print("Count: ");
             Serial.println(count);

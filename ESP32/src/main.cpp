@@ -16,6 +16,7 @@ const unsigned int AGC_FREQUENCY = 20;
 ///////////////////   GLOBAL VARIABLES    ///////////////
 
 Smartclamp_AS7341 as7341;
+unsigned long lastMsecs = millis();
 bool rawCountsMode = true;
 unsigned int cnt_agc = 0;
 int count = 0;
@@ -51,7 +52,7 @@ void loop(void)
     client.loop();
 
     current_millis = millis();
-    if (current_millis - start_millis > TARGET_PERIOD)
+    if (current_millis - lastMsecs > TARGET_PERIOD)
     {
         // Serial.print("Main Loop. Identifier: ");
         // Serial.print(identifier);
@@ -138,6 +139,7 @@ void loop(void)
             }
         }
         start_millis = current_millis;
+        lastMsecs = millis();
     }
     else
     {

@@ -23,4 +23,8 @@ This code is designed to be deployed using PlatformIO on either VSCode or Atom. 
 ## Raspberry Pi Hub Setup
 1. Follow instructions [here](https://diyi0t.com/microcontroller-to-raspberry-pi-wifi-mqtt-communication/) under the "Setup the MQTT Broker to Receive MQTT Data (Raspberry Pi)" section.
 2. Make sure the mosquitto (The MQTT Broker) is running
-3. Run the app.py flask server
+3. cd into the repository
+4. cd into Webserver
+5. source env/bin/activate
+6. python3 app.py
+7. Run the app.py flask server

@@ -17,10 +17,10 @@
 ///////////////////   CONSTANTS    ///////////////
 
 // Sampling
-const String SMARTCLAMP_VERSION = "0.15";
 const unsigned long SERIAL_DELAY = 227;
-const unsigned long TARGET_PERIOD = 500;
-const unsigned long READING_PERIOD = TARGET_PERIOD - SERIAL_DELAY;
+const unsigned long MQTT_DELAY = 156;
+const unsigned long TARGET_PERIOD = 400;
+const unsigned long READING_PERIOD = TARGET_PERIOD - MQTT_DELAY;
 const unsigned int AGC_FREQUENCY = 20;
 
 // Communication
@@ -42,7 +42,7 @@ const unsigned long period = 2000;
 Smartclamp_AS7341 as7341;
 unsigned long lastMsecs = millis();
 bool rawCountsMode = true;
-unsigned int cnt_agc = 0;
+unsigned int cnt_agc = AGC_FREQUENCY+1;
 
 // Communication
 String macAddress;
@@ -344,7 +344,7 @@ void loop(void)
     client.loop();
 
     current_millis = millis();
-    if (current_millis - lastMsecs > TARGET_PERIOD)
+    if (current_millis - lastMsecs > READING_PERIOD)
     {
         // Serial.print("Main Loop. Identifier: ");
         // Serial.print(identifier);
@@ -365,12 +365,14 @@ void loop(void)
             if (cnt_agc > AGC_FREQUENCY)
             {
                 as7341.automaticGainContol();
+                cnt_agc = 0;
             }
             cnt_agc++;
+            
 
             if (!as7341.readAllChannels(readings))
             {
-                Serial.println("ERROR: Couldn't read all channels!");
+                // Serial.println("ERROR: Couldn't read all channels!");
                 return;
             }
 
@@ -386,12 +388,12 @@ void loop(void)
                 }
             }
 
-            if (!rawCountsMode)
-                serialAllCounts(Serial, counts);
-            else
-                serialAllRaw(Serial, readings);
+            // if (!rawCountsMode)
+            //     serialAllCounts(Serial, counts);
+            // else
+            //     serialAllRaw(Serial, readings);
 
-            as7341.printParameters(Serial);
+            // as7341.printParameters(Serial);
 
             StaticJsonDocument<256> doc;
             doc["id"] = identifier;
@@ -422,19 +424,15 @@ void loop(void)
             
             if (client.publish(topic_experiment_data, buffer, n))
             {
-                Serial.println("Data sent!");
+                // Serial.println("Data sent!");
             }
             else
             {
-                Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");
+                // Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");
                 connect_MQTT();
             }
         }
         start_millis = current_millis;
         lastMsecs = millis();
-    }
-    else
-    {
-        read_SERIAL(as7341);
     }
 }

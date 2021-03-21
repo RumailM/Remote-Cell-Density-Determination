@@ -177,7 +177,7 @@ void Smartclamp_Communication::callback_default(char* topic, byte* payload, unsi
 }
 
 // Callback function for subscribed topics
-void Smartclamp_Communication::callback(char* topic, byte* payload, unsigned int length)
+void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned int length)
 {
     Serial.print("Message arrived in topic: ");
     Serial.println(topic);
@@ -276,4 +276,29 @@ void Smartclamp_Communication::identify_handshake()
         Serial.println("String failed to send. Reconnecting to MQTT Broker and trying again");
         connect_MQTT();
     }
+}
+
+void Smartclamp_Communication::setIdentifier(int identifier)
+{
+    this->identifier = identifier;
+}
+
+void Smartclamp_Communication::clientLoop()
+{
+    client_ptr->loop();
+}
+
+bool Smartclamp_Communication::getFlagHandshake(){return flag_handshake;}
+
+bool Smartclamp_Communication::getFlagIdentification(){return flag_identification;}
+
+bool Smartclamp_Communication::getFlagStart(){return flag_start;}
+
+int Smartclamp_Communication::getIdentifier(){return identifier;}
+
+const char* Smartclamp_Communication::getTopicExperimentData(){return topic_experiment_data;}
+
+bool Smartclamp_Communication::publishData(const char* buffer, unsigned int n)
+{
+    return client_ptr->publish(topic_experiment_data, buffer, n);
 }

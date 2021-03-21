@@ -28,8 +28,10 @@ Smartclamp_AS7341 as7341;
 unsigned long lastMsecs = millis();
 bool rawCountsMode = true;
 unsigned int cnt_agc = AGC_FREQUENCY+1;
+unsigned long start_millis, current_millis;
 
 // Communication
+Smartclamp_Communication MQTT;
 
 
 ///////////////////   SETUP    ///////////////
@@ -44,10 +46,10 @@ void setup()
     Serial.println("START");
     as7341.initializeSensor();
 
-    identifier = -99;
+    MQTT.setIdentifier(-99);
 
-    connect_wifi();
-    connect_MQTT();
+    MQTT.connect_wifi();
+    MQTT.connect_MQTT();
 
     start_millis = millis();
 
@@ -61,7 +63,7 @@ int count = 0;
 
 void loop(void)
 {
-    client.loop();
+    MQTT.clientLoop();
 
     current_millis = millis();
     if (current_millis - lastMsecs > READING_PERIOD)
@@ -73,11 +75,11 @@ void loop(void)
         // Serial.print(", flag_start: ");
         // Serial.println(flag_start);
 
-        if(!flag_handshake)
+        if(!MQTT.getFlagHandshake())
         {
-            identify_handshake();
+            MQTT.identify_handshake();
         }
-        else if (flag_identification && flag_start)
+        else if (MQTT.getFlagIdentification() && MQTT.getFlagStart())
         {
             uint16_t readings[12];
             float counts[12];
@@ -116,7 +118,7 @@ void loop(void)
             // as7341.printParameters(Serial);
 
             StaticJsonDocument<256> doc;
-            doc["id"] = identifier;
+            doc["id"] = MQTT.getIdentifier();
             doc["timestamp"] = current_millis;
             
             JsonArray data = doc.createNestedArray("readings");
@@ -142,14 +144,14 @@ void loop(void)
             char buffer[256];
             size_t n = serializeJson(doc, buffer);  
             
-            if (client.publish(topic_experiment_data, buffer, n))
+            if (MQTT.publishData(buffer, n))
             {
                 // Serial.println("Data sent!");
             }
             else
             {
                 // Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");
-                connect_MQTT();
+                MQTT.connect_MQTT();
             }
         }
         start_millis = current_millis;

@@ -189,12 +189,12 @@ def handle_experimentStart(client, userdata, message):
 
 if __name__ == '__main__':
     # Clearing Retained Messages
-    mqtt.publish("lab/control/login", payload=None, qos, retain=True)
-    mqtt.publish("lab/control/loginResponse", payload=None, qos, retain=True)
-    mqtt.publish("lab/control/logout", payload=None, qos, retain=True)
-    mqtt.publish("lab/control/data", payload=None, qos, retain=True)
-    mqtt.publish("lab/control/experimentStart", payload=None, qos, retain=True)
-    mqtt.publish("lab/control/experimentStop", payload=None, qos, retain=True)
+    mqtt.publish("lab/control/login", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/loginResponse", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/logout", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/data", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
 
     # Subscribing to relevant MQTT Topics
     mqtt.subscribe("lab/control/login", qos)
@@ -202,6 +202,6 @@ if __name__ == '__main__':
     mqtt.subscribe("lab/data", qos)
     mqtt.subscribe("lab/control/experimentStart", qos)
     mqtt.subscribe("lab/control/experimentStop", qos)
-    
+
     socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
 

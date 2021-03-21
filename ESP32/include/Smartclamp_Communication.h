@@ -5,7 +5,7 @@
 #include "WiFi.h" // Enables the ESP32 to connect to the local network (via WiFi)
 #include <ArduinoJson.h> // Enables JSON serialization and deserialization
 
-class Smartclamp_Communication : public PubSubClient
+class Smartclamp_Communication
 {
 public:
 

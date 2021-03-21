@@ -239,7 +239,9 @@ void Smartclamp_Communication::connect_MQTT()
     if (client_ptr->connect(clientID, mqtt_username, mqtt_password))
     {
         Serial.println("Connected to MQTT Broker!");
-        client_ptr->setCallback(callback);
+        std::function <void (char *topic, uint8_t *payload, unsigned int length)> fn1;
+        std::bind(callback, fn1);
+        client_ptr->setCallback(fn1);
     }
     else
     {

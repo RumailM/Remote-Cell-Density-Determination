@@ -13,7 +13,10 @@
  * @brief Construct a new Smartclamp_Communication::Smartclamp_Communication object
  *
  */
-Smartclamp_Communication::Smartclamp_Communication(){};
+Smartclamp_Communication::Smartclamp_Communication(){
+    PubSubClient client(mqtt_server, 1883, wifiClient);
+    client_ptr = &client;
+};
 
 /**
  * @brief Destroy the Smartclamp_Communication::Smartclamp_Communication object
@@ -22,7 +25,7 @@ Smartclamp_Communication::Smartclamp_Communication(){};
 Smartclamp_Communication::~Smartclamp_Communication(){}
 
 
-void callback_login_response(char* topic, byte* payload, unsigned int length)
+void Smartclamp_Communication::callback_login_response(char* topic, byte* payload, unsigned int length)
 {
     flag_handshake = true;
     Serial.println("Login Response received.");
@@ -44,7 +47,7 @@ void callback_login_response(char* topic, byte* payload, unsigned int length)
         // Assign unique identifier and unsub from login topic
         identifier = doc["id"];
         Serial.println(identifier);
-        if (client.unsubscribe(topic_login_response))
+        if (client_ptr->unsubscribe(topic_login_response))
         {
             Serial.println("Unsubscribed from loginResponse topic!");
         }
@@ -54,7 +57,7 @@ void callback_login_response(char* topic, byte* payload, unsigned int length)
         }
 
         // Sub to experimentToggle topic
-        if (client.subscribe(topic_experiment_start))
+        if (client_ptr->subscribe(topic_experiment_start))
         {
             Serial.println("Subscribed to experimentStart topic!");
         }
@@ -68,7 +71,7 @@ void callback_login_response(char* topic, byte* payload, unsigned int length)
     }
 }
 
-void callback_experiment_start(char* topic, byte* payload, unsigned int length)
+void Smartclamp_Communication::callback_experiment_start(char* topic, byte* payload, unsigned int length)
 {
     if (flag_identification)
     {
@@ -88,7 +91,7 @@ void callback_experiment_start(char* topic, byte* payload, unsigned int length)
         if (identifier == (int) doc["id"])
         {
             // Unsub from experiment start topic
-            if (client.unsubscribe(topic_experiment_start))
+            if (client_ptr->unsubscribe(topic_experiment_start))
             {
                 Serial.println("Unsubscribed from experimentStart topic!");
             }
@@ -98,7 +101,7 @@ void callback_experiment_start(char* topic, byte* payload, unsigned int length)
             }
 
             // Sub to experiment stop topic
-            if (client.subscribe(topic_experiment_stop))
+            if (client_ptr->subscribe(topic_experiment_stop))
             {
                 Serial.println("Subscribed to experimentStop topic!");
             }
@@ -115,7 +118,7 @@ void callback_experiment_start(char* topic, byte* payload, unsigned int length)
     }
 }
 
-void callback_experiment_stop(char* topic, byte* payload, unsigned int length)
+void Smartclamp_Communication::callback_experiment_stop(char* topic, byte* payload, unsigned int length)
 {
     if (flag_start)
     {
@@ -133,7 +136,7 @@ void callback_experiment_stop(char* topic, byte* payload, unsigned int length)
         if (identifier == (int) doc["id"])
         {
             // Unsub from experiment stop topic
-            if (client.unsubscribe(topic_experiment_stop))
+            if (client_ptr->unsubscribe(topic_experiment_stop))
             {
                 Serial.println("Unsubscribed from experimentStop topic!");
             }
@@ -143,7 +146,7 @@ void callback_experiment_stop(char* topic, byte* payload, unsigned int length)
             }
 
             // Sub to experiment start topic
-            if (client.subscribe(topic_experiment_start))
+            if (client_ptr->subscribe(topic_experiment_start))
             {
                 Serial.println("Subscribed to experimentStart topic!");
             }
@@ -160,7 +163,7 @@ void callback_experiment_stop(char* topic, byte* payload, unsigned int length)
     }
 }
 
-void callback_default(char* topic, byte* payload, unsigned int length)
+void Smartclamp_Communication::callback_default(char* topic, byte* payload, unsigned int length)
 {
     StaticJsonDocument<256> doc;
     DeserializationError err = deserializeJson(doc, payload, length);
@@ -174,7 +177,7 @@ void callback_default(char* topic, byte* payload, unsigned int length)
 }
 
 // Callback function for subscribed topics
-void callback(char* topic, byte* payload, unsigned int length)
+void Smartclamp_Communication::callback(char* topic, byte* payload, unsigned int length)
 {
     Serial.print("Message arrived in topic: ");
     Serial.println(topic);
@@ -199,7 +202,7 @@ void callback(char* topic, byte* payload, unsigned int length)
 }
 
 // Custom function to connect to WiFi
-void connect_wifi()
+void Smartclamp_Communication::connect_wifi()
 {
     Serial.print("Connecting to ");
     Serial.println(ssid);
@@ -228,15 +231,15 @@ void connect_wifi()
 }
 
 // Custom function to connect to the MQTT broker via WiFi
-void connect_MQTT()
+void Smartclamp_Communication::connect_MQTT()
 {
     // Connect to MQTT Broker
     // client.connect returns a boolean value to let us know if the connection was successful.
     // If the connection is failing, make sure you are using the correct MQTT Username and Password
-    if (client.connect(clientID, mqtt_username, mqtt_password))
+    if (client_ptr->connect(clientID, mqtt_username, mqtt_password))
     {
         Serial.println("Connected to MQTT Broker!");
-        client.setCallback(callback);
+        client_ptr->setCallback(callback);
     }
     else
     {
@@ -246,7 +249,7 @@ void connect_MQTT()
 
 
 // Custom function to obtain ID from Raspberry Pi
-void identify_handshake()
+void Smartclamp_Communication::identify_handshake()
 {
 
     StaticJsonDocument<256> doc;
@@ -255,7 +258,7 @@ void identify_handshake()
     char buffer[256];
     size_t n = serializeJson(doc, buffer);  
     
-    if (client.subscribe(topic_login_response))
+    if (client_ptr->subscribe(topic_login_response))
     {
         Serial.println("Subscribed to login response topic!");
     }
@@ -264,7 +267,7 @@ void identify_handshake()
         Serial.println("Failed to subscribe to login response topic.");
     }
 
-    if (client.publish(topic_login, buffer, n))
+    if (client_ptr->publish(topic_login, buffer, n))
     {
         Serial.println("MAC sent!");
     }

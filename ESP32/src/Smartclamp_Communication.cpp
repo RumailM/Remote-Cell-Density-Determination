@@ -13,37 +13,14 @@
  * @brief Construct a new Smartclamp_Communication::Smartclamp_Communication object
  *
  */
-Smartclamp_Communication::Smartclamp_Communication(void) {}
+Smartclamp_Communication::Smartclamp_Communication(){};
 
 /**
  * @brief Destroy the Smartclamp_Communication::Smartclamp_Communication object
  *
  */
-Smartclamp_Communication::~Smartclamp_Communication(void) {}
+Smartclamp_Communication::~Smartclamp_Communication(){}
 
-
-// Wifi and MQTT Broker Authentication
-const char* ssid = "NameOfNetwork";                     // Raspberry Pi network SSID
-const char* wifi_password = "AardvarkBadgerHedgehog";   // Raspberry Pi network password
-const char* mqtt_server = "192.168.4.1";  // IP of the MQTT broker
-const char* mqtt_username = "smart"; // MQTT username
-const char* mqtt_password = "clamp"; // MQTT password
-
-// MQTT Topic Names
-const char* topic_login = "lab/control/login";
-const char* topic_login_response = "lab/control/loginResponse";
-const char* topic_experiment_start = "lab/control/experimentStart";
-const char* topic_experiment_stop = "lab/control/experimentStop";
-const char* topic_experiment_data = "lab/data";
-
-// Constants
-String macAddress;
-const char* clientID = "";
-int identifier;
-bool flag_handshake = false, flag_identification = false, flag_start = false;
-unsigned long start_millis, current_millis;
-WiFiClient wifiClient;
-PubSubClient client(mqtt_server, 1883, wifiClient); 
 
 void callback_login_response(char* topic, byte* payload, unsigned int length)
 {

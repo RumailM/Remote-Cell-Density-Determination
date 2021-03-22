@@ -19,7 +19,7 @@
  * @brief Construct a new Smartclamp_AS7341::Smartclamp_AS7341 object
  *
  */
-Smartclamp_AS7341::Smartclamp_AS7341(void) {}
+Smartclamp_AS7341::Smartclamp_AS7341(void) {Wire.begin(23, 22);}
 
 /**
  * @brief Destroy the Smartclamp_AS7341::Smartclamp_AS7341 object

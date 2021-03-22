@@ -1,87 +1,152 @@
 
 ///////////////////   LIBRARIES    ///////////////
 
+// Sampling
 #include <stdint.h>
 #include <stdio.h>
 
 #include <Smartclamp_LED.h>
 #include <Smartclamp_Serial.h>
 #include <Smartclamp_AS7341.h>
+#include <Smartclamp_Communication.h>
 
 ///////////////////   CONSTANTS    ///////////////
 
-const String SMARTCLAMP_VERSION = "0.15";
 const unsigned long SERIAL_DELAY = 227;
-const unsigned long TARGET_PERIOD = 500;
-const unsigned long READING_PERIOD = TARGET_PERIOD - SERIAL_DELAY;
-const unsigned int AGC_FREQUENCY = 20;
+const unsigned long MQTT_DELAY = 158;
+const unsigned long TARGET_PERIOD = 200;
+const unsigned long READING_PERIOD = TARGET_PERIOD - MQTT_DELAY;
+const unsigned int AGC_FREQUENCY = 50;
+const extern bool serialDebug = false;
+const bool rawCountsMode = true;
 
-///////////////////   GLOBAL VARIABLES    ///////////////
+///////////////////   GLOBAL     ///////////////
 
-Smartclamp_AS7341 as7341;
+// Variables
 unsigned long lastMsecs = millis();
-bool rawCountsMode = true;
-unsigned int cnt_agc = 0;
+int count = 0;
+unsigned int cnt_agc = AGC_FREQUENCY+1;
+unsigned long start_millis, current_millis;
+
+// Objects
+Smartclamp_AS7341 as7341;
+Smartclamp_Communication MQTT;
+WiFiClient wifiClient;
+PubSubClient client(MQTT.getMqttServer(), 1883, wifiClient);
 
 ///////////////////   SETUP    ///////////////
 
 void setup()
 {
-  Serial.begin(115200);
-  while (!Serial)
-  {
-    delay(1);
-  }
-  Serial.println("START");
-  as7341.initializeSensor();
+    // Initialize Serial connection for debugging
+    Serial.begin(115200);
+    while (!Serial){delay(1);}
+    Serial.println("START");
 
-  // Setup LED PWM Signal.
-  setupLED();
+    // Initialize 
+    as7341.initializeSensor();
+    MQTT.setClientPtr(&client);
+    MQTT.setIdentifier(-99);
+    MQTT.connect_wifi();
+    MQTT.connect_MQTT();
+    setupLED();
+    start_millis = millis();
 }
 
 ///////////////////   LOOP    ///////////////
 
 void loop(void)
 {
+    MQTT.clientLoop();
 
-  uint16_t readings[12];
-  float counts[12];
-  if (millis() - lastMsecs > READING_PERIOD)
-  {
-    if (cnt_agc > AGC_FREQUENCY)
+    current_millis = millis();
+    if (current_millis - lastMsecs > READING_PERIOD)
     {
-      as7341.automaticGainContol();
+        if (serialDebug){
+            Serial.print("Main Loop. Identifier: ");
+            Serial.print(MQTT.getIdentifier());
+            Serial.print(", flag_identification: ");
+            Serial.print(MQTT.flag_identification);
+            Serial.print(", flag_start: ");
+            Serial.println(MQTT.getFlagStart());
+        }
+
+        if(!MQTT.getFlagHandshake()){MQTT.identify_handshake();}
+
+        else if (MQTT.getFlagIdentification() && MQTT.getFlagStart())
+        {
+            uint16_t readings[12];
+            
+            if (cnt_agc > AGC_FREQUENCY)
+            {
+                as7341.automaticGainContol();
+                cnt_agc = 0;
+
+                if (serialDebug){Serial.println("DEBUG: Performed AGC");}
+            }
+            cnt_agc++;
+            
+
+            if (!as7341.readAllChannels(readings))
+            {
+                if (serialDebug){
+                    Serial.println("ERROR: Couldn't read all channels!");
+                }
+                return;
+            }
+
+            if (!rawCountsMode)
+            {
+                float counts[12];
+                for (uint8_t i = 0; i < 12; i++)
+                {
+                    if (i == 4 || i == 5)
+                        continue;
+                    // we skip the first set of duplicate clear/NIR readings
+                    // (indices 4 and 5)
+                    counts[i] = as7341.toBasicCounts(readings[i]);
+                }
+                if (serialDebug){serialAllCounts(Serial, counts);}
+            }else if (serialDebug){
+                serialAllRaw(Serial, readings);
+                as7341.printParameters(Serial);
+            }
+
+            StaticJsonDocument<256> doc;
+            doc["id"] = MQTT.getIdentifier();
+            doc["timestamp"] = current_millis;
+            doc["gain"] = as7341.as7341Info.gain;
+            doc["atime"] = as7341.as7341Info.atime;
+            doc["astep"] = as7341.as7341Info.astep;
+
+            JsonArray data = doc.createNestedArray("readings");
+            
+            for (int i = 0; i < 12; i++)
+            {
+                data.add(readings[i]);
+            }
+            data.add(count++);
+            if (serialDebug)
+            {
+                Serial.print("Count: ");
+                Serial.println(count);
+            }
+
+            char buffer[256];
+            size_t n = serializeJson(doc, buffer); 
+            if (serialDebug){Serial.println(buffer);} 
+            
+            if (MQTT.publishData(buffer, n))
+            {
+                if (serialDebug){Serial.println("Data sent!");}
+            }
+            else
+            {
+                if (serialDebug){Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");}
+                MQTT.connect_MQTT();
+            }
+        }
+        start_millis = current_millis;
+        lastMsecs = millis();
     }
-    cnt_agc++;
-
-    if (!as7341.readHighChannels(readings))
-    {
-      Serial.println("ERROR: Couldn't read all channels!");
-      return;
-    }
-
-    if (!rawCountsMode)
-    {
-      for (uint8_t i = 0; i < 12; i++)
-      {
-        if (i == 4 || i == 5)
-          continue;
-        // we skip the first set of duplicate clear/NIR readings
-        // (indices 4 and 5)
-        counts[i] = as7341.toBasicCounts(readings[i]);
-      }
-    }
-
-    if (!rawCountsMode)
-      serialHighCounts(Serial, counts);
-    else
-      serialHighRaw(Serial, readings);
-
-    as7341.printParameters(Serial);
-    lastMsecs = millis();
-  }
-  else
-  {
-    read_SERIAL(as7341);
-  }
 }

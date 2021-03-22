@@ -13,10 +13,10 @@
 ///////////////////   CONSTANTS    ///////////////
 
 const unsigned long SERIAL_DELAY = 227;
-const unsigned long MQTT_DELAY = 157;
-const unsigned long TARGET_PERIOD = 250;
+const unsigned long MQTT_DELAY = 158;
+const unsigned long TARGET_PERIOD = 200;
 const unsigned long READING_PERIOD = TARGET_PERIOD - MQTT_DELAY;
-const unsigned int AGC_FREQUENCY = 25;
+const unsigned int AGC_FREQUENCY = 50;
 const extern bool serialDebug = false;
 const bool rawCountsMode = true;
 

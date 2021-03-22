@@ -36,9 +36,9 @@ public:
     ///////////////////   CALLBACKS    ///////////////
     Smartclamp_Communication();
     ~Smartclamp_Communication();
-    void callback_login_response(char* topic, byte* payload, unsigned int length);
-    void callback_experiment_start(char* topic, byte* payload, unsigned int length);
-    void callback_experiment_stop(char* topic, byte* payload, unsigned int length);
+    void callback_login_response(byte* payload, unsigned int length);
+    void callback_experiment_start(byte* payload, unsigned int length);
+    void callback_experiment_stop(byte* payload, unsigned int length);
     void callback_default(char* topic, byte* payload, unsigned int length);
     void callback(char* topic, uint8_t* payload, unsigned int length);
 

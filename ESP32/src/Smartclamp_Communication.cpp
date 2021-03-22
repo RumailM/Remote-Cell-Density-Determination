@@ -2,6 +2,9 @@
  *  @file Smartclamp_Smartclamp_Communication::cpp
  *
  *  This file contains all functions related to MQTT communication
+ * 
+ *  It utilizes the PubSubClient Arduino MQTT library available at:
+ *  https://github.com/knolleary/pubsubclient
  *
  *  Developed by Ahmad Nasralla (an2485@nyu.edu) 
  * 
@@ -11,19 +14,25 @@
 
 /**
  * @brief Construct a new Smartclamp_Communication::Smartclamp_Communication object
- *
+ * 
  */
 Smartclamp_Communication::Smartclamp_Communication(){
 };
 
 /**
  * @brief Destroy the Smartclamp_Communication::Smartclamp_Communication object
- *
+ * 
  */
 Smartclamp_Communication::~Smartclamp_Communication(){}
 
-
-void Smartclamp_Communication::callback_login_response(char* topic, byte* payload, unsigned int length)
+/**
+ * @brief Callback function executed when a message is received on loginResponse topic
+ *        Assigns device identifier and subscribes to experimentStart topic
+ *
+ * @param payload Pointer to a byte array of the message
+ * @param length Length of the message payload
+ */
+void Smartclamp_Communication::callback_login_response(byte* payload, unsigned int length)
 {
     flag_handshake = true;
     Serial.println("Login Response received.");
@@ -42,7 +51,7 @@ void Smartclamp_Communication::callback_login_response(char* topic, byte* payloa
 
     if (strcmp(macAddress.c_str(), mac) == 0)
     {
-        // Assign unique identifier and unsub from login topic
+        // Assign unique identifier and unsub from loginResponse topic
         identifier = doc["id"];
         Serial.println(identifier);
         if (client_ptr->unsubscribe(topic_login_response))
@@ -69,7 +78,17 @@ void Smartclamp_Communication::callback_login_response(char* topic, byte* payloa
     }
 }
 
-void Smartclamp_Communication::callback_experiment_start(char* topic, byte* payload, unsigned int length)
+/**
+ * @brief Callback function executed when a message is received on experimentStart topic
+ *        Starts experiment on device specified by identifier
+ *        If message identifier matches device identifier:
+ *              Unsubs from experimentStart topic, Subs to experimentStop topic
+ *              Raises flag to begin sensor reading and transmission
+ *
+ * @param payload Pointer to a byte array of the message
+ * @param length Length of the message payload
+ */
+void Smartclamp_Communication::callback_experiment_start(byte* payload, unsigned int length)
 {
     if (flag_identification)
     {
@@ -88,7 +107,7 @@ void Smartclamp_Communication::callback_experiment_start(char* topic, byte* payl
         // Check identifier
         if (identifier == (int) doc["id"])
         {
-            // Unsub from experiment start topic
+            // Unsub from experimentStart topic
             if (client_ptr->unsubscribe(topic_experiment_start))
             {
                 Serial.println("Unsubscribed from experimentStart topic!");
@@ -98,7 +117,7 @@ void Smartclamp_Communication::callback_experiment_start(char* topic, byte* payl
                 Serial.println("Failed to unsubscribe from experimentStart topic.");
             }
 
-            // Sub to experiment stop topic
+            // Sub to experimentStop topic
             if (client_ptr->subscribe(topic_experiment_stop))
             {
                 Serial.println("Subscribed to experimentStop topic!");
@@ -116,7 +135,17 @@ void Smartclamp_Communication::callback_experiment_start(char* topic, byte* payl
     }
 }
 
-void Smartclamp_Communication::callback_experiment_stop(char* topic, byte* payload, unsigned int length)
+/**
+ * @brief Callback function executed when a message is received on experimentStop topic
+ *        Stops experiment on device specified by identifier
+ *        If message identifier matches device identifier:
+ *              Unsubs from experimentStop topic, Subs to experimentStart topic
+ *              Lowers flag to stop sensor reading and transmission
+ *
+ * @param payload Pointer to a byte array of the message
+ * @param length Length of the message payload
+ */
+void Smartclamp_Communication::callback_experiment_stop(byte* payload, unsigned int length)
 {
     if (flag_start)
     {
@@ -133,7 +162,7 @@ void Smartclamp_Communication::callback_experiment_stop(char* topic, byte* paylo
         // Check identifier
         if (identifier == (int) doc["id"])
         {
-            // Unsub from experiment stop topic
+            // Unsub from experimentStop topic
             if (client_ptr->unsubscribe(topic_experiment_stop))
             {
                 Serial.println("Unsubscribed from experimentStop topic!");
@@ -143,7 +172,7 @@ void Smartclamp_Communication::callback_experiment_stop(char* topic, byte* paylo
                 Serial.println("Failed to unsubscribe from experimentStop topic.");
             }
 
-            // Sub to experiment start topic
+            // Sub to experimentStart topic
             if (client_ptr->subscribe(topic_experiment_start))
             {
                 Serial.println("Subscribed to experimentStart topic!");
@@ -153,7 +182,7 @@ void Smartclamp_Communication::callback_experiment_stop(char* topic, byte* paylo
                 Serial.println("Failed to subscribe to experimentStart topic.");
             }
 
-            // Raise flag_start
+            // Lower flag_start
             flag_start = false;
         }
 
@@ -161,6 +190,14 @@ void Smartclamp_Communication::callback_experiment_stop(char* topic, byte* paylo
     }
 }
 
+/**
+ * @brief Callback function executed when a message is received on unexpected topic
+ *        Prints warning of unexpected topic name and message contents
+ *
+ * @param topic Pointer to a character array of the message topic name
+ * @param payload Pointer to a byte array of the message
+ * @param length Length of the message payload
+ */
 void Smartclamp_Communication::callback_default(char* topic, byte* payload, unsigned int length)
 {
     StaticJsonDocument<256> doc;
@@ -172,26 +209,40 @@ void Smartclamp_Communication::callback_default(char* topic, byte* payload, unsi
         Serial.println(err.f_str());
         return;
     }
+
+    Serial.println("WARNING: Message arrived on unexpected topic");
+    Serial.println("Message payload:");
+    for (int i = 0; i < length; i++)
+    {
+        Serial.print((char)payload[i]);
+    }
+    Serial.println();
 }
 
-// Callback function for subscribed topics
+/**
+ * @brief Callback function disambiguation
+ *        Calls the appropriate callback function based upon received message topic
+ *
+ * @param topic Pointer to a character array of the message topic name
+ * @param payload Pointer to a byte array of the message
+ * @param length Length of the message payload
+ */
 void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned int length)
 {
     Serial.print("Message arrived in topic: ");
     Serial.println(topic);
 
-    // Topic Callback Functions
     if (strcmp(topic, topic_login_response) == 0)
     {
-        callback_login_response(topic, payload, length);
+        callback_login_response(payload, length);
     }
     else if (strcmp(topic, topic_experiment_start) == 0)
     {
-        callback_experiment_start(topic, payload, length);
+        callback_experiment_start(payload, length);
     }
     else if (strcmp(topic, topic_experiment_stop) == 0)
     {
-        callback_experiment_stop(topic, payload, length);
+        callback_experiment_stop(payload, length);
     }
     else
     {
@@ -199,7 +250,10 @@ void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned 
     }
 }
 
-// Custom function to connect to WiFi
+/**
+ * @brief Custom function to connect to WiFi
+ * 
+ */
 void Smartclamp_Communication::connect_wifi()
 {
     Serial.print("Connecting to ");
@@ -228,28 +282,30 @@ void Smartclamp_Communication::connect_wifi()
     Serial.println(macAddress.c_str());
 }
 
-// Custom function to connect to the MQTT broker via WiFi
+/**
+ * @brief Custom function to connect to the MQTT broker via WiFi
+ *        Connects to MQTT broker and assigns disambiguation callback function
+ */
 void Smartclamp_Communication::connect_MQTT()
 {
     // Connect to MQTT Broker
-    // client.connect returns a boolean value to let us know if the connection was successful.
-    // If the connection is failing, make sure you are using the correct MQTT Username and Password
-    Serial.println("Will Attempt to connect to MQTT server");
+    Serial.println("Attempting to connect to MQTT server...");
     if (client_ptr == NULL)
     {
         Serial.printf("client_ptr is null!");
-    }else{
+    }
+    else
+    {
         std::stringstream ss;
         ss << client_ptr;  
         std::string name = ss.str();
         Serial.print("client_ptr: ");
         Serial.println(name.c_str());
     }
+
     if (client_ptr->connect(clientID, mqtt_username, mqtt_password))
     {
         Serial.println("Connected to MQTT Broker!");
-        // std::function <void (char *topic, uint8_t *payload, unsigned int length)> fn1;
-        // std::bind(callback);
         using std::placeholders::_1;
         using std::placeholders::_2;
         using std::placeholders::_3;
@@ -261,11 +317,13 @@ void Smartclamp_Communication::connect_MQTT()
     }
 }
 
-
-// Custom function to obtain ID from Raspberry Pi
+/**
+ * @brief Custom function to obtain assigned identifier from Raspberry Pi
+ *        Subs to loginResponse topic, Publishes MAC address to login topic for server identification
+ *        Reconnects to MQTT broker if messages fails to send
+ */
 void Smartclamp_Communication::identify_handshake()
 {
-
     StaticJsonDocument<256> doc;
     doc["MAC"] = macAddress.c_str();
 
@@ -292,17 +350,36 @@ void Smartclamp_Communication::identify_handshake()
     }
 }
 
+/**
+ * @brief Publishes experiment data to the data topic
+ * 
+ */
+bool Smartclamp_Communication::publishData(const char* buffer, unsigned int n)
+{
+    return client_ptr->publish(topic_experiment_data, buffer, n);
+}
+
+/**
+ * @brief Allows the client to process incoming messages and maintain its connection to the server
+ * 
+ */
+void Smartclamp_Communication::clientLoop()
+{
+    client_ptr->loop();
+}
+
+// Setters
 void Smartclamp_Communication::setIdentifier(int identifier)
 {
     this->identifier = identifier;
 }
 
-void Smartclamp_Communication::clientLoop()
+void Smartclamp_Communication::setClientPtr(PubSubClient* client_ptr)
 {
-    
-    client_ptr->loop();
+    this->client_ptr = client_ptr;
 }
 
+// Getters
 bool Smartclamp_Communication::getFlagHandshake(){return flag_handshake;}
 
 bool Smartclamp_Communication::getFlagIdentification(){return flag_identification;}
@@ -312,15 +389,5 @@ bool Smartclamp_Communication::getFlagStart(){return flag_start;}
 int Smartclamp_Communication::getIdentifier(){return identifier;}
 
 const char* Smartclamp_Communication::getTopicExperimentData(){return topic_experiment_data;}
-
-bool Smartclamp_Communication::publishData(const char* buffer, unsigned int n)
-{
-    return client_ptr->publish(topic_experiment_data, buffer, n);
-}
-
-void Smartclamp_Communication::setClientPtr(PubSubClient* client_ptr)
-{
-    this->client_ptr = client_ptr;
-}
 
 const char* Smartclamp_Communication::getMqttServer(){return mqtt_server;}

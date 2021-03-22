@@ -63,7 +63,7 @@ void loop(void)
     if (current_millis - lastMsecs > READING_PERIOD)
     {
         if (serialDebug){
-            Serial.print("Main Loop. Identifier: ");
+            Serial.print("DEBUG: Main Loop. Identifier: ");
             Serial.print(MQTT.getIdentifier());
             Serial.print(", flag_identification: ");
             Serial.print(MQTT.flag_identification);
@@ -85,7 +85,6 @@ void loop(void)
                 if (serialDebug){Serial.println("DEBUG: Performed AGC");}
             }
             cnt_agc++;
-            
 
             if (!as7341.readAllChannels(readings))
             {
@@ -107,7 +106,9 @@ void loop(void)
                     counts[i] = as7341.toBasicCounts(readings[i]);
                 }
                 if (serialDebug){serialAllCounts(Serial, counts);}
-            }else if (serialDebug){
+            }
+            else if (serialDebug)
+            {
                 serialAllRaw(Serial, readings);
                 as7341.printParameters(Serial);
             }

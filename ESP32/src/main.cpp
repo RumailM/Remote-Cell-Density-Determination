@@ -13,11 +13,11 @@
 ///////////////////   CONSTANTS    ///////////////
 
 const unsigned long SERIAL_DELAY = 227;
-const unsigned long MQTT_DELAY = 156;
-const unsigned long TARGET_PERIOD = 400;
+const unsigned long MQTT_DELAY = 157;
+const unsigned long TARGET_PERIOD = 250;
 const unsigned long READING_PERIOD = TARGET_PERIOD - MQTT_DELAY;
 const unsigned int AGC_FREQUENCY = 25;
-const extern bool serialDebug = true;
+const extern bool serialDebug = false;
 const bool rawCountsMode = true;
 
 ///////////////////   GLOBAL     ///////////////
@@ -76,7 +76,6 @@ void loop(void)
         else if (MQTT.getFlagIdentification() && MQTT.getFlagStart())
         {
             uint16_t readings[12];
-            float counts[12];
             
             if (cnt_agc > AGC_FREQUENCY)
             {
@@ -98,6 +97,7 @@ void loop(void)
 
             if (!rawCountsMode)
             {
+                float counts[12];
                 for (uint8_t i = 0; i < 12; i++)
                 {
                     if (i == 4 || i == 5)
@@ -106,13 +106,9 @@ void loop(void)
                     // (indices 4 and 5)
                     counts[i] = as7341.toBasicCounts(readings[i]);
                 }
-            }
-
-            if (serialDebug){
-                if (!rawCountsMode)
-                    serialAllCounts(Serial, counts);
-                else
-                    serialAllRaw(Serial, readings);
+                if (serialDebug){serialAllCounts(Serial, counts);}
+            }else if (serialDebug){
+                serialAllRaw(Serial, readings);
                 as7341.printParameters(Serial);
             }
 

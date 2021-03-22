@@ -32,7 +32,8 @@ unsigned long start_millis, current_millis;
 
 // Communication
 Smartclamp_Communication MQTT;
-
+WiFiClient wifiClient;
+PubSubClient client(MQTT.getMqttServer(), 1883, wifiClient);
 
 ///////////////////   SETUP    ///////////////
 
@@ -45,6 +46,7 @@ void setup()
     }
     Serial.println("START");
     as7341.initializeSensor();
+    MQTT.setClientPtr(&client);
 
     MQTT.setIdentifier(-99);
 
@@ -68,12 +70,12 @@ void loop(void)
     current_millis = millis();
     if (current_millis - lastMsecs > READING_PERIOD)
     {
-        // Serial.print("Main Loop. Identifier: ");
-        // Serial.print(identifier);
-        // Serial.print(", flag_identification: ");
-        // Serial.print(flag_identification);
-        // Serial.print(", flag_start: ");
-        // Serial.println(flag_start);
+        Serial.print("Main Loop. Identifier: ");
+        Serial.print(MQTT.getIdentifier());
+        Serial.print(", flag_identification: ");
+        Serial.print(MQTT.flag_identification);
+        Serial.print(", flag_start: ");
+        Serial.println(MQTT.getFlagStart());
 
         if(!MQTT.getFlagHandshake())
         {
@@ -94,7 +96,7 @@ void loop(void)
 
             if (!as7341.readAllChannels(readings))
             {
-                // Serial.println("ERROR: Couldn't read all channels!");
+                Serial.println("ERROR: Couldn't read all channels!");
                 return;
             }
 
@@ -146,11 +148,11 @@ void loop(void)
             
             if (MQTT.publishData(buffer, n))
             {
-                // Serial.println("Data sent!");
+                Serial.println("Data sent!");
             }
             else
             {
-                // Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");
+                Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");
                 MQTT.connect_MQTT();
             }
         }

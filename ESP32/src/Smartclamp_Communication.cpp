@@ -14,8 +14,6 @@
  *
  */
 Smartclamp_Communication::Smartclamp_Communication(){
-    PubSubClient client(mqtt_server, 1883, wifiClient);
-    client_ptr = &client;
 };
 
 /**
@@ -236,6 +234,17 @@ void Smartclamp_Communication::connect_MQTT()
     // Connect to MQTT Broker
     // client.connect returns a boolean value to let us know if the connection was successful.
     // If the connection is failing, make sure you are using the correct MQTT Username and Password
+    Serial.println("Will Attempt to connect to MQTT server");
+    if (client_ptr == NULL)
+    {
+        Serial.printf("client_ptr is null!");
+    }else{
+        std::stringstream ss;
+        ss << client_ptr;  
+        std::string name = ss.str();
+        Serial.print("client_ptr: ");
+        Serial.println(name.c_str());
+    }
     if (client_ptr->connect(clientID, mqtt_username, mqtt_password))
     {
         Serial.println("Connected to MQTT Broker!");
@@ -290,6 +299,7 @@ void Smartclamp_Communication::setIdentifier(int identifier)
 
 void Smartclamp_Communication::clientLoop()
 {
+    
     client_ptr->loop();
 }
 
@@ -307,3 +317,10 @@ bool Smartclamp_Communication::publishData(const char* buffer, unsigned int n)
 {
     return client_ptr->publish(topic_experiment_data, buffer, n);
 }
+
+void Smartclamp_Communication::setClientPtr(PubSubClient* client_ptr)
+{
+    this->client_ptr = client_ptr;
+}
+
+const char* Smartclamp_Communication::getMqttServer(){return mqtt_server;}

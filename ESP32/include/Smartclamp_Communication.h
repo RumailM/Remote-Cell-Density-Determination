@@ -4,6 +4,8 @@
 #include "PubSubClient.h" // Connect and publish to the MQTT broker
 #include "WiFi.h" // Enables the ESP32 to connect to the local network (via WiFi)
 #include <ArduinoJson.h> // Enables JSON serialization and deserialization
+#include <sstream>
+#include <string>
 
 class Smartclamp_Communication
 {
@@ -15,7 +17,6 @@ public:
     int identifier;
     bool flag_handshake = false, flag_identification = false, flag_start = false;
     unsigned long start_millis, current_millis;
-    WiFiClient wifiClient;
     PubSubClient* client_ptr = NULL;
 
     // Wifi and MQTT Broker Authentication
@@ -54,6 +55,8 @@ public:
     bool getFlagStart();
     int getIdentifier();
     const char* getTopicExperimentData();
+    void setClientPtr(PubSubClient* client_ptr);
+    const char* getMqttServer();
 
     void clientLoop();
 

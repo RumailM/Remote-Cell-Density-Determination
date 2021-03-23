@@ -117,7 +117,7 @@ bool Smartclamp_AS7341::readHighChannels(uint16_t *readings_buffer)
  */
 bool Smartclamp_AS7341::printParameters(Stream &stream)
 {
-    updateSensorInfo();
+    //updateSensorInfo();
     stream.print("Gain: ");
     stream.println(as7341Info.gain);
     stream.print("ATime: ");

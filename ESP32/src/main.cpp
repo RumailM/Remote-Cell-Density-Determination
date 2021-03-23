@@ -93,7 +93,7 @@ void loop(void)
                 }
                 return;
             }
-
+            as7341.updateSensorInfo();
             if (!rawCountsMode)
             {
                 float counts[12];

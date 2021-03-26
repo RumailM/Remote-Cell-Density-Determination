@@ -32,7 +32,7 @@ var last_time = 7;
       var name = $('#message_start_name').val();
       var astep = $('#message_start_astep').val();
       var atime = $('#message_start_atime').val();
-      var data = '{"id": "' + message + '", "experimentName": "'+ name + '", "ASTEP": ' + astep + ', "ATIME": ' + atime +'}';
+      var data = '{"id": "' + message + '", "experimentName": "'+ name + '", "ASTEP": "' + astep + '", "ATIME": "' + atime +'"}';
       socket.emit('experimentStart', data=data);
     });
 

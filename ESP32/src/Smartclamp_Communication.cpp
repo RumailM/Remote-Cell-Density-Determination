@@ -257,6 +257,13 @@ void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned 
     // Serial.print("Message arrived in topic: ");
     // Serial.println(topic);
 
+    Serial.println("Message payload:");
+    for (int i = 0; i < length; i++)
+    {
+        Serial.print((char)payload[i]);
+    }
+    Serial.println();
+
     if (strcmp(topic, topic_login_response) == 0)
     {
         callbackLoginResponse(payload, length);

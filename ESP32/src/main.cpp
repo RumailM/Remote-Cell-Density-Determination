@@ -1,4 +1,3 @@
-
 ///////////////////   LIBRARIES    ///////////////
 
 // Sampling
@@ -45,10 +44,15 @@ void setup()
 
     // Initialize 
     as7341.initializeSensor();
-    MQTT.setClientPtr(&client);
+
+    if (!MQTT.setClientPtr(&client))
+        Serial.println("ERROR: client_ptr is null!");
+    if (!MQTT.setSensorPtr(&as7341))
+        Serial.println("ERROR: sensor_ptr is null!");
     MQTT.setIdentifier(-99);
-    MQTT.connect_wifi();
-    MQTT.connect_MQTT();
+    MQTT.connectWifi();
+    MQTT.connectMQTT();
+
     setupLED();
     start_millis = millis();
 }
@@ -62,7 +66,8 @@ void loop(void)
     current_millis = millis();
     if (current_millis - lastMsecs > READING_PERIOD)
     {
-        if (serialDebug){
+        if (serialDebug)
+        {
             Serial.print("DEBUG: Main Loop. Identifier: ");
             Serial.print(MQTT.getIdentifier());
             Serial.print(", flag_identification: ");
@@ -71,7 +76,7 @@ void loop(void)
             Serial.println(MQTT.getFlagStart());
         }
 
-        if(!MQTT.getFlagHandshake()){MQTT.identify_handshake();}
+        if(!MQTT.getFlagHandshake()){MQTT.identifyHandshake();}
 
         else if (MQTT.getFlagIdentification() && MQTT.getFlagStart())
         {
@@ -144,7 +149,7 @@ void loop(void)
             else
             {
                 if (serialDebug){Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");}
-                MQTT.connect_MQTT();
+                MQTT.connectMQTT();
             }
         }
         start_millis = current_millis;

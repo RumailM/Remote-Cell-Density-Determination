@@ -16,109 +16,111 @@ var chart;
 var options;
 var last_time = 7;
 
-  $(document).ready(function() {
+$(document).ready(function()
+{
     var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-    $('#publish').click(function(event) {
-      var topic = $('#topic').val();
-      var message = $('#message').val();
-      var qos = $('#qos').val();
-      var data = '{"topic": "' + topic + '", "message": "' + message + '", "qos": ' + qos + '}';
-      socket.emit('publish', data=data);
+    $('#publish').click(function(event)
+    {
+        var topic = $('#topic').val();
+        var message = $('#message').val();
+        var qos = $('#qos').val();
+        var data = '{"topic": "' + topic + '", "message": "' + message + '", "qos": ' + qos + '}';
+        socket.emit('publish', data=data);
     });
 
-    $('#experiment_start').click(function(event) {
-      var message = $('#message_start').val();
-      var name = $('#message_start_name').val();
-      var data = '{"id": "' + message + '", "experimentName": "'+ name +'"'+'}';
-      socket.emit('experimentStart', data=data);
+    $('#experiment_start').click(function(event)
+    {
+        var message = $('#message_start').val();
+        var name = $('#message_start_name').val();
+        var astep = $('#message_start_astep').val();
+        var atime = $('#message_start_atime').val();
+        var data = '{"id": "' + message + '", "experimentName": "'+ name + '", "ASTEP": "' + astep + '", "ATIME": "' + atime +'"}';
+        socket.emit('experimentStart', data=data);
     });
 
-    $('#experiment_stop').click(function(event) {
-      var message = $('#message_stop').val();
-      var data = '{"id": "' + message + '"}';
-      socket.emit('experimentStop', data=data);
+    $('#experiment_stop').click(function(event)
+    {
+        var message = $('#message_stop').val();
+        var data = '{"id": "' + message + '"}';
+        socket.emit('experimentStop', data=data);
     });
 
-  
-
-    $('#subscribe').click(function(event) {
-      var topic = $('#subscribe_topic').val();
-      var qos = $('#subscribe_qos').val();
-      var data = '{"topic": "' + topic + '", "qos": ' + qos + '}';
-      socket.emit('subscribe', data=data);
-      $('#subscribe').hide();
-      $('#unsubscribe').show();
-      $('#subscribe_topic').prop('readonly', true);
+    $('#subscribe').click(function(event)
+    {
+        var topic = $('#subscribe_topic').val();
+        var qos = $('#subscribe_qos').val();
+        var data = '{"topic": "' + topic + '", "qos": ' + qos + '}';
+        socket.emit('subscribe', data=data);
+        $('#subscribe').hide();
+        $('#unsubscribe').show();
+        $('#subscribe_topic').prop('readonly', true);
     });
 
-    $('#unsubscribe').click(function(event) {
-      socket.emit('unsubscribe_all');
-      $('#subscribe').show();
-      $('#unsubscribe').hide();
-      $('#subscribe_topic').prop('readonly', false);
+    $('#unsubscribe').click(function(event)
+    {
+        socket.emit('unsubscribe_all');
+        $('#subscribe').show();
+        $('#unsubscribe').hide();
+        $('#subscribe_topic').prop('readonly', false);
     });
 
-    socket.on('mqtt_message', function(data) {
-      console.log(data);
-      var text = '(' + data['topic'] + ' qos: ' + data['qos'] + ') ' + data['payload'];
-      var $textarea = $('#subscribe_messages');
-      $textarea.val($textarea.val() + text + '\n');
+    socket.on('mqtt_message', function(data)
+    {
+        console.log(data);
+        var text = '(' + data['topic'] + ' qos: ' + data['qos'] + ') ' + data['payload'];
+        var $textarea = $('#subscribe_messages');
+        $textarea.val($textarea.val() + text + '\n');
 
-      //1)decode json object in data['payload']
+        //1)decode json object in data['payload']
 
-      //2) do something with decoded data, i.e. plot
-      data_table.addRow([last_time,Number(data['payload'])]);
-      last_time = last_time + 1;
-      chart.draw(data_table , options);
-
-
+        //2) do something with decoded data, i.e. plot
+        data_table.addRow([last_time,Number(data['payload'])]);
+        last_time = last_time + 1;
+        chart.draw(data_table , options);
     })
-  });
+});
 
+google.charts.load('current', {'packages': ['corechart']});
+google.charts.setOnLoadCallback(drawChart);
 
-      google.charts.load('current', {
-        'packages': ['corechart']
-      });
-      google.charts.setOnLoadCallback(drawChart);
+function drawChart()
+{
+    data_table = new google.visualization.DataTable();
+    data_table.addColumn('number', 'time');
+    data_table.addColumn('number', 'value');
+    data_table.addRow([1,1]);
+    data_table.addRow([2,2]);
+    data_table.addRow([3,3]);
+    data_table.addRow([4,4]);
+    data_table.addRow([5,5]);
+    data_table.addRow([6,6]);
 
-      function drawChart() {
-        data_table = new google.visualization.DataTable();
-        data_table.addColumn('number', 'time');
-        data_table.addColumn('number', 'value');
-        data_table.addRow([1,1]);
-        data_table.addRow([2,2]);
-        data_table.addRow([3,3]);
-        data_table.addRow([4,4]);
-        data_table.addRow([5,5]);
-        data_table.addRow([6,6]);
-
-
-
-        options = {
-          title: 'Company Performance',
-          hAxis: {
+    options = {
+        title: 'Company Performance',
+        hAxis:
+        {
             title: 'Year',
-            titleTextStyle: {
-              color: '#333'
-            },
+            titleTextStyle: {color: '#333'},
             slantedText: true,
             slantedTextAngle: 80
-          },
-          vAxis: {
+        },
+        vAxis:
+        {
             minValue: 0
-          },
-          explorer: {
+        },
+        explorer:
+        {
             axis: 'horizontal',
             keepInBounds: true,
             maxZoomIn: 4.0
-          },
-          colors: ['#D44E41'],
-        };
+        },
+        colors: ['#D44E41'],
+    };
 
-        chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        chart.draw(data_table , options);
-      }
+    chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    chart.draw(data_table , options);
+}
 
 </script>
 {% endblock %}
@@ -128,7 +130,7 @@ var last_time = 7;
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <h1>Flask-MQTT Example</h1>
+      <h1>SmartClamp Webserver</h1>
     </div>
   </div>
 
@@ -144,13 +146,21 @@ var last_time = 7;
               <div class="form-horizontal">
                 
                 <div class="form-group">
-                  <label class="control-label col-xs-4">id: </label>
+                  <label class="control-label col-xs-4">ID: </label>
                   <div class="col-xs-8">
                     <input id="message_start" class="form-control">
                   </div>
-                  <label class="control-label col-xs-4">experiment name(no special characters, only alphabet and underscores)[do not leave empty!!!]: </label>
+                  <label class="control-label col-xs-4">Experiment Name: </label>
                   <div class="col-xs-8">
                     <input id="message_start_name" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">ATIME: </label>
+                  <div class="col-xs-8">
+                    <input id="message_start_atime" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">ASTEP: </label>
+                  <div class="col-xs-8">
+                    <input id="message_start_astep" class="form-control">
                   </div>
                 </div>
                 
@@ -179,7 +189,7 @@ var last_time = 7;
               <div class="form-horizontal">
                 
                 <div class="form-group">
-                  <label class="control-label col-xs-4">id: </label>
+                  <label class="control-label col-xs-4">ID: </label>
                   <div class="col-xs-8">
                     <input id="message_stop" class="form-control">
                   </div>

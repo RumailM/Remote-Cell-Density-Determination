@@ -7,17 +7,19 @@
 #include <sstream>
 #include <string>
 
+#include <Smartclamp_AS7341.h>
+
 class Smartclamp_Communication
 {
 public:
 
     // Constants
-    String macAddress;
     const char* clientID = "";
     int identifier;
     bool flag_handshake = false, flag_identification = false, flag_start = false;
     unsigned long start_millis, current_millis;
     PubSubClient* client_ptr = NULL;
+    Smartclamp_AS7341* sensor_ptr = NULL;
 
     // Wifi and MQTT Broker Authentication
     const char* ssid = "NameOfNetwork";                     // Raspberry Pi network SSID
@@ -33,29 +35,31 @@ public:
     const char* topic_experiment_stop = "lab/control/experimentStop";
     const char* topic_experiment_data = "lab/data";
 
-    ///////////////////   CALLBACKS    ///////////////
     Smartclamp_Communication();
     ~Smartclamp_Communication();
-    void callback_login_response(byte* payload, unsigned int length);
-    void callback_experiment_start(byte* payload, unsigned int length);
-    void callback_experiment_stop(byte* payload, unsigned int length);
-    void callback_default(char* topic, byte* payload, unsigned int length);
+
+    ///////////////////   CALLBACKS    ///////////////
+    void callbackLoginResponse(byte* payload, unsigned int length);
+    void callbackExperimentStart(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr);
+    void callbackExperimentStop(byte* payload, unsigned int length);
+    void callbackDefault(char* topic, byte* payload, unsigned int length);
     void callback(char* topic, uint8_t* payload, unsigned int length);
 
     ///////////////////   HANDSHAKING    ///////////////
 
-    void connect_wifi();
-    void connect_MQTT();
-    void identify_handshake();
+    void connectWifi();
+    void connectMQTT();
+    void identifyHandshake();
 
     ///////////////////   SETTERS AND GETTERS    ///////////////
     void setIdentifier(int identifier);
+    bool setClientPtr(PubSubClient* client_ptr);
+    bool setSensorPtr(Smartclamp_AS7341* sensor_ptr);
     bool getFlagHandshake();
     bool getFlagIdentification();
     bool getFlagStart();
     int getIdentifier();
     const char* getTopicExperimentData();
-    void setClientPtr(PubSubClient* client_ptr);
     const char* getMqttServer();
 
     void clientLoop();

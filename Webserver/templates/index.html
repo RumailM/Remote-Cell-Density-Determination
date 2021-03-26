@@ -30,6 +30,8 @@ var last_time = 7;
     $('#experiment_start').click(function(event) {
       var message = $('#message_start').val();
       var name = $('#message_start_name').val();
+      var astep = $('#message_start_astep').val();
+      var atime = $('#message_start_atime').val();
       var data = '{"id": "' + message + '", "experimentName": "'+ name +'"'+'}';
       socket.emit('experimentStart', data=data);
     });
@@ -151,6 +153,14 @@ var last_time = 7;
                   <label class="control-label col-xs-4">experiment name(no special characters, only alphabet and underscores)[do not leave empty!!!]: </label>
                   <div class="col-xs-8">
                     <input id="message_start_name" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">ASTEP: </label>
+                  <div class="col-xs-8">
+                    <input id="message_start_astep" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">ATIME: </label>
+                  <div class="col-xs-8">
+                    <input id="message_start_atime" class="form-control">
                   </div>
                 </div>
                 

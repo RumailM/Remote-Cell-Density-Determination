@@ -16,8 +16,7 @@
  * @brief Construct a new Smartclamp_Communication::Smartclamp_Communication object
  * 
  */
-Smartclamp_Communication::Smartclamp_Communication(){
-};
+Smartclamp_Communication::Smartclamp_Communication(){}
 
 /**
  * @brief Destroy the Smartclamp_Communication::Smartclamp_Communication object
@@ -32,7 +31,7 @@ Smartclamp_Communication::~Smartclamp_Communication(){}
  * @param payload Pointer to a byte array of the message
  * @param length Length of the message payload
  */
-void Smartclamp_Communication::callback_login_response(byte* payload, unsigned int length)
+void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int length)
 {
     flag_handshake = true;
     Serial.println("Login Response received.");
@@ -53,7 +52,9 @@ void Smartclamp_Communication::callback_login_response(byte* payload, unsigned i
     {
         // Assign unique identifier and unsub from loginResponse topic
         identifier = doc["id"];
+        Serial.print("Device ID: ");
         Serial.println(identifier);
+
         if (client_ptr->unsubscribe(topic_login_response))
         {
             Serial.println("Unsubscribed from loginResponse topic!");
@@ -88,7 +89,7 @@ void Smartclamp_Communication::callback_login_response(byte* payload, unsigned i
  * @param payload Pointer to a byte array of the message
  * @param length Length of the message payload
  */
-void Smartclamp_Communication::callback_experiment_start(byte* payload, unsigned int length)
+void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr)
 {
     if (flag_identification)
     {
@@ -102,11 +103,35 @@ void Smartclamp_Communication::callback_experiment_start(byte* payload, unsigned
             return;
         }
 
-        Serial.println(identifier);
-
         // Check identifier
         if (identifier == (int) doc["id"])
         {
+            // Set ATIME and ASTEP values
+            uint8_t atime = (uint8_t) doc["atime"];
+            uint16_t astep = (uint16_t) doc["astep"];
+            Serial.print("ATIME set to ");
+            if (atime != 0)
+            {
+                sensor_ptr->setATIME(atime);
+                Serial.printf("custom value: %d\n", atime);
+            }
+            else
+            {
+                sensor_ptr->setATIME(DEFAULT_ATIME);
+                Serial.printf("default value: %d\n", DEFAULT_ATIME);
+            }
+            Serial.print("ASTEP set to ");
+            if (astep != 0)
+            {
+                sensor_ptr->setASTEP(astep);
+                Serial.printf("custom value: %d\n", astep);
+            }
+            else
+            {
+                sensor_ptr->setASTEP(DEFAULT_ASTEP);
+                Serial.printf("default value: %d\n", DEFAULT_ASTEP);
+            }
+            
             // Unsub from experimentStart topic
             if (client_ptr->unsubscribe(topic_experiment_start))
             {
@@ -145,7 +170,7 @@ void Smartclamp_Communication::callback_experiment_start(byte* payload, unsigned
  * @param payload Pointer to a byte array of the message
  * @param length Length of the message payload
  */
-void Smartclamp_Communication::callback_experiment_stop(byte* payload, unsigned int length)
+void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned int length)
 {
     if (flag_start)
     {
@@ -198,7 +223,7 @@ void Smartclamp_Communication::callback_experiment_stop(byte* payload, unsigned 
  * @param payload Pointer to a byte array of the message
  * @param length Length of the message payload
  */
-void Smartclamp_Communication::callback_default(char* topic, byte* payload, unsigned int length)
+void Smartclamp_Communication::callbackDefault(char* topic, byte* payload, unsigned int length)
 {
     StaticJsonDocument<256> doc;
     DeserializationError err = deserializeJson(doc, payload, length);
@@ -229,24 +254,24 @@ void Smartclamp_Communication::callback_default(char* topic, byte* payload, unsi
  */
 void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned int length)
 {
-    Serial.print("Message arrived in topic: ");
-    Serial.println(topic);
+    // Serial.print("Message arrived in topic: ");
+    // Serial.println(topic);
 
     if (strcmp(topic, topic_login_response) == 0)
     {
-        callback_login_response(payload, length);
+        callbackLoginResponse(payload, length);
     }
     else if (strcmp(topic, topic_experiment_start) == 0)
     {
-        callback_experiment_start(payload, length);
+        callbackExperimentStart(payload, length, sensor_ptr);
     }
     else if (strcmp(topic, topic_experiment_stop) == 0)
     {
-        callback_experiment_stop(payload, length);
+        callbackExperimentStop(payload, length);
     }
     else
     {
-        callback_default(topic, payload, length);
+        callbackDefault(topic, payload, length);
     }
 }
 
@@ -254,7 +279,7 @@ void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned 
  * @brief Custom function to connect to WiFi
  * 
  */
-void Smartclamp_Communication::connect_wifi()
+void Smartclamp_Communication::connectWifi()
 {
     Serial.print("Connecting to ");
     Serial.println(ssid);
@@ -286,22 +311,10 @@ void Smartclamp_Communication::connect_wifi()
  * @brief Custom function to connect to the MQTT broker via WiFi
  *        Connects to MQTT broker and assigns disambiguation callback function
  */
-void Smartclamp_Communication::connect_MQTT()
+void Smartclamp_Communication::connectMQTT()
 {
     // Connect to MQTT Broker
     Serial.println("Attempting to connect to MQTT server...");
-    if (client_ptr == NULL)
-    {
-        Serial.printf("client_ptr is null!");
-    }
-    else
-    {
-        std::stringstream ss;
-        ss << client_ptr;  
-        std::string name = ss.str();
-        Serial.print("client_ptr: ");
-        Serial.println(name.c_str());
-    }
 
     if (client_ptr->connect(clientID, mqtt_username, mqtt_password))
     {
@@ -322,7 +335,7 @@ void Smartclamp_Communication::connect_MQTT()
  *        Subs to loginResponse topic, Publishes MAC address to login topic for server identification
  *        Reconnects to MQTT broker if messages fails to send
  */
-void Smartclamp_Communication::identify_handshake()
+void Smartclamp_Communication::identifyHandshake()
 {
     StaticJsonDocument<256> doc;
     doc["MAC"] = macAddress.c_str();
@@ -346,7 +359,7 @@ void Smartclamp_Communication::identify_handshake()
     else
     {
         Serial.println("String failed to send. Reconnecting to MQTT Broker and trying again");
-        connect_MQTT();
+        connectMQTT();
     }
 }
 
@@ -374,9 +387,18 @@ void Smartclamp_Communication::setIdentifier(int identifier)
     this->identifier = identifier;
 }
 
-void Smartclamp_Communication::setClientPtr(PubSubClient* client_ptr)
+bool Smartclamp_Communication::setClientPtr(PubSubClient* client_ptr)
 {
     this->client_ptr = client_ptr;
+
+    return client_ptr != NULL;
+}
+
+bool Smartclamp_Communication::setSensorPtr(Smartclamp_AS7341* sesnsor_ptr)
+{
+    this->sensor_ptr = sesnsor_ptr;
+
+    return sensor_ptr != NULL;
 }
 
 // Getters

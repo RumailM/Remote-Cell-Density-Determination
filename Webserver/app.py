@@ -1,10 +1,9 @@
 """
 
-A small Test application to show how to use Flask-MQTT.
+Flask-MQTT Webserver for Raspberry Pi remote processing unit
 
 """
 import logging
-
 import eventlet
 import json
 from flask import Flask, render_template
@@ -39,20 +38,18 @@ app.config['MQTT_LAST_WILL_QOS'] = 2
 mqtt = Mqtt(app)
 socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
-
-qos = 0;
-
+qos = 0
 
 #Parameters
-num_devices = 8;
+num_devices = 8
 
-mac_addr_list = [None]*num_devices;
-experiment_start_time_list = [None]*num_devices;
-experiment_name_list = [None]*num_devices;
+mac_addr_list = [None]*num_devices
+experiment_start_time_list = [None]*num_devices
+experiment_name_list = [None]*num_devices
 
 def push_mac(mac_str):
     #Adds MAC Address and returns device ID, call when device logs in
-    id = -99;
+    id = -99
     for i in range(num_devices):
         if (mac_addr_list[i] is None) or (mac_addr_list[i]==mac_str):
             mac_addr_list[i] = mac_str
@@ -71,18 +68,14 @@ def pop_mac(mac_str):
             mac_addr_list[i] = None
             print("Removed MAC Address at id " + str(i))
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @socketio.on('publish')
 def handle_publish(json_str):
     data = json.loads(json_str)
     mqtt.publish(data['topic'], data['message'], data['qos'])
-
-
 
 @socketio.on('experimentStart')
 def handle_experimentStart(json_str):   
@@ -92,17 +85,14 @@ def handle_experimentStart(json_str):
 def handle_experimentStop(json_str):
     mqtt.publish("lab/control/experimentStop", json_str, qos)
 
-
 @socketio.on('subscribe')
 def handle_subscribe(json_str):
     data = json.loads(json_str)
     mqtt.subscribe(data['topic'], data['qos'])
 
-
 @socketio.on('unsubscribe_all')
 def handle_unsubscribe_all():
     mqtt.unsubscribe_all()
-
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
@@ -115,12 +105,10 @@ def handle_mqtt_message(client, userdata, message):
     )
     socketio.emit('mqtt_message', data=data)
 
-
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
     # print(level, buf)
     pass
-
 
 @mqtt.on_topic("lab/data")
 def handle_data(client, userdata, message):
@@ -133,7 +121,7 @@ def handle_data(client, userdata, message):
     payload_dict = json.loads(message.payload.decode())
     date = experiment_start_time_list[int(payload_dict['id'])]
     
-    file_name = experiment_name_list[int(payload_dict['id'])] +"_"+mac_addr_list[int(payload_dict["id"])]+"_"+date+".txt"
+    file_name = experiment_name_list[int(payload_dict['id'])] + "_" + mac_addr_list[int(payload_dict["id"])] + "_" + date + ".txt"
     print(file_name)
     file_descriptor = open(file_name,"a")
     file_descriptor.write(message.payload.decode())
@@ -175,7 +163,6 @@ def handle_experimentStart(client, userdata, message):
           .format(message.topic, message.payload.decode()))
 
     received_payload = message.payload.decode()
-    
 
     received_payload = json.loads(received_payload)
     now = datetime.now()

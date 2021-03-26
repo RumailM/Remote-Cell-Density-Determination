@@ -32,7 +32,7 @@ var last_time = 7;
       var name = $('#message_start_name').val();
       var astep = $('#message_start_astep').val();
       var atime = $('#message_start_atime').val();
-      var data = '{"id": "' + message + '", "experimentName": "'+ name +'"'+'}';
+      var data = '{"id": "' + message + '", "experimentName": "'+ name + '", "ASTEP": ' + astep + ', "ATIME": ' + atime +'}';
       socket.emit('experimentStart', data=data);
     });
 
@@ -130,7 +130,7 @@ var last_time = 7;
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <h1>Flask-MQTT Example</h1>
+      <h1>SmartClamp Webserver</h1>
     </div>
   </div>
 
@@ -146,11 +146,11 @@ var last_time = 7;
               <div class="form-horizontal">
                 
                 <div class="form-group">
-                  <label class="control-label col-xs-4">id: </label>
+                  <label class="control-label col-xs-4">ID: </label>
                   <div class="col-xs-8">
                     <input id="message_start" class="form-control">
                   </div>
-                  <label class="control-label col-xs-4">experiment name(no special characters, only alphabet and underscores)[do not leave empty!!!]: </label>
+                  <label class="control-label col-xs-4">Experiment Name: </label>
                   <div class="col-xs-8">
                     <input id="message_start_name" class="form-control">
                   </div>
@@ -189,7 +189,7 @@ var last_time = 7;
               <div class="form-horizontal">
                 
                 <div class="form-group">
-                  <label class="control-label col-xs-4">id: </label>
+                  <label class="control-label col-xs-4">ID: </label>
                   <div class="col-xs-8">
                     <input id="message_stop" class="form-control">
                   </div>

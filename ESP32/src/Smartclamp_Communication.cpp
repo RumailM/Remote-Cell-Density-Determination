@@ -48,12 +48,11 @@ void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int
     
     const char* mac = doc["MAC"];
 
-    if (strcmp(macAddress.c_str(), mac) == 0)
+    if (strcmp(WiFi.macAddress().c_str(), mac) == 0)
     {
         // Assign unique identifier and unsub from loginResponse topic
         identifier = doc["id"];
-        Serial.print("Device ID: ");
-        Serial.println(identifier);
+        Serial.printf("Device ID: %d\n", identifier);
 
         if (client_ptr->unsubscribe(topic_login_response))
         {
@@ -107,8 +106,8 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
         if (identifier == (int) doc["id"])
         {
             // Set ATIME and ASTEP values
-            uint8_t atime = (uint8_t) doc["atime"];
-            uint16_t astep = (uint16_t) doc["astep"];
+            uint8_t atime = (uint8_t) doc["ATIME"];
+            uint16_t astep = (uint16_t) doc["ASTEP"];
             Serial.print("ATIME set to ");
             if (atime != 0)
             {
@@ -236,6 +235,7 @@ void Smartclamp_Communication::callbackDefault(char* topic, byte* payload, unsig
     }
 
     Serial.println("WARNING: Message arrived on unexpected topic");
+    Serial.println(topic);
     Serial.println("Message payload:");
     for (int i = 0; i < length; i++)
     {
@@ -254,16 +254,6 @@ void Smartclamp_Communication::callbackDefault(char* topic, byte* payload, unsig
  */
 void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned int length)
 {
-    // Serial.print("Message arrived in topic: ");
-    // Serial.println(topic);
-
-    Serial.println("Message payload:");
-    for (int i = 0; i < length; i++)
-    {
-        Serial.print((char)payload[i]);
-    }
-    Serial.println();
-
     if (strcmp(topic, topic_login_response) == 0)
     {
         callbackLoginResponse(payload, length);
@@ -288,8 +278,7 @@ void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned 
  */
 void Smartclamp_Communication::connectWifi()
 {
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
+    Serial.printf("Connecting to %s\n", ssid);
 
     // Connect to the WiFi
     WiFi.begin(ssid, wifi_password);
@@ -301,17 +290,10 @@ void Smartclamp_Communication::connectWifi()
         Serial.print(".");
     }
 
-    // Get MAC Address
-    macAddress = WiFi.macAddress();
-
     // Debugging - Output the IP Address and MAC Address
     Serial.println("WiFi connected");
-
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-
-    Serial.print("MAC address: ");
-    Serial.println(macAddress.c_str());
+    Serial.printf("IP address: %d.%d.%d.%d\n", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
+    Serial.printf("MAC address: %s\n", WiFi.macAddress().c_str());
 }
 
 /**
@@ -345,7 +327,7 @@ void Smartclamp_Communication::connectMQTT()
 void Smartclamp_Communication::identifyHandshake()
 {
     StaticJsonDocument<256> doc;
-    doc["MAC"] = macAddress.c_str();
+    doc["MAC"] = WiFi.macAddress().c_str();
 
     char buffer[256];
     size_t n = serializeJson(doc, buffer);  

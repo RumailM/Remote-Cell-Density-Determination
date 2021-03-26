@@ -14,7 +14,6 @@ class Smartclamp_Communication
 public:
 
     // Constants
-    String macAddress;
     const char* clientID = "";
     int identifier;
     bool flag_handshake = false, flag_identification = false, flag_start = false;

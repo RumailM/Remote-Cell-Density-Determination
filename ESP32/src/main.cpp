@@ -1,4 +1,3 @@
-
 ///////////////////   LIBRARIES    ///////////////
 
 // Sampling
@@ -67,7 +66,8 @@ void loop(void)
     current_millis = millis();
     if (current_millis - lastMsecs > READING_PERIOD)
     {
-        if (serialDebug){
+        if (serialDebug)
+        {
             Serial.print("DEBUG: Main Loop. Identifier: ");
             Serial.print(MQTT.getIdentifier());
             Serial.print(", flag_identification: ");

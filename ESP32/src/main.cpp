@@ -91,7 +91,7 @@ void loop(void)
             }
             cnt_agc++;
 
-            if (!as7341.readAllChannels(readings))
+            if (!as7341.readHighChannels(readings))
             {
                 if (serialDebug){
                     Serial.println("ERROR: Couldn't read all channels!");

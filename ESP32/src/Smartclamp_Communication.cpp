@@ -135,7 +135,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
             if (agc != 0)
             {
                 sensor_ptr->setAgcFrequency(agc);
-                Serial.printf("custom value: %d\n", astep);
+                Serial.printf("custom value: %d\n", agc);
             }
             else
             {

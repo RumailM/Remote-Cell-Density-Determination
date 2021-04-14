@@ -175,9 +175,9 @@ def handle_experimentStart(client, userdata, message):
     module_list[int(received_payload['id'])].experiment_name = str(received_payload['experimentName'])
     experiment_name = module_list[int(received_payload['id'])].experiment_name
     new_file = open(
-                module_list[int(payload_dict['id'])].experiment_name + "_" +
-                module_list[int(payload_dict['id'])].experiment_agc_freq + "_" +
-                module_list[int(payload_dict["id"])].mac_addr + "_" +
+                module_list[int(received_payload['id'])].experiment_name + "_" +
+                module_list[int(received_payload['id'])].experiment_agc_freq + "_" +
+                module_list[int(received_payload["id"])].mac_addr + "_" +
                 date + ".txt",'x')
     new_file.close()
 

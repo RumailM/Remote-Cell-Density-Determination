@@ -173,7 +173,7 @@ def handle_experimentStart(client, userdata, message):
     experiment_agc_freq_list[int(received_payload['id'])] = str(received_payload['AGC'])
     experiment_name_list[int(received_payload['id'])] = str(received_payload['experimentName'])
     experiment_name = experiment_name_list[int(received_payload['id'])]
-    new_file = open(experiment_name + "_" + str(received_payload['AGC']) + "_" + device_mac + "_" + date + ".txt",'x')
+    new_file = open(experiment_name + "_" + experiment_agc_freq_list[int(received_payload['id'])] + "_" + device_mac + "_" + date + ".txt",'x')
     new_file.close()
 
 if __name__ == '__main__':

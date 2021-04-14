@@ -46,6 +46,7 @@ num_devices = 8
 mac_addr_list = [None]*num_devices
 experiment_start_time_list = [None]*num_devices
 experiment_name_list = [None]*num_devices
+experiment_agc_freq_list = [None]*num_devices
 
 def push_mac(mac_str):
     #Adds MAC Address and returns device ID, call when device logs in
@@ -121,7 +122,7 @@ def handle_data(client, userdata, message):
     payload_dict = json.loads(message.payload.decode())
     date = experiment_start_time_list[int(payload_dict['id'])]
     
-    file_name = experiment_name_list[int(payload_dict['id'])] + "_" + mac_addr_list[int(payload_dict["id"])] + "_" + date + ".txt"
+    file_name = experiment_name_list[int(payload_dict['id'])] + "_" + experiment_agc_freq_list[int(payload_dict['id'])] + "_" + mac_addr_list[int(payload_dict["id"])] + "_" + date + ".txt"
     print(file_name)
     file_descriptor = open(file_name,"a")
     file_descriptor.write(message.payload.decode())
@@ -168,7 +169,8 @@ def handle_experimentStart(client, userdata, message):
     now = datetime.now()
     date = now.strftime("%d_%m_%Y_%H_%M_%S")
     experiment_start_time_list[int(received_payload['id'])] = date
-    device_mac = mac_addr_list[int(received_payload['id'])]    
+    device_mac = mac_addr_list[int(received_payload['id'])]
+    experiment_agc_freq_list[int(received_payload['id'])] = str(received_payload['AGC'])
     experiment_name_list[int(received_payload['id'])] = str(received_payload['experimentName'])
     experiment_name = experiment_name_list[int(received_payload['id'])]
     new_file = open(experiment_name + "_" + str(received_payload['AGC']) + "_" + device_mac + "_" + date + ".txt",'x')

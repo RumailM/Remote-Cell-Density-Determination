@@ -11,6 +11,14 @@ from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 from datetime import datetime
+from dataclasses import dataclass
+
+@dataclass
+class Module():
+    mac_addr: str = None
+    experiment_name: str = None
+    experiment_start_time: str = None
+    experiment_agc_freq: str = None
 
 eventlet.monkey_patch()
 
@@ -29,12 +37,6 @@ app.config['MQTT_LAST_WILL_TOPIC'] = 'home/lastwill'
 app.config['MQTT_LAST_WILL_MESSAGE'] = 'bye'
 app.config['MQTT_LAST_WILL_QOS'] = 2
 
-# Parameters for SSL enabled
-# app.config['MQTT_BROKER_PORT'] = 8883
-# app.config['MQTT_TLS_ENABLED'] = True
-# app.config['MQTT_TLS_INSECURE'] = True
-# app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
-
 mqtt = Mqtt(app)
 socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
@@ -42,18 +44,14 @@ qos = 0
 
 #Parameters
 num_devices = 8
-
-mac_addr_list = [None]*num_devices
-experiment_start_time_list = [None]*num_devices
-experiment_name_list = [None]*num_devices
-experiment_agc_freq_list = [None]*num_devices
+module_list = [Module()]*num_devices
 
 def push_mac(mac_str):
     #Adds MAC Address and returns device ID, call when device logs in
     id = -99
     for i in range(num_devices):
-        if (mac_addr_list[i] is None) or (mac_addr_list[i]==mac_str):
-            mac_addr_list[i] = mac_str
+        if (module_list[i].mac_addr is None) or (module_list[i].mac_addr==mac_str):
+            module_list[i].mac_addr = mac_str
             id = i
             break
     if id == -99:
@@ -65,8 +63,8 @@ def push_mac(mac_str):
 def pop_mac(mac_str):
     # Removes MAC Adress and frees up an ID, call when device logs out
     for i in range(num_devices):
-        if mac_addr_list[i] == mac_str:
-            mac_addr_list[i] = None
+        if module_list[i].mac_addr == mac_str:
+            module_list[i].mac_addr = None
             print("Removed MAC Address at id " + str(i))
 
 @app.route('/')
@@ -120,9 +118,12 @@ def handle_data(client, userdata, message):
     print(message.payload.decode())
     # print(payload)
     payload_dict = json.loads(message.payload.decode())
-    date = experiment_start_time_list[int(payload_dict['id'])]
+    date = module_list[int(payload_dict['id'])].experiment_start_time
     
-    file_name = experiment_name_list[int(payload_dict['id'])] + "_" + experiment_agc_freq_list[int(payload_dict['id'])] + "_" + mac_addr_list[int(payload_dict["id"])] + "_" + date + ".txt"
+    file_name = (module_list[int(payload_dict['id'])].experiment_name + "_" +
+                module_list[int(payload_dict['id'])].experiment_agc_freq + "_" +
+                module_list[int(payload_dict["id"])].mac_addr + "_" +
+                date + ".txt")
     print(file_name)
     file_descriptor = open(file_name,"a")
     file_descriptor.write(message.payload.decode())
@@ -168,12 +169,16 @@ def handle_experimentStart(client, userdata, message):
     received_payload = json.loads(received_payload)
     now = datetime.now()
     date = now.strftime("%d_%m_%Y_%H_%M_%S")
-    experiment_start_time_list[int(received_payload['id'])] = date
-    device_mac = mac_addr_list[int(received_payload['id'])]
-    experiment_agc_freq_list[int(received_payload['id'])] = str(received_payload['AGC'])
-    experiment_name_list[int(received_payload['id'])] = str(received_payload['experimentName'])
-    experiment_name = experiment_name_list[int(received_payload['id'])]
-    new_file = open(experiment_name + "_" + experiment_agc_freq_list[int(received_payload['id'])] + "_" + device_mac + "_" + date + ".txt",'x')
+    module_list[int(received_payload['id'])].experiment_start_time = date
+    device_mac = module_list[int(received_payload['id'])].mac_addr
+    module_list[int(received_payload['id'])].experiment_agc_freq = str(received_payload['AGC'])
+    module_list[int(received_payload['id'])].experiment_name = str(received_payload['experimentName'])
+    experiment_name = module_list[int(received_payload['id'])].experiment_name
+    new_file = open(
+                module_list[int(payload_dict['id'])].experiment_name + "_" +
+                module_list[int(payload_dict['id'])].experiment_agc_freq + "_" +
+                module_list[int(payload_dict["id"])].mac_addr + "_" +
+                date + ".txt",'x')
     new_file.close()
 
 if __name__ == '__main__':

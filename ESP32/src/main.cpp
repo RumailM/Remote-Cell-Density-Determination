@@ -15,23 +15,22 @@ const unsigned long SERIAL_DELAY = 227;
 const unsigned long MQTT_DELAY = 158;
 const unsigned long TARGET_PERIOD = 200;
 const unsigned long READING_PERIOD = TARGET_PERIOD - MQTT_DELAY;
-const unsigned int AGC_FREQUENCY = 50;
 const extern bool serialDebug = false;
 const bool rawCountsMode = true;
 
 ///////////////////   GLOBAL     ///////////////
-
-// Variables
-unsigned long lastMsecs = millis();
-int count = 0;
-unsigned int cnt_agc = AGC_FREQUENCY+1;
-unsigned long start_millis, current_millis;
 
 // Objects
 Smartclamp_AS7341 as7341;
 Smartclamp_Communication MQTT;
 WiFiClient wifiClient;
 PubSubClient client(MQTT.getMqttServer(), 1883, wifiClient);
+
+// Variables
+unsigned long lastMsecs = millis();
+int count = 0;
+unsigned int cnt_agc = as7341.getAgcFrequency()+1;
+unsigned long start_millis, current_millis;
 
 ///////////////////   SETUP    ///////////////
 
@@ -82,7 +81,7 @@ void loop(void)
         {
             uint16_t readings[12];
             
-            if (cnt_agc > AGC_FREQUENCY)
+            if (cnt_agc > as7341.getAgcFrequency())
             {
                 as7341.automaticGainContol();
                 cnt_agc = 0;

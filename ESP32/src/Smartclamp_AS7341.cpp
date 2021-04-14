@@ -45,6 +45,7 @@ bool Smartclamp_AS7341::initializeSensor()
     setATIME(DEFAULT_ATIME);
     setASTEP(DEFAULT_ASTEP);
     setGain(DEFAULT_GAIN);
+    setAgcFrequency(DEFAULT_AGC_FREQUENCY);
     enableSpAutoGainCtrl(true); // true after debug
     enableSaturationInterrupt(false);
     setLowAgcThreshold(DEFAULT_SP_AGC_LOW);
@@ -59,6 +60,7 @@ void Smartclamp_AS7341::updateSensorInfo()
     as7341Info.gain = getGain();
     as7341Info.atime = getATIME();
     as7341Info.astep = getASTEP();
+    as7341Info.agc_freq = getAgcFrequency();
     as7341Info.sp_agc_en = getSpAutoGainCtrl();
     as7341Info.agc_low_th = getLowAgcThreshold();
     as7341Info.agc_high_th = getHighAgcThreshold();
@@ -124,6 +126,8 @@ bool Smartclamp_AS7341::printParameters(Stream &stream)
     stream.println(as7341Info.atime);
     stream.print("AStep: ");
     stream.println(as7341Info.astep);
+    stream.print("Agc_freq: ");
+    stream.println(as7341Info.agc_freq);
     stream.print("SpIntEn: ");
     stream.println(as7341Info.sp_int_en);
     stream.print("SpAGCEn: ");
@@ -209,6 +213,29 @@ bool Smartclamp_AS7341::automaticGainContol()
     delay(as7341Info.intTime); //NOTE: This needs to be changed once AVALID is fixed
     enableSpAutoGainCtrl(false);
     return true;
+}
+
+/**
+ * @brief sets Automatic Gain Control (AGC) frequency
+ *
+ * @param agc_frequency_value agc frequency value passed during experimentStart
+ * 
+ * @return true: success false: failure
+ */
+bool Smartclamp_AS7341::setAgcFrequency(unsigned int agc_freq_value)
+{
+    as7341Info.agc_freq = agc_freq_value;
+    return as7341Info.agc_freq == agc_freq_value;
+}
+
+/**
+ * @brief gets Automatic Gain Change (AGC) frequency
+ * 
+ * @return unsigned int agc_freq
+ */
+unsigned int Smartclamp_AS7341::getAgcFrequency()
+{
+    return as7341Info.agc_freq;
 }
 
 /**

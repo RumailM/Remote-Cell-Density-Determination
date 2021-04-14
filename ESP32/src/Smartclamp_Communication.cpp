@@ -108,6 +108,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
             // Set ATIME and ASTEP values
             uint8_t atime = (uint8_t) doc["ATIME"];
             uint16_t astep = (uint16_t) doc["ASTEP"];
+            unsigned int agc = (unsigned int) doc["AGC"];
             Serial.print("ATIME set to ");
             if (atime != 0)
             {
@@ -129,6 +130,17 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
             {
                 sensor_ptr->setASTEP(DEFAULT_ASTEP);
                 Serial.printf("default value: %d\n", DEFAULT_ASTEP);
+            }
+            Serial.print("AGC_FREQUENCY set to ");
+            if (agc != 0)
+            {
+                sensor_ptr->setAgcFrequency(agc);
+                Serial.printf("custom value: %d\n", astep);
+            }
+            else
+            {
+                sensor_ptr->setAgcFrequency(DEFAULT_AGC_FREQUENCY);
+                Serial.printf("default value: %d\n", DEFAULT_AGC_FREQUENCY);
             }
             
             // Unsub from experimentStart topic

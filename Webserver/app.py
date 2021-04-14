@@ -171,7 +171,7 @@ def handle_experimentStart(client, userdata, message):
     device_mac = mac_addr_list[int(received_payload['id'])]    
     experiment_name_list[int(received_payload['id'])] = str(received_payload['experimentName'])
     experiment_name = experiment_name_list[int(received_payload['id'])]
-    new_file = open(experiment_name+"_" + device_mac + "_" + date + ".txt",'x')
+    new_file = open(experiment_name + "_" + device_mac + "_" + date + ".txt",'x')
     new_file.close()
 
 if __name__ == '__main__':

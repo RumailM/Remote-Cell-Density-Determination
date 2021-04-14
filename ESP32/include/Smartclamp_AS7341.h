@@ -66,6 +66,7 @@ struct as7431_info_t
     as7341_gain_t gain;
     uint8_t atime;
     uint16_t astep;
+    unsigned int agc_freq;
     uint32_t intTime;
     bool sp_int_en;
     bool sp_agc_en;
@@ -75,6 +76,7 @@ struct as7431_info_t
 
 const uint8_t DEFAULT_ATIME = 29;
 const uint16_t DEFAULT_ASTEP = 599;
+const unsigned int DEFAULT_AGC_FREQUENCY = 50;
 const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
 const as7341_agc_low_t DEFAULT_SP_AGC_LOW = AS7341_AGC_LOW_25;
 const as7341_agc_high_t DEFAULT_SP_AGC_HIGH = AS7341_AGC_HIGH_75;
@@ -103,6 +105,8 @@ public:
     bool enableSaturationInterrupt(bool enable_asien);
     bool getSaturationInterrupt();
     bool automaticGainContol();
+    bool setAgcFrequency(unsigned int agc_freq_value);
+    unsigned int getAgcFrequency();
     bool setLowAgcThreshold(as7341_agc_low_t low_threshold);
     as7341_agc_low_t getLowAgcThreshold();
     bool setHighAgcThreshold(as7341_agc_high_t high_threshold);

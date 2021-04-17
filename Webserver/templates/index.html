@@ -14,7 +14,6 @@
 var data_table;
 var chart;
 var options;
-var last_time = 7;
 
 $(document).ready(function()
 {
@@ -68,17 +67,25 @@ $(document).ready(function()
 
     socket.on('mqtt_message', function(data)
     {
-        console.log(data);
         var text = '(' + data['topic'] + ' qos: ' + data['qos'] + ') ' + data['payload'];
         var $textarea = $('#subscribe_messages');
         $textarea.val($textarea.val() + text + '\n');
 
+        if (!data["topic"].localeCompare("lab/data"))
+        {
+            var obj = JSON.parse(data["payload"]);
+            var count = obj.readings[6]/(Math.pow(2, obj.gain-1)*0.00278*(obj.atime+1)*(obj.astep+1))
+            data_table.addRow([data_table.getNumberOfRows()+1,Number(count)]);
+            chart.draw(data_table , options);
+        }
+
+        // out.x630nm = [out.x630nm row.readings(7)/(2^(row.gain-1) *0.00278*(row.atime+1)*(row.astep+1))];
+        // {"id":0,"timestamp":0,"gain":5,"atime":59,"astep":599,"readings":[7568,16379,54,0,0,0,5,31,218,38]}
+
+
         //1)decode json object in data['payload']
 
         //2) do something with decoded data, i.e. plot
-        data_table.addRow([last_time,Number(data['payload'])]);
-        last_time = last_time + 1;
-        chart.draw(data_table , options);
     })
 });
 
@@ -90,18 +97,12 @@ function drawChart()
     data_table = new google.visualization.DataTable();
     data_table.addColumn('number', 'time');
     data_table.addColumn('number', 'value');
-    data_table.addRow([1,1]);
-    data_table.addRow([2,2]);
-    data_table.addRow([3,3]);
-    data_table.addRow([4,4]);
-    data_table.addRow([5,5]);
-    data_table.addRow([6,6]);
 
     options = {
-        title: 'Company Performance',
+        title: 'Counts',
         hAxis:
         {
-            title: 'Year',
+            title: 'Seconds',
             titleTextStyle: {color: '#333'},
             slantedText: true,
             slantedTextAngle: 80

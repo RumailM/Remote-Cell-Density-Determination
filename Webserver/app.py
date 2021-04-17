@@ -1,7 +1,5 @@
 """
-
 Flask-MQTT Webserver for Raspberry Pi remote processing unit
-
 """
 import logging
 import eventlet
@@ -57,8 +55,8 @@ def push_mac(mac_str):
             break
     if not isPushed:
         clamp_list.append(Clamp(mac_addr=mac_str))
-        print("Succesfully cached MAC Address " + mac_str + " at id " + str(id))
         id = len(clamp_list) - 1
+        print("Succesfully cached MAC Address " + mac_str + " at id " + str(id))
     
     return id
 
@@ -117,8 +115,6 @@ def handle_data(client, userdata, message):
     print("Received message on topic {}: {}"
         .format(message.topic, message.payload.decode()))
 
-    print(message.payload.decode())
-    # print(payload)
     payload_dict = json.loads(message.payload.decode())
     date = clamp_list[int(payload_dict["id"])].experiment_start_time
     
@@ -126,11 +122,18 @@ def handle_data(client, userdata, message):
                 clamp_list[int(payload_dict["id"])].experiment_agc_freq + "_" +
                 clamp_list[int(payload_dict["id"])].mac_addr + "_" +
                 date + ".txt")
-    print(file_name)
+
     file_descriptor = open(file_name,"a")
     file_descriptor.write(message.payload.decode())
     file_descriptor.write("\n")
     file_descriptor.close()
+
+    data = dict(
+        topic=message.topic,
+        payload=message.payload.decode(),
+        qos=message.qos,
+    )
+    socketio.emit("mqtt_message", data=data)
 
 @mqtt.on_topic("lab/control/login")
 def handle_login(client, userdata, message):

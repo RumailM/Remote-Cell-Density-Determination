@@ -73,6 +73,16 @@ void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int
             Serial.println("Failed to subscribe to experimentStart topic.");
         }
 
+        // Sub to AGCToggle topic
+        if (client_ptr->subscribe(topic_AGC_toggle))
+        {
+            Serial.println("Subscribed to AGCToggle topic!");
+        }
+        else
+        {
+            Serial.println("Failed to subscribe to AGCToggle topic.");
+        }
+
         // Raise identification flag
         flag_identification = true;
     }

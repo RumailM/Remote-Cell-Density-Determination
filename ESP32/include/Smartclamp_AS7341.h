@@ -74,7 +74,7 @@ struct as7431_info_t
     as7341_agc_low_t agc_low_th;
 };
 
-const uint8_t DEFAULT_ATIME = 29;
+const uint8_t DEFAULT_ATIME = 59;
 const uint16_t DEFAULT_ASTEP = 599;
 const unsigned int DEFAULT_AGC_FREQUENCY = 50;
 const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;

@@ -50,8 +50,8 @@ bool Smartclamp_AS7341::initializeSensor()
     enableSaturationInterrupt(false);
     setLowAgcThreshold(DEFAULT_SP_AGC_LOW);
     setHighAgcThreshold(DEFAULT_SP_AGC_HIGH);
+    setReadBandMode(DEFAULT_READ_BAND_MODE);
     enableSpectralMeasurement(true);
-
     return true;
 }
 
@@ -60,7 +60,6 @@ void Smartclamp_AS7341::updateSensorInfo()
     as7341Info.gain = getGain();
     as7341Info.atime = getATIME();
     as7341Info.astep = getASTEP();
-    as7341Info.agc_freq = getAgcFrequency();
     as7341Info.sp_agc_en = getSpAutoGainCtrl();
     as7341Info.agc_low_th = getLowAgcThreshold();
     as7341Info.agc_high_th = getHighAgcThreshold();
@@ -136,6 +135,8 @@ bool Smartclamp_AS7341::printParameters(Stream &stream)
     stream.println(as7341Info.agc_low_th);
     stream.print("SpAGCHighTh: ");
     stream.println(as7341Info.agc_high_th);
+    stream.print("ReadBandMode: ");
+    stream.println(as7341Info.read_band_mode);
     stream.print("IntTime: ");
     stream.println(as7341Info.intTime);
     stream.println();
@@ -302,6 +303,29 @@ as7341_agc_high_t Smartclamp_AS7341::getHighAgcThreshold()
     Adafruit_BusIO_RegisterBits agc_high_threshold =
         Adafruit_BusIO_RegisterBits(&agc_threshold_reg, 2, 6);
     return (as7341_agc_high_t)agc_high_threshold.read();
+}
+
+/**
+ * @brief sets Reading Band Mode
+ *
+ * @param agc_frequency_value Reading Band Mode passed during experimentStart
+ * 
+ * @return true: success false: failure
+ */
+bool Smartclamp_AS7341::setReadBandMode(as7341_read_band_mode read_mode)
+{
+    as7341Info.read_band_mode = read_mode;
+    return as7341Info.read_band_mode == read_mode;
+}
+
+/**
+ * @brief gets Reading Band Mode
+ * 
+ * @return as7341_read_band_mode mode (ENUM)
+ */
+as7341_read_band_mode Smartclamp_AS7341::getReadBandMode()
+{
+    return as7341Info.read_band_mode;
 }
 
 void Smartclamp_AS7341::setSMUXLowChannels(bool f1_f4)

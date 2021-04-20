@@ -33,9 +33,8 @@ WiFiClient wifiClient;
 PubSubClient client(MQTT.getMqttServer(), 1883, wifiClient);
 
 // Variables
-unsigned long lastMsecs = millis();
 unsigned int cnt_agc = as7341.getAgcFrequency()+1;
-unsigned long current_millis;
+unsigned long prev_millis, current_millis;
 
 ///////////////////   SETUP    ///////////////
 
@@ -57,6 +56,7 @@ void setup()
     MQTT.connectWifi();
     MQTT.connectMQTT();
 
+    prev_millis = millis();
     setupLED();
 }
 
@@ -65,9 +65,16 @@ void setup()
 void loop(void)
 {
     MQTT.clientLoop();
+    current_millis = millis();
 
-    if(!MQTT.getFlagHandshake()){MQTT.identifyHandshake();}
-
+    if(!MQTT.getFlagHandshake())
+    {
+        if (current_millis - prev_millis > 100)
+        {
+            MQTT.identifyHandshake();
+            prev_millis = current_millis;
+        }
+    }
     else if (MQTT.getFlagIdentification() && MQTT.getFlagStart())
     {
         uint16_t readings[12];
@@ -81,34 +88,58 @@ void loop(void)
         }
         cnt_agc++;
 
-        if (!as7341.readHighChannels(readings))
+        switch(as7341.getReadBandMode())
         {
-            if (serialDebug){
-                Serial.println("ERROR: Couldn't read all channels!");
-            }
-            return;
+            case AS7341_READ_ALL_CHANNELS:
+                if (!as7341.readAllChannels(readings))
+                {
+                    if (serialDebug){
+                        Serial.println("ERROR: Couldn't read all channels!");
+                    }
+                    return;
+                }
+                break;
+            case AS7341_READ_LOW_CHANNELS:
+                if (!as7341.readLowChannels(readings))
+                {
+                    if (serialDebug){
+                        Serial.println("ERROR: Couldn't read low channels!");
+                    }
+                    return;
+                }
+                break;
+            case AS7341_READ_HIGH_CHANNELS:
+                if (!as7341.readHighChannels(readings))
+                {
+                    if (serialDebug){
+                        Serial.println("ERROR: Couldn't read high channels!");
+                    }
+                    return;
+                }
+                break;
         }
+
         current_millis = millis();
         as7341.updateSensorInfo();
 
-        if (!rawCountsMode)
-        {
-            float counts[12];
-            for (uint8_t i = 0; i < 12; i++)
-            {
-                if (i == 4 || i == 5)
-                    continue;
-                // we skip the first set of duplicate clear/NIR readings
-                // (indices 4 and 5)
-                counts[i] = as7341.toBasicCounts(readings[i]);
-            }
-            if (serialDebug){serialAllCounts(Serial, counts);}
-        }
-        else if (serialDebug)
-        {
-            serialAllRaw(Serial, readings);
-            as7341.printParameters(Serial);
-        }
+        // if (!rawCountsMode)
+        // {
+        //     float counts[12];
+        //     for (uint8_t i = 0; i < 12; i++)
+        //     {
+        //         if (i == 4 || i == 5)
+        //             continue;
+        //         // we skip the first set of duplicate clear/NIR readings
+        //         // (indices 4 and 5)
+        //         counts[i] = as7341.toBasicCounts(readings[i]);
+        //     }
+        //     if (serialDebug){serialAllCounts(Serial, counts);}
+        // }
+        // else if (serialDebug)
+        // {
+        //     serialAllRaw(Serial, readings);
+        //     as7341.printParameters(Serial);
+        // }
 
         StaticJsonDocument<256> doc;
         doc["id"] = MQTT.getIdentifier();
@@ -119,9 +150,31 @@ void loop(void)
 
         JsonArray data = doc.createNestedArray("readings");
         
-        for (int i = 0; i < 12; i++)
+        switch(as7341.getReadBandMode())
         {
-            data.add(readings[i]);
+            case AS7341_READ_ALL_CHANNELS:
+                for (int i = 0; i < 12; i++)
+                {
+                    // we skip the first set of duplicate clear/NIR readings
+                    // (indices 4 and 5)
+                    if (i == 4 || i == 5)
+                        continue;
+                    
+                    data.add(readings[i]);
+                }
+                break;
+            case AS7341_READ_LOW_CHANNELS:
+                for (int i = 0; i < 6; i++)
+                {
+                    data.add(readings[i]);
+                }
+                break;
+            case AS7341_READ_HIGH_CHANNELS:
+                for (int i = 6; i < 12; i++)
+                {
+                    data.add(readings[i]);
+                }
+                break;
         }
 
         char buffer[256];

@@ -109,6 +109,8 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
             uint8_t atime = (uint8_t) doc["ATIME"];
             uint16_t astep = (uint16_t) doc["ASTEP"];
             unsigned int agc = (unsigned int) doc["AGC"];
+            as7341_read_band_mode readMode = static_cast<as7341_read_band_mode>(doc["MODE"]);
+
             Serial.print("ATIME set to ");
             if (atime != 0)
             {
@@ -141,6 +143,17 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
             {
                 sensor_ptr->setAgcFrequency(DEFAULT_AGC_FREQUENCY);
                 Serial.printf("default value: %d\n", DEFAULT_AGC_FREQUENCY);
+            }
+            Serial.print("READ_BAND_MODE set to ");
+            if (readMode == AS7341_READ_LOW_CHANNELS || readMode == AS7341_READ_HIGH_CHANNELS)
+            {
+                sensor_ptr->setReadBandMode(readMode);
+                Serial.printf("custom value: %d\n", readMode);
+            }
+            else
+            {
+                sensor_ptr->setReadBandMode(DEFAULT_READ_BAND_MODE);
+                Serial.printf("default value: %d\n", DEFAULT_READ_BAND_MODE);
             }
             
             // Unsub from experimentStart topic

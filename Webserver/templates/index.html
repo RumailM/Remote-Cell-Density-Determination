@@ -35,7 +35,8 @@ $(document).ready(function()
         var astep = $('#message_start_astep').val();
         var atime = $('#message_start_atime').val();
         var agc_freq = $('#message_start_agc_frequency').val();
-        var data = '{"id": "' + message + '", "experimentName": "' + name + '", "AGC": "' + agc_freq + '", "ASTEP": "' + astep + '", "ATIME": "' + atime +'"}';
+        var read_band_mode = $('#message_start_read_band_mode').val();
+        var data = '{"id": "' + message + '", "experimentName": "' + name + '", "AGC": "' + agc_freq + '", "ASTEP": "' + astep + '", "ATIME": "' + atime + '", "MODE": "' + read_band_mode +'"}';
         socket.emit('experimentStart', data=data);
     });
 
@@ -128,7 +129,7 @@ function drawChart()
 {% endblock %}
 
 {% block content %}
-<div id="chart_div" style="width: 500px; height: 300px;"></div>
+<!-- <div id="chart_div" style="width: 500px; height: 300px;"></div> -->
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
@@ -167,6 +168,10 @@ function drawChart()
                   <label class="control-label col-xs-4">AGC_FREQ: (50)</label>
                   <div class="col-xs-8">
                     <input id="message_start_agc_frequency" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">READ_BAND_MODE: (0)</label>
+                  <div class="col-xs-8">
+                    <input id="message_start_read_band_mode" class="form-control">
                   </div>
                 </div>
                 

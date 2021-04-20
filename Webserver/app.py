@@ -17,6 +17,7 @@ class Clamp():
     experiment_name: str = None
     experiment_start_time: str = None
     experiment_agc_freq: str = None
+    experiment_mode: str = None
 
 eventlet.monkey_patch()
 
@@ -120,6 +121,7 @@ def handle_data(client, userdata, message):
     
     file_name = (clamp_list[int(payload_dict["id"])].experiment_name + "_" +
                 clamp_list[int(payload_dict["id"])].experiment_agc_freq + "_" +
+                clamp_list[int(payload_dict["id"])].experiment_mode + "_" +
                 clamp_list[int(payload_dict["id"])].mac_addr + "_" +
                 date + ".txt")
 
@@ -172,11 +174,13 @@ def handle_experimentStart(client, userdata, message):
     clamp_list[int(received_payload["id"])].experiment_start_time = date
     device_mac = clamp_list[int(received_payload["id"])].mac_addr
     clamp_list[int(received_payload["id"])].experiment_agc_freq = str(received_payload["AGC"])
+    clamp_list[int(received_payload["id"])].experiment_mode = str(received_payload["MODE"])
     clamp_list[int(received_payload["id"])].experiment_name = str(received_payload["experimentName"])
     experiment_name = clamp_list[int(received_payload["id"])].experiment_name
     new_file = open(
                 clamp_list[int(received_payload["id"])].experiment_name + "_" +
                 clamp_list[int(received_payload["id"])].experiment_agc_freq + "_" +
+                clamp_list[int(received_payload["id"])].experiment_mode + "_" +
                 clamp_list[int(received_payload["id"])].mac_addr + "_" +
                 date + ".txt","x")
     new_file.close()
@@ -198,4 +202,3 @@ if __name__ == "__main__":
     mqtt.subscribe("lab/control/experimentStop", qos)
 
     socketio.run(app, host="0.0.0.0", port=5000, use_reloader=False, debug=True)
-

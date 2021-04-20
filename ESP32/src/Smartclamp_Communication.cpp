@@ -240,6 +240,36 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
 }
 
 /**
+ * @brief Callback function executed when a message is received on AGCToggle topic
+ *        Runs the Automatic Gain Control (AGC) on the AS7341 sensor
+ *
+ * @param payload Pointer to a byte array of the message
+ * @param length Length of the message payload
+ */
+void Smartclamp_Communication::callbackAGCToggle(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr)
+{
+    if (flag_identification)
+    {
+        StaticJsonDocument<256> doc;
+        DeserializationError err = deserializeJson(doc, payload, length);
+
+        if (err)
+        {
+            Serial.print(F("deserializeJson() failed: "));
+            Serial.println(err.f_str());
+            return;
+        }
+
+        // Check identifier
+        if (identifier == (int) doc["id"])
+        {
+            sensor_ptr->automaticGainContol();
+        }
+        Serial.println("Performed Automatic Gain Calibration (AGC)!");
+    }
+}
+
+/**
  * @brief Callback function executed when a message is received on unexpected topic
  *        Prints warning of unexpected topic name and message contents
  *
@@ -290,6 +320,10 @@ void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned 
     else if (strcmp(topic, topic_experiment_stop) == 0)
     {
         callbackExperimentStop(payload, length);
+    }
+    else if (strcmp(topic, topic_AGC_toggle) == 0)
+    {
+        callbackAGCToggle(payload, length, sensor_ptr);
     }
     else
     {

@@ -79,14 +79,15 @@ void loop(void)
     {
         uint16_t readings[12];
         
-        if (cnt_agc > as7341.getAgcFrequency())
-        {
-            as7341.automaticGainContol();
-            cnt_agc = 0;
+        // Temporary Disable
+        // if (cnt_agc > as7341.getAgcFrequency())
+        // {
+        //     as7341.automaticGainContol();
+        //     cnt_agc = 0;
 
-            if (serialDebug){Serial.println("DEBUG: Performed AGC");}
-        }
-        cnt_agc++;
+        //     if (serialDebug){Serial.println("DEBUG: Performed AGC");}
+        // }
+        // cnt_agc++;
 
         switch(as7341.getReadBandMode())
         {

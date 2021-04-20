@@ -33,6 +33,7 @@ public:
     const char* topic_login_response = "lab/control/loginResponse";
     const char* topic_experiment_start = "lab/control/experimentStart";
     const char* topic_experiment_stop = "lab/control/experimentStop";
+    const char* topic_AGC_toggle = "lab/control/AGCToggle";
     const char* topic_experiment_data = "lab/data";
 
     Smartclamp_Communication();
@@ -42,6 +43,7 @@ public:
     void callbackLoginResponse(byte* payload, unsigned int length);
     void callbackExperimentStart(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr);
     void callbackExperimentStop(byte* payload, unsigned int length);
+    void callbackAGCToggle(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr);
     void callbackDefault(char* topic, byte* payload, unsigned int length);
     void callback(char* topic, uint8_t* payload, unsigned int length);
 

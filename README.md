@@ -4,12 +4,13 @@ Ongoing developing a low-cost cell density monitoring accessory for standard lab
 
 ### Hardware Used
 
-- ESP-WROVER-KIT
+- ESP32 Sparkfun Thing Plus
 - ADAFRUIT AS7341
 - 56 Ohm Resistor
 - ThorLabs LED631E
+- 1000 mAh 3.7V LiPo Battery
 
-### ESP-WROVER-KIT Hardware Connections
+### ESP32 Hardware Connections
 
 - VIN: 3.3V
 - I2C SDA: IO21

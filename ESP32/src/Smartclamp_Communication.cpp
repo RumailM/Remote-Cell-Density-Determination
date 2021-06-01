@@ -73,6 +73,16 @@ void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int
             Serial.println("Failed to subscribe to experimentStart topic.");
         }
 
+        // Sub to AGCToggle topic
+        if (client_ptr->subscribe(topic_AGC_toggle))
+        {
+            Serial.println("Subscribed to AGCToggle topic!");
+        }
+        else
+        {
+            Serial.println("Failed to subscribe to AGCToggle topic.");
+        }
+
         // Raise identification flag
         flag_identification = true;
     }
@@ -108,6 +118,9 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
             // Set ATIME and ASTEP values
             uint8_t atime = (uint8_t) doc["ATIME"];
             uint16_t astep = (uint16_t) doc["ASTEP"];
+            unsigned int agc = (unsigned int) doc["AGC"];
+            as7341_read_band_mode readMode = static_cast<as7341_read_band_mode>(doc["MODE"]);
+
             Serial.print("ATIME set to ");
             if (atime != 0)
             {
@@ -129,6 +142,28 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
             {
                 sensor_ptr->setASTEP(DEFAULT_ASTEP);
                 Serial.printf("default value: %d\n", DEFAULT_ASTEP);
+            }
+            Serial.print("AGC_FREQUENCY set to ");
+            if (agc != 0)
+            {
+                sensor_ptr->setAgcFrequency(agc);
+                Serial.printf("custom value: %d\n", agc);
+            }
+            else
+            {
+                sensor_ptr->setAgcFrequency(DEFAULT_AGC_FREQUENCY);
+                Serial.printf("default value: %d\n", DEFAULT_AGC_FREQUENCY);
+            }
+            Serial.print("READ_BAND_MODE set to ");
+            if (readMode == AS7341_READ_LOW_CHANNELS || readMode == AS7341_READ_HIGH_CHANNELS)
+            {
+                sensor_ptr->setReadBandMode(readMode);
+                Serial.printf("custom value: %d\n", readMode);
+            }
+            else
+            {
+                sensor_ptr->setReadBandMode(DEFAULT_READ_BAND_MODE);
+                Serial.printf("default value: %d\n", DEFAULT_READ_BAND_MODE);
             }
             
             // Unsub from experimentStart topic
@@ -215,6 +250,36 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
 }
 
 /**
+ * @brief Callback function executed when a message is received on AGCToggle topic
+ *        Runs the Automatic Gain Control (AGC) on the AS7341 sensor
+ *
+ * @param payload Pointer to a byte array of the message
+ * @param length Length of the message payload
+ */
+void Smartclamp_Communication::callbackAGCToggle(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr)
+{
+    if (flag_identification)
+    {
+        StaticJsonDocument<256> doc;
+        DeserializationError err = deserializeJson(doc, payload, length);
+
+        if (err)
+        {
+            Serial.print(F("deserializeJson() failed: "));
+            Serial.println(err.f_str());
+            return;
+        }
+
+        // Check identifier
+        if (identifier == (int) doc["id"])
+        {
+            sensor_ptr->automaticGainContol();
+        }
+        Serial.println("Performed Automatic Gain Calibration (AGC)!");
+    }
+}
+
+/**
  * @brief Callback function executed when a message is received on unexpected topic
  *        Prints warning of unexpected topic name and message contents
  *
@@ -265,6 +330,10 @@ void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned 
     else if (strcmp(topic, topic_experiment_stop) == 0)
     {
         callbackExperimentStop(payload, length);
+    }
+    else if (strcmp(topic, topic_AGC_toggle) == 0)
+    {
+        callbackAGCToggle(payload, length, sensor_ptr);
     }
     else
     {

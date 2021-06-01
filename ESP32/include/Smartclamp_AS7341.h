@@ -88,7 +88,7 @@ const unsigned int DEFAULT_AGC_FREQUENCY = 50;
 const as7341_gain_t DEFAULT_GAIN = AS7341_GAIN_16X;
 const as7341_agc_low_t DEFAULT_SP_AGC_LOW = AS7341_AGC_LOW_25;
 const as7341_agc_high_t DEFAULT_SP_AGC_HIGH = AS7341_AGC_HIGH_75;
-const as7341_read_band_mode DEFAULT_READ_BAND_MODE = AS7341_READ_ALL_CHANNELS;
+const as7341_read_band_mode DEFAULT_READ_BAND_MODE = AS7341_READ_HIGH_CHANNELS;
 
 class Smartclamp_AS7341 : public Adafruit_AS7341
 {

@@ -79,15 +79,14 @@ void loop(void)
     {
         uint16_t readings[12];
         
-        // Temporary Disable
-        // if (cnt_agc > as7341.getAgcFrequency())
-        // {
-        //     as7341.automaticGainContol();
-        //     cnt_agc = 0;
+        if (cnt_agc > as7341.getAgcFrequency())
+        {
+            as7341.automaticGainContol();
+            cnt_agc = 0;
 
-        //     if (serialDebug){Serial.println("DEBUG: Performed AGC");}
-        // }
-        // cnt_agc++;
+            if (serialDebug){Serial.println("DEBUG: Performed AGC");}
+        }
+        cnt_agc++;
 
         switch(as7341.getReadBandMode())
         {
@@ -150,7 +149,7 @@ void loop(void)
         doc["astep"] = as7341.as7341Info.astep;
 
         JsonArray data = doc.createNestedArray("readings");
-        
+
         switch(as7341.getReadBandMode())
         {
             case AS7341_READ_ALL_CHANNELS:

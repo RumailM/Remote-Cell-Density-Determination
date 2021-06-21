@@ -1,3 +1,15 @@
+/*!
+ *  @file Smartclamp_Communication.h
+ *
+ *  This file contains all functions related to MQTT communication
+ * 
+ *  It utilizes the PubSubClient Arduino MQTT library available at:
+ *  https://github.com/knolleary/pubsubclient
+ *
+ *  Developed by Ahmad Nasralla (an2485@nyu.edu) 
+ * 
+ */
+
 #ifndef _SMARTCLAMP_COMMUNICATION_H
 #define _SMARTCLAMP_COMMUNICATION_H
 
@@ -8,6 +20,7 @@
 #include <string>
 
 #include <Smartclamp_AS7341.h>
+#include <Smartclamp_LED.h>
 
 class Smartclamp_Communication
 {
@@ -20,6 +33,7 @@ public:
     unsigned long start_millis, current_millis;
     PubSubClient* client_ptr = NULL;
     Smartclamp_AS7341* sensor_ptr = NULL;
+    Smartclamp_LED* led_ptr = NULL;
 
     // Wifi and MQTT Broker Authentication
     const char* ssid = "NameOfNetwork";                     // Raspberry Pi network SSID
@@ -57,6 +71,7 @@ public:
     void setIdentifier(int identifier);
     bool setClientPtr(PubSubClient* client_ptr);
     bool setSensorPtr(Smartclamp_AS7341* sensor_ptr);
+    bool setLEDPtr(Smartclamp_LED* led_ptr);
     bool getFlagHandshake();
     bool getFlagIdentification();
     bool getFlagStart();

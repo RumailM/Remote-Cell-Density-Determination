@@ -1,5 +1,5 @@
 /*!
- *  @file Smartclamp_Smartclamp_AS7341::cpp
+ *  @file Smartclamp_AS7341.cpp
  *
  * 	This is an extension of Adafruit's I2C Driver for the Library 
  *  for the AS7341 11-Channel Spectral Sensor.
@@ -45,13 +45,13 @@ bool Smartclamp_AS7341::initializeSensor()
     setATIME(DEFAULT_ATIME);
     setASTEP(DEFAULT_ASTEP);
     setGain(DEFAULT_GAIN);
-    setAgcFrequency(DEFAULT_AGC_FREQUENCY);
     enableSpAutoGainCtrl(true); // true after debug
     enableSaturationInterrupt(false);
     setLowAgcThreshold(DEFAULT_SP_AGC_LOW);
     setHighAgcThreshold(DEFAULT_SP_AGC_HIGH);
     setReadBandMode(DEFAULT_READ_BAND_MODE);
     enableSpectralMeasurement(true);
+    as7341Info.isAGCUpdated = false;
     return true;
 }
 
@@ -118,15 +118,12 @@ bool Smartclamp_AS7341::readHighChannels(uint16_t *readings_buffer)
  */
 bool Smartclamp_AS7341::printParameters(Stream &stream)
 {
-    //updateSensorInfo();
     stream.print("Gain: ");
     stream.println(as7341Info.gain);
     stream.print("ATime: ");
     stream.println(as7341Info.atime);
     stream.print("AStep: ");
     stream.println(as7341Info.astep);
-    stream.print("Agc_freq: ");
-    stream.println(as7341Info.agc_freq);
     stream.print("SpIntEn: ");
     stream.println(as7341Info.sp_int_en);
     stream.print("SpAGCEn: ");
@@ -206,37 +203,14 @@ bool Smartclamp_AS7341::getSaturationInterrupt()
 /**
  * @brief Performs a cycle of automatic gain control
  * 
- * @return true: gain was changes false: gain wasnt changed
+ * @return true: gain was changed false: gain wasnt changed
  */
-bool Smartclamp_AS7341::automaticGainContol()
+bool Smartclamp_AS7341::automaticGainControl()
 {
     enableSpAutoGainCtrl(true);
     delay(as7341Info.intTime); //NOTE: This needs to be changed once AVALID is fixed
     enableSpAutoGainCtrl(false);
     return true;
-}
-
-/**
- * @brief sets Automatic Gain Control (AGC) frequency
- *
- * @param agc_frequency_value agc frequency value passed during experimentStart
- * 
- * @return true: success false: failure
- */
-bool Smartclamp_AS7341::setAgcFrequency(unsigned int agc_freq_value)
-{
-    as7341Info.agc_freq = agc_freq_value;
-    return as7341Info.agc_freq == agc_freq_value;
-}
-
-/**
- * @brief gets Automatic Gain Change (AGC) frequency
- * 
- * @return unsigned int agc_freq
- */
-unsigned int Smartclamp_AS7341::getAgcFrequency()
-{
-    return as7341Info.agc_freq;
 }
 
 /**
@@ -308,7 +282,7 @@ as7341_agc_high_t Smartclamp_AS7341::getHighAgcThreshold()
 /**
  * @brief sets Reading Band Mode
  *
- * @param agc_frequency_value Reading Band Mode passed during experimentStart
+ * @param read_mode Reading Band Mode passed during experimentStart
  * 
  * @return true: success false: failure
  */
@@ -326,6 +300,15 @@ bool Smartclamp_AS7341::setReadBandMode(as7341_read_band_mode read_mode)
 as7341_read_band_mode Smartclamp_AS7341::getReadBandMode()
 {
     return as7341Info.read_band_mode;
+}
+
+/**
+ * @brief switches isAGCUpdated flag
+ * 
+ */
+void Smartclamp_AS7341::updateAGC()
+{
+    as7341Info.isAGCUpdated = !as7341Info.isAGCUpdated;
 }
 
 void Smartclamp_AS7341::setSMUXLowChannels(bool f1_f4)

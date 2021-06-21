@@ -21,90 +21,92 @@ float getSerialFloatArgument()
   return atof(serialBuffer + (bufferPos + 1));
 }
 
-void processSerialBuffer(Smartclamp_AS7341 &as7341)
-{
-  if (toupper(serialBuffer[bufferPos]) == 'L')
-  {
-    if (toupper(serialBuffer[bufferPos + 1]) == 'O')
-    {
-      if (toupper(serialBuffer[bufferPos + 2]) == 'N')
-      {
-        // LON - Laser ON
-        turnOnLight();
-      }
-      else if (toupper(serialBuffer[bufferPos + 2]) == 'F')
-      {
-        // LOF - Laser OF
-        turnOffLight();
-      }
-    }
-  }
+// Serial Input Disabled
 
-  if (toupper(serialBuffer[bufferPos]) == 'S')
-  {
-    if (toupper(serialBuffer[bufferPos + 1]) == 'L')
-    {
-      if (toupper(serialBuffer[bufferPos + 2]) == 'I')
-      {
-        // SLI - Set Light Intensity
-        bufferPos += 3;
-        setLightIntensity(getSerialIntArgument());
-      }
-    }
-    if (toupper(serialBuffer[bufferPos + 1]) == 'A')
-    {
-      if (toupper(serialBuffer[bufferPos + 2]) == 'S')
-      {
-        // SAS - Set AStep
-        bufferPos += 3;
-        as7341.setASTEP(getSerialIntArgument());
-      }
-      if (toupper(serialBuffer[bufferPos + 2]) == 'T')
-      {
-        // SAT - Set ATime
-        bufferPos += 3;
-        as7341.setATIME(getSerialIntArgument());
-      }
-    }
-  }
+// void processSerialBuffer(Smartclamp_AS7341 &as7341)
+// {
+//   if (toupper(serialBuffer[bufferPos]) == 'L')
+//   {
+//     if (toupper(serialBuffer[bufferPos + 1]) == 'O')
+//     {
+//       if (toupper(serialBuffer[bufferPos + 2]) == 'N')
+//       {
+//         // LON - Laser ON
+//         turnOnLight();
+//       }
+//       else if (toupper(serialBuffer[bufferPos + 2]) == 'F')
+//       {
+//         // LOF - Laser OF
+//         turnOffLight();
+//       }
+//     }
+//   }
 
-  if (toupper(serialBuffer[bufferPos]) == 'G')
-  {
-    if (toupper(serialBuffer[bufferPos + 1]) == 'S')
-    {
-      if (toupper(serialBuffer[bufferPos + 2]) == 'P')
-      {
-        // GSP - Get Sensor Parameters
-        as7341.printParameters(Serial);
-      }
-    }
-  }
-}
+//   if (toupper(serialBuffer[bufferPos]) == 'S')
+//   {
+//     if (toupper(serialBuffer[bufferPos + 1]) == 'L')
+//     {
+//       if (toupper(serialBuffer[bufferPos + 2]) == 'I')
+//       {
+//         // SLI - Set Light Intensity
+//         bufferPos += 3;
+//         setLightIntensity(getSerialIntArgument());
+//       }
+//     }
+//     if (toupper(serialBuffer[bufferPos + 1]) == 'A')
+//     {
+//       if (toupper(serialBuffer[bufferPos + 2]) == 'S')
+//       {
+//         // SAS - Set AStep
+//         bufferPos += 3;
+//         as7341.setASTEP(getSerialIntArgument());
+//       }
+//       if (toupper(serialBuffer[bufferPos + 2]) == 'T')
+//       {
+//         // SAT - Set ATime
+//         bufferPos += 3;
+//         as7341.setATIME(getSerialIntArgument());
+//       }
+//     }
+//   }
 
-void read_SERIAL(Smartclamp_AS7341 &as7341)
-{
-  if (Serial.available() > 0)
-  {
-    // get incoming byte:
-    serialBuffer[bufferEnd] = Serial.read();
-    Serial.print("INPUT: ");
-    Serial.print(serialBuffer[bufferEnd]);
+//   if (toupper(serialBuffer[bufferPos]) == 'G')
+//   {
+//     if (toupper(serialBuffer[bufferPos + 1]) == 'S')
+//     {
+//       if (toupper(serialBuffer[bufferPos + 2]) == 'P')
+//       {
+//         // GSP - Get Sensor Parameters
+//         as7341.printParameters(Serial);
+//       }
+//     }
+//   }
+// }
 
-    // min message length? -> process commands
-    if (serialBuffer[bufferEnd] == 10)
-    {
-      processSerialBuffer(as7341);
+// void read_SERIAL(Smartclamp_AS7341 &as7341)
+// {
+//   if (Serial.available() > 0)
+//   {
+//     // get incoming byte:
+//     serialBuffer[bufferEnd] = Serial.read();
+//     Serial.print("INPUT: ");
+//     Serial.print(serialBuffer[bufferEnd]);
 
-      // go to message end
-      bufferPos = bufferEnd + 1;
-    }
+//     // min message length? -> process commands
+//     if (serialBuffer[bufferEnd] == 10)
+//     {
+//       processSerialBuffer(as7341);
 
-    if (bufferEnd < SERIAL_BUFFER_LEN - 1)
-      bufferEnd++;
-    else
-      bufferEnd = 0;
-  }
-}
+//       // go to message end
+//       bufferPos = bufferEnd + 1;
+//     }
+
+//     if (bufferEnd < SERIAL_BUFFER_LEN - 1)
+//       bufferEnd++;
+//     else
+//       bufferEnd = 0;
+//   }
+// }
 
 bool serialAllCounts(Stream &serialport, float_t counts[12])
 {

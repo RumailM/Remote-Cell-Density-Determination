@@ -1,5 +1,5 @@
 /*!
- *  @file Smartclamp_Smartclamp_Communication::cpp
+ *  @file Smartclamp_Communication.cpp
  *
  *  This file contains all functions related to MQTT communication
  * 
@@ -51,7 +51,7 @@ void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int
     if (strcmp(WiFi.macAddress().c_str(), mac) == 0)
     {
         // Assign unique identifier and unsub from loginResponse topic
-        identifier = doc["id"];
+        identifier = doc["ID"];
         Serial.printf("Device ID: %d\n", identifier);
 
         if (client_ptr->unsubscribe(topic_login_response))
@@ -113,13 +113,15 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
         }
 
         // Check identifier
-        if (identifier == (int) doc["id"])
+        if (identifier == (int) doc["ID"])
         {
             // Set ATIME and ASTEP values
             uint8_t atime = (uint8_t) doc["ATIME"];
             uint16_t astep = (uint16_t) doc["ASTEP"];
-            unsigned int agc = (unsigned int) doc["AGC"];
             as7341_read_band_mode readMode = static_cast<as7341_read_band_mode>(doc["MODE"]);
+            lz7_color color = static_cast<lz7_color>(doc["CLR"]);
+            uint16_t wakeTime = (uint16_t) doc["WKE"]; 
+            uint16_t sleepTime = (uint16_t) doc["SLP"]; 
 
             Serial.print("ATIME set to ");
             if (atime != 0)
@@ -143,17 +145,6 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                 sensor_ptr->setASTEP(DEFAULT_ASTEP);
                 Serial.printf("default value: %d\n", DEFAULT_ASTEP);
             }
-            Serial.print("AGC_FREQUENCY set to ");
-            if (agc != 0)
-            {
-                sensor_ptr->setAgcFrequency(agc);
-                Serial.printf("custom value: %d\n", agc);
-            }
-            else
-            {
-                sensor_ptr->setAgcFrequency(DEFAULT_AGC_FREQUENCY);
-                Serial.printf("default value: %d\n", DEFAULT_AGC_FREQUENCY);
-            }
             Serial.print("READ_BAND_MODE set to ");
             if (readMode == AS7341_READ_LOW_CHANNELS || readMode == AS7341_READ_HIGH_CHANNELS)
             {
@@ -165,7 +156,44 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                 sensor_ptr->setReadBandMode(DEFAULT_READ_BAND_MODE);
                 Serial.printf("default value: %d\n", DEFAULT_READ_BAND_MODE);
             }
-            
+            Serial.print("COLOR set to ");
+            if (color == LZ7_COLOR_GREEN)
+            {
+                led_ptr->setColor(color);
+                Serial.printf("custom value: %d\n", color);
+            }
+            else
+            {
+                led_ptr->setColor(DEFAULT_LZ7_COLOR);
+                Serial.printf("default value: %d\n", DEFAULT_LZ7_COLOR);
+            }
+            Serial.print("WAKETIME set to ");
+            if (wakeTime != 0)
+            {
+                led_ptr->setWakeTime(wakeTime);
+                Serial.printf("custom value: %d seconds\n", wakeTime);
+            }
+            else
+            {
+                led_ptr->setWakeTime(DEFAULT_WAKE_TIME);
+                Serial.printf("default value: %d seconds\n", DEFAULT_WAKE_TIME);
+            }
+            Serial.print("SLEEPTIME set to ");
+            if (sleepTime != 0)
+            {
+                led_ptr->setSleepTime(sleepTime);
+                Serial.printf("custom value: %d seconds\n", sleepTime);
+            }
+            else
+            {
+                led_ptr->setSleepTime(DEFAULT_SLEEP_TIME);
+                Serial.printf("default value: %d seconds\n", DEFAULT_SLEEP_TIME);
+            }
+
+            led_ptr->turnOnLight(LED_CH_RED);
+            delay(10);
+            sensor_ptr->automaticGainControl();
+
             // Unsub from experimentStart topic
             if (client_ptr->unsubscribe(topic_experiment_start))
             {
@@ -219,7 +247,7 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
         }
 
         // Check identifier
-        if (identifier == (int) doc["id"])
+        if (identifier == (int) doc["ID"])
         {
             // Unsub from experimentStop topic
             if (client_ptr->unsubscribe(topic_experiment_stop))
@@ -230,6 +258,8 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
             {
                 Serial.println("Failed to unsubscribe from experimentStop topic.");
             }
+
+            led_ptr->turnOffLight(LED_CH_RED);
 
             // Sub to experimentStart topic
             if (client_ptr->subscribe(topic_experiment_start))
@@ -271,9 +301,9 @@ void Smartclamp_Communication::callbackAGCToggle(byte* payload, unsigned int len
         }
 
         // Check identifier
-        if (identifier == (int) doc["id"])
+        if (identifier == (int) doc["ID"])
         {
-            sensor_ptr->automaticGainContol();
+            sensor_ptr->automaticGainControl();
         }
         Serial.println("Performed Automatic Gain Calibration (AGC)!");
     }
@@ -452,11 +482,18 @@ bool Smartclamp_Communication::setClientPtr(PubSubClient* client_ptr)
     return client_ptr != NULL;
 }
 
-bool Smartclamp_Communication::setSensorPtr(Smartclamp_AS7341* sesnsor_ptr)
+bool Smartclamp_Communication::setSensorPtr(Smartclamp_AS7341* sensor_ptr)
 {
-    this->sensor_ptr = sesnsor_ptr;
+    this->sensor_ptr = sensor_ptr;
 
     return sensor_ptr != NULL;
+}
+
+bool Smartclamp_Communication::setLEDPtr(Smartclamp_LED* led_ptr)
+{
+    this->led_ptr = led_ptr;
+
+    return led_ptr != NULL;
 }
 
 // Getters

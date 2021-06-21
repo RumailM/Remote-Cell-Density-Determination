@@ -1,36 +1,93 @@
-#include <SMARTCLAMP_LED.h>
+/*!
+ *  @file Smartclamp_LED.cpp
+ *
+ *  This file contains all functions related to LED Control
+ *
+ *  Developed by Ahmad Nasralla (an2485@nyu.edu) 
+ * 
+ */
 
-const double LED_FREQ = 5000; // PWM Frequency
-const uint8_t LED_RES = 8;    // 8-bit ADC Resolution
-const uint8_t LED_PIN_RED = 4;    // PWM Pin Red
-const uint8_t LED_PIN_GREEN = 25;    // PWM Pin Green
-const uint8_t LED_CH_RED = 0;     // PWM Channel Red
-const uint8_t LED_CH_GREEN = 1;     // PWM Channel Green
+#include <Smartclamp_LED.h>
 
-uint8_t dutyCycle = 255; // 8-bit Duty Cycle
+/**
+ * @brief Construct a new Smartclamp_LED::Smartclamp_LED object
+ * 
+ */
+Smartclamp_LED::Smartclamp_LED(){};
 
-bool setupLED()
+/**
+ * @brief Destroy the Smartclamp_LED::Smartclamp_LED object
+ * 
+ */
+Smartclamp_LED::~Smartclamp_LED(){};
+
+/**
+ * @brief Setup the ESP32 LEDC PWM Outputs and Channels
+ * 
+ */
+bool Smartclamp_LED::setupLED()
 {
     ledcSetup(LED_CH_RED, LED_FREQ, LED_RES);
     ledcAttachPin(LED_PIN_RED, LED_CH_RED);
     ledcSetup(LED_CH_GREEN, LED_FREQ, LED_RES);
     ledcAttachPin(LED_PIN_GREEN, LED_CH_GREEN);
+    isAwake = false;
 
-    return (true);
+    return true;
 }
 
-void turnOnLight(uint8_t channel)
+/**
+ * @brief Sets the PWM Output of channel to its maximum value
+ *
+ * @param channel PWM Channel to be controlled
+ * 
+ */
+void Smartclamp_LED::turnOnLight(uint8_t channel)
 {
     setLightIntensity(channel, 255);
 }
 
-void turnOffLight(uint8_t channel)
+/**
+ * @brief Sets the PWM Output of channel to zero
+ *
+ * @param channel PWM Channel to be controlled
+ * 
+ */
+void Smartclamp_LED::turnOffLight(uint8_t channel)
 {
     setLightIntensity(channel, 0);
 }
 
-void setLightIntensity(uint8_t channel, uint8_t intensity)
+/**
+ * @brief Sets the PWM Output of channel to intensity
+ *
+ * @param channel PWM Channel to be controlled
+ * @param intensity 8-bit intensity scale (duty cycle) of PWM Output
+ * 
+ */
+void Smartclamp_LED::setLightIntensity(uint8_t channel, uint8_t intensity)
 {
     dutyCycle = intensity;
     ledcWrite(channel, dutyCycle);
 }
+
+// Setters
+void Smartclamp_LED::setColor(lz7_color color)
+{
+    this->color = color;
+}
+
+void Smartclamp_LED::setWakeTime(uint16_t wakeTime)
+{
+    this->wakeTime = wakeTime;
+}
+
+void Smartclamp_LED::setSleepTime(uint16_t sleepTime)
+{
+    this->sleepTime = sleepTime;
+}
+
+// Getters
+lz7_color Smartclamp_LED::getColor(){return color;}
+uint16_t Smartclamp_LED::getWakeTime(){return wakeTime;}
+uint16_t Smartclamp_LED::getSleepTime(){return sleepTime;}

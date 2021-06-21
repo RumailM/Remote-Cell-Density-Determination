@@ -119,9 +119,7 @@ def handle_data(client, userdata, message):
     date = clamp_list[int(payload_dict["ID"])].experiment_start_time
     
     file_name = (clamp_list[int(payload_dict["ID"])].experiment_name + "_" +
-                clamp_list[int(payload_dict["ID"])].experiment_agc_freq + "_" +
                 clamp_list[int(payload_dict["ID"])].experiment_mode + "_" +
-                clamp_list[int(payload_dict["ID"])].mac_addr + "_" +
                 date + ".txt")
 
     file_descriptor = open(file_name,"a")

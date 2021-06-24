@@ -25,6 +25,47 @@ Smartclamp_Communication::Smartclamp_Communication(){}
 Smartclamp_Communication::~Smartclamp_Communication(){}
 
 /**
+ * @brief Calls deserializeJson on doc and handles potential deserialization errors
+ *
+ * @param &doc Pointer to StaticJsonDocument of size 256 bytes 
+ * @param payload Pointer to a byte array of the message
+ * @param length Length of the message payload
+ */
+bool Smartclamp_Communication::deserializeJsonHandleError(JsonDocument& doc, byte* payload, unsigned int length)
+{
+    DeserializationError err = deserializeJson(doc, payload, length);
+
+    if (err)
+    {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(err.f_str());
+
+        switch (err.code())
+        {
+            case DeserializationError::EmptyInput:
+                Serial.print(F("Resetting handshake and identification flags..."));
+                flag_handshake = false;
+                flag_identification = false;
+                flag_start = false;
+                break;
+            case DeserializationError::Ok:
+                Serial.print(F("Deserialization succeeded"));
+                break;
+            case DeserializationError::InvalidInput:
+                Serial.print(F("Invalid input!"));
+                break;
+            case DeserializationError::NoMemory:
+                Serial.print(F("Not enough memory"));
+                break;
+            default:
+                Serial.print(F("Default error"));
+                break;
+        }
+    }
+    return err;
+}
+
+/**
  * @brief Callback function executed when a message is received on loginResponse topic
  *        Assigns device identifier and subscribes to experimentStart topic
  *
@@ -37,54 +78,48 @@ void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int
     Serial.println("Login Response received.");
     
     StaticJsonDocument<256> doc;
-    DeserializationError err = deserializeJson(doc, payload, length);
-
-    if (err)
+    if (!deserializeJsonHandleError(doc, payload, length))
     {
-        Serial.print(F("deserializeJson() failed: "));
-        Serial.println(err.f_str());
-        return;
-    }
-    
-    const char* mac = doc["MAC"];
+        const char* mac = doc["MAC"];
 
-    if (strcmp(WiFi.macAddress().c_str(), mac) == 0)
-    {
-        // Assign unique identifier and unsub from loginResponse topic
-        identifier = doc["ID"];
-        Serial.printf("Device ID: %d\n", identifier);
+        if (strcmp(WiFi.macAddress().c_str(), mac) == 0)
+        {
+            // Assign unique identifier and unsub from loginResponse topic
+            identifier = doc["ID"];
+            Serial.printf("Device ID: %d\n", identifier);
 
-        if (client_ptr->unsubscribe(topic_login_response))
-        {
-            Serial.println("Unsubscribed from loginResponse topic!");
-        }
-        else
-        {
-            Serial.println("Failed to unsubscribe from loginResponse topic.");
-        }
+            if (client_ptr->unsubscribe(topic_login_response))
+            {
+                Serial.println("Unsubscribed from loginResponse topic!");
+            }
+            else
+            {
+                Serial.println("Failed to unsubscribe from loginResponse topic.");
+            }
 
-        // Sub to experimentToggle topic
-        if (client_ptr->subscribe(topic_experiment_start))
-        {
-            Serial.println("Subscribed to experimentStart topic!");
-        }
-        else
-        {
-            Serial.println("Failed to subscribe to experimentStart topic.");
-        }
+            // Sub to experimentToggle topic
+            if (client_ptr->subscribe(topic_experiment_start))
+            {
+                Serial.println("Subscribed to experimentStart topic!");
+            }
+            else
+            {
+                Serial.println("Failed to subscribe to experimentStart topic.");
+            }
 
-        // Sub to AGCToggle topic
-        if (client_ptr->subscribe(topic_AGC_toggle))
-        {
-            Serial.println("Subscribed to AGCToggle topic!");
-        }
-        else
-        {
-            Serial.println("Failed to subscribe to AGCToggle topic.");
-        }
+            // Sub to AGCToggle topic
+            if (client_ptr->subscribe(topic_AGC_toggle))
+            {
+                Serial.println("Subscribed to AGCToggle topic!");
+            }
+            else
+            {
+                Serial.println("Failed to subscribe to AGCToggle topic.");
+            }
 
-        // Raise identification flag
-        flag_identification = true;
+            // Raise identification flag
+            flag_identification = true;
+        }
     }
 }
 
@@ -103,123 +138,117 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
     if (flag_identification)
     {
         StaticJsonDocument<256> doc;
-        DeserializationError err = deserializeJson(doc, payload, length);
-
-        if (err)
+        if (!deserializeJsonHandleError(doc, payload, length))
         {
-            Serial.print(F("deserializeJson() failed: "));
-            Serial.println(err.f_str());
-            return;
+            // Check identifier
+            if (identifier == (int) doc["ID"])
+            {
+                // Set ATIME and ASTEP values
+                uint8_t atime = (uint8_t) doc["ATIME"];
+                uint16_t astep = (uint16_t) doc["ASTEP"];
+                as7341_read_band_mode readMode = static_cast<as7341_read_band_mode>(doc["MODE"]);
+                lz7_color color = static_cast<lz7_color>(doc["CLR"]);
+                uint16_t wakeTime = (uint16_t) doc["WKE"]; 
+                uint16_t sleepTime = (uint16_t) doc["SLP"]; 
+
+                Serial.print("ATIME set to ");
+                if (atime != 0)
+                {
+                    sensor_ptr->setATIME(atime);
+                    Serial.printf("custom value: %d\n", atime);
+                }
+                else
+                {
+                    sensor_ptr->setATIME(DEFAULT_ATIME);
+                    Serial.printf("default value: %d\n", DEFAULT_ATIME);
+                }
+                Serial.print("ASTEP set to ");
+                if (astep != 0)
+                {
+                    sensor_ptr->setASTEP(astep);
+                    Serial.printf("custom value: %d\n", astep);
+                }
+                else
+                {
+                    sensor_ptr->setASTEP(DEFAULT_ASTEP);
+                    Serial.printf("default value: %d\n", DEFAULT_ASTEP);
+                }
+                Serial.print("READ_BAND_MODE set to ");
+                if (readMode == AS7341_READ_LOW_CHANNELS || readMode == AS7341_READ_HIGH_CHANNELS)
+                {
+                    sensor_ptr->setReadBandMode(readMode);
+                    Serial.printf("custom value: %d\n", readMode);
+                }
+                else
+                {
+                    sensor_ptr->setReadBandMode(DEFAULT_READ_BAND_MODE);
+                    Serial.printf("default value: %d\n", DEFAULT_READ_BAND_MODE);
+                }
+                Serial.print("COLOR set to ");
+                if (color == LZ7_COLOR_GREEN)
+                {
+                    led_ptr->setColor(color);
+                    Serial.printf("custom value: %d\n", color);
+                }
+                else
+                {
+                    led_ptr->setColor(DEFAULT_LZ7_COLOR);
+                    Serial.printf("default value: %d\n", DEFAULT_LZ7_COLOR);
+                }
+                Serial.print("WAKETIME set to ");
+                if (wakeTime != 0)
+                {
+                    led_ptr->setWakeTime(wakeTime);
+                    Serial.printf("custom value: %d seconds\n", wakeTime);
+                }
+                else
+                {
+                    led_ptr->setWakeTime(DEFAULT_WAKE_TIME);
+                    Serial.printf("default value: %d seconds\n", DEFAULT_WAKE_TIME);
+                }
+                Serial.print("SLEEPTIME set to ");
+                if (sleepTime != 0)
+                {
+                    led_ptr->setSleepTime(sleepTime);
+                    Serial.printf("custom value: %d seconds\n", sleepTime);
+                }
+                else
+                {
+                    led_ptr->setSleepTime(DEFAULT_SLEEP_TIME);
+                    Serial.printf("default value: %d seconds\n", DEFAULT_SLEEP_TIME);
+                }
+
+                led_ptr->turnOnLight(LED_CH_RED);
+                delay(200);
+                sensor_ptr->automaticGainControl();
+                led_ptr->slp_millis = millis();
+
+                // Unsub from experimentStart topic
+                if (client_ptr->unsubscribe(topic_experiment_start))
+                {
+                    Serial.println("Unsubscribed from experimentStart topic!");
+                }
+                else
+                {
+                    Serial.println("Failed to unsubscribe from experimentStart topic.");
+                }
+
+                // Sub to experimentStop topic
+                if (client_ptr->subscribe(topic_experiment_stop))
+                {
+                    Serial.println("Subscribed to experimentStop topic!");
+                }
+                else
+                {
+                    Serial.println("Failed to subscribe to experimentStop topic.");
+                }
+
+                // Raise flag_start
+                flag_start = true;
+            }
+
+            Serial.println("Experiment successfully started!");
         }
-
-        // Check identifier
-        if (identifier == (int) doc["ID"])
-        {
-            // Set ATIME and ASTEP values
-            uint8_t atime = (uint8_t) doc["ATIME"];
-            uint16_t astep = (uint16_t) doc["ASTEP"];
-            as7341_read_band_mode readMode = static_cast<as7341_read_band_mode>(doc["MODE"]);
-            lz7_color color = static_cast<lz7_color>(doc["CLR"]);
-            uint16_t wakeTime = (uint16_t) doc["WKE"]; 
-            uint16_t sleepTime = (uint16_t) doc["SLP"]; 
-
-            Serial.print("ATIME set to ");
-            if (atime != 0)
-            {
-                sensor_ptr->setATIME(atime);
-                Serial.printf("custom value: %d\n", atime);
-            }
-            else
-            {
-                sensor_ptr->setATIME(DEFAULT_ATIME);
-                Serial.printf("default value: %d\n", DEFAULT_ATIME);
-            }
-            Serial.print("ASTEP set to ");
-            if (astep != 0)
-            {
-                sensor_ptr->setASTEP(astep);
-                Serial.printf("custom value: %d\n", astep);
-            }
-            else
-            {
-                sensor_ptr->setASTEP(DEFAULT_ASTEP);
-                Serial.printf("default value: %d\n", DEFAULT_ASTEP);
-            }
-            Serial.print("READ_BAND_MODE set to ");
-            if (readMode == AS7341_READ_LOW_CHANNELS || readMode == AS7341_READ_HIGH_CHANNELS)
-            {
-                sensor_ptr->setReadBandMode(readMode);
-                Serial.printf("custom value: %d\n", readMode);
-            }
-            else
-            {
-                sensor_ptr->setReadBandMode(DEFAULT_READ_BAND_MODE);
-                Serial.printf("default value: %d\n", DEFAULT_READ_BAND_MODE);
-            }
-            Serial.print("COLOR set to ");
-            if (color == LZ7_COLOR_GREEN)
-            {
-                led_ptr->setColor(color);
-                Serial.printf("custom value: %d\n", color);
-            }
-            else
-            {
-                led_ptr->setColor(DEFAULT_LZ7_COLOR);
-                Serial.printf("default value: %d\n", DEFAULT_LZ7_COLOR);
-            }
-            Serial.print("WAKETIME set to ");
-            if (wakeTime != 0)
-            {
-                led_ptr->setWakeTime(wakeTime);
-                Serial.printf("custom value: %d seconds\n", wakeTime);
-            }
-            else
-            {
-                led_ptr->setWakeTime(DEFAULT_WAKE_TIME);
-                Serial.printf("default value: %d seconds\n", DEFAULT_WAKE_TIME);
-            }
-            Serial.print("SLEEPTIME set to ");
-            if (sleepTime != 0)
-            {
-                led_ptr->setSleepTime(sleepTime);
-                Serial.printf("custom value: %d seconds\n", sleepTime);
-            }
-            else
-            {
-                led_ptr->setSleepTime(DEFAULT_SLEEP_TIME);
-                Serial.printf("default value: %d seconds\n", DEFAULT_SLEEP_TIME);
-            }
-
-            led_ptr->turnOnLight(LED_CH_RED);
-            delay(10);
-            sensor_ptr->automaticGainControl();
-            led_ptr->slp_millis = millis();
-
-            // Unsub from experimentStart topic
-            if (client_ptr->unsubscribe(topic_experiment_start))
-            {
-                Serial.println("Unsubscribed from experimentStart topic!");
-            }
-            else
-            {
-                Serial.println("Failed to unsubscribe from experimentStart topic.");
-            }
-
-            // Sub to experimentStop topic
-            if (client_ptr->subscribe(topic_experiment_stop))
-            {
-                Serial.println("Subscribed to experimentStop topic!");
-            }
-            else
-            {
-                Serial.println("Failed to subscribe to experimentStop topic.");
-            }
-
-            // Raise flag_start
-            flag_start = true;
-        }
-
-        Serial.println("Experiment successfully started!");
     }
 }
 
@@ -238,45 +267,40 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
     if (flag_start)
     {
         StaticJsonDocument<256> doc;
-        DeserializationError err = deserializeJson(doc, payload, length);
-
-        if (err)
+        if (!deserializeJsonHandleError(doc, payload, length))
         {
-            Serial.print(F("deserializeJson() failed: "));
-            Serial.println(err.f_str());
-            return;
+            // Check identifier
+            if (identifier == (int) doc["ID"])
+            {
+                // Unsub from experimentStop topic
+                if (client_ptr->unsubscribe(topic_experiment_stop))
+                {
+                    Serial.println("Unsubscribed from experimentStop topic!");
+                }
+                else
+                {
+                    Serial.println("Failed to unsubscribe from experimentStop topic.");
+                }
+
+                led_ptr->turnOffLight(LED_CH_RED);
+                led_ptr->isAwake = true;
+
+                // Sub to experimentStart topic
+                if (client_ptr->subscribe(topic_experiment_start))
+                {
+                    Serial.println("Subscribed to experimentStart topic!");
+                }
+                else
+                {
+                    Serial.println("Failed to subscribe to experimentStart topic.");
+                }
+
+                // Lower flag_start
+                flag_start = false;
+            }
+
+            Serial.println("Experiment successfully stopped!");
         }
-
-        // Check identifier
-        if (identifier == (int) doc["ID"])
-        {
-            // Unsub from experimentStop topic
-            if (client_ptr->unsubscribe(topic_experiment_stop))
-            {
-                Serial.println("Unsubscribed from experimentStop topic!");
-            }
-            else
-            {
-                Serial.println("Failed to unsubscribe from experimentStop topic.");
-            }
-
-            led_ptr->turnOffLight(LED_CH_RED);
-
-            // Sub to experimentStart topic
-            if (client_ptr->subscribe(topic_experiment_start))
-            {
-                Serial.println("Subscribed to experimentStart topic!");
-            }
-            else
-            {
-                Serial.println("Failed to subscribe to experimentStart topic.");
-            }
-
-            // Lower flag_start
-            flag_start = false;
-        }
-
-        Serial.println("Experiment successfully stopped!");
     }
 }
 
@@ -287,26 +311,20 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
  * @param payload Pointer to a byte array of the message
  * @param length Length of the message payload
  */
-void Smartclamp_Communication::callbackAGCToggle(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr)
+void Smartclamp_Communication::callbackAGCToggle(byte* payload, unsigned int length)
 {
     if (flag_identification)
     {
         StaticJsonDocument<256> doc;
-        DeserializationError err = deserializeJson(doc, payload, length);
-
-        if (err)
+        if (!deserializeJsonHandleError(doc, payload, length))
         {
-            Serial.print(F("deserializeJson() failed: "));
-            Serial.println(err.f_str());
-            return;
+            // Check identifier
+            if (identifier == (int) doc["ID"])
+            {
+                sensor_ptr->automaticGainControl();
+            }
+            Serial.println("Performed Automatic Gain Calibration (AGC)!");
         }
-
-        // Check identifier
-        if (identifier == (int) doc["ID"])
-        {
-            sensor_ptr->automaticGainControl();
-        }
-        Serial.println("Performed Automatic Gain Calibration (AGC)!");
     }
 }
 
@@ -321,14 +339,7 @@ void Smartclamp_Communication::callbackAGCToggle(byte* payload, unsigned int len
 void Smartclamp_Communication::callbackDefault(char* topic, byte* payload, unsigned int length)
 {
     StaticJsonDocument<256> doc;
-    DeserializationError err = deserializeJson(doc, payload, length);
-
-    if (err)
-    {
-        Serial.print(F("deserializeJson() failed: "));
-        Serial.println(err.f_str());
-        return;
-    }
+    deserializeJsonHandleError(doc, payload, length);
 
     Serial.println("WARNING: Message arrived on unexpected topic");
     Serial.println(topic);
@@ -364,7 +375,7 @@ void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned 
     }
     else if (strcmp(topic, topic_AGC_toggle) == 0)
     {
-        callbackAGCToggle(payload, length, sensor_ptr);
+        callbackAGCToggle(payload, length);
     }
     else
     {

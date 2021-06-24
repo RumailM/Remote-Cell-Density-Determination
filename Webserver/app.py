@@ -187,6 +187,7 @@ if __name__ == "__main__":
     mqtt.publish("lab/data", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/AGCToggle", payload=None, qos=qos, retain=True)
 
     # Subscribing to relevant MQTT Topics
     mqtt.subscribe("lab/control/login", qos)

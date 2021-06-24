@@ -53,11 +53,13 @@ public:
     Smartclamp_Communication();
     ~Smartclamp_Communication();
 
+    bool deserializeJsonHandleError(JsonDocument& doc, byte* payload, unsigned int length);
+
     ///////////////////   CALLBACKS    ///////////////
     void callbackLoginResponse(byte* payload, unsigned int length);
     void callbackExperimentStart(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr);
     void callbackExperimentStop(byte* payload, unsigned int length);
-    void callbackAGCToggle(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr);
+    void callbackAGCToggle(byte* payload, unsigned int length);
     void callbackDefault(char* topic, byte* payload, unsigned int length);
     void callback(char* topic, uint8_t* payload, unsigned int length);
 

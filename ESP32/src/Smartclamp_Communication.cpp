@@ -43,22 +43,23 @@ bool Smartclamp_Communication::deserializeJsonHandleError(JsonDocument& doc, byt
         switch (err.code())
         {
             case DeserializationError::EmptyInput:
-                Serial.print(F("Resetting handshake and identification flags..."));
+                Serial.println(F("Resetting handshake and identification flags..."));
                 flag_handshake = false;
                 flag_identification = false;
                 flag_start = false;
+                led_ptr->setupLED();
                 break;
             case DeserializationError::Ok:
-                Serial.print(F("Deserialization succeeded"));
+                Serial.println(F("Deserialization succeeded"));
                 break;
             case DeserializationError::InvalidInput:
-                Serial.print(F("Invalid input!"));
+                Serial.println(F("Invalid input!"));
                 break;
             case DeserializationError::NoMemory:
-                Serial.print(F("Not enough memory"));
+                Serial.println(F("Not enough memory"));
                 break;
             default:
-                Serial.print(F("Default error"));
+                Serial.println(F("Default error"));
                 break;
         }
     }

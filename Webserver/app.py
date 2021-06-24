@@ -115,24 +115,25 @@ def handle_data(client, userdata, message):
     print("Received message on topic {}: {}"
         .format(message.topic, message.payload.decode()))
 
-    payload_dict = json.loads(message.payload.decode())
-    date = clamp_list[int(payload_dict["ID"])].experiment_start_time
-    
-    file_name = (clamp_list[int(payload_dict["ID"])].experiment_name + "_" +
-                clamp_list[int(payload_dict["ID"])].experiment_mode + "_" +
-                date + ".txt")
+    if clamp_list:
+        payload_dict = json.loads(message.payload.decode())
+        date = clamp_list[int(payload_dict["ID"])].experiment_start_time
+        
+        file_name = (clamp_list[int(payload_dict["ID"])].experiment_name + "_" +
+                    clamp_list[int(payload_dict["ID"])].experiment_mode + "_" +
+                    date + ".txt")
 
-    file_descriptor = open(file_name,"a")
-    file_descriptor.write(message.payload.decode())
-    file_descriptor.write("\n")
-    file_descriptor.close()
+        file_descriptor = open(file_name,"a")
+        file_descriptor.write(message.payload.decode())
+        file_descriptor.write("\n")
+        file_descriptor.close()
 
-    data = dict(
-        topic=message.topic,
-        payload=message.payload.decode(),
-        qos=message.qos,
-    )
-    socketio.emit("mqtt_message", data=data)
+        data = dict(
+            topic=message.topic,
+            payload=message.payload.decode(),
+            qos=message.qos,
+        )
+        socketio.emit("mqtt_message", data=data)
 
 @mqtt.on_topic("lab/control/login")
 def handle_login(client, userdata, message):
@@ -163,21 +164,21 @@ def handle_experimentStart(client, userdata, message):
     print("Received message on topic {}: {}"
           .format(message.topic, message.payload.decode()))
 
-    received_payload = message.payload.decode()
-
-    received_payload = json.loads(received_payload)
-    now = datetime.now()
-    date = now.strftime("%d_%m_%Y_%H_%M_%S")
-    clamp_list[int(received_payload["ID"])].experiment_start_time = date
-    device_mac = clamp_list[int(received_payload["ID"])].mac_addr
-    clamp_list[int(received_payload["ID"])].experiment_mode = str(received_payload["MODE"])
-    clamp_list[int(received_payload["ID"])].experiment_name = str(received_payload["experimentName"])
-    experiment_name = clamp_list[int(received_payload["ID"])].experiment_name
-    new_file = open(
-                clamp_list[int(received_payload["ID"])].experiment_name + "_" +
-                clamp_list[int(received_payload["ID"])].experiment_mode + "_" +
-                date + ".txt","x")
-    new_file.close()
+    if clamp_list:
+        received_payload = message.payload.decode()
+        received_payload = json.loads(received_payload)
+        now = datetime.now()
+        date = now.strftime("%d_%m_%Y_%H_%M_%S")
+        clamp_list[int(received_payload["ID"])].experiment_start_time = date
+        device_mac = clamp_list[int(received_payload["ID"])].mac_addr
+        clamp_list[int(received_payload["ID"])].experiment_mode = str(received_payload["MODE"])
+        clamp_list[int(received_payload["ID"])].experiment_name = str(received_payload["experimentName"])
+        experiment_name = clamp_list[int(received_payload["ID"])].experiment_name
+        new_file = open(
+                    clamp_list[int(received_payload["ID"])].experiment_name + "_" +
+                    clamp_list[int(received_payload["ID"])].experiment_mode + "_" +
+                    date + ".txt","x")
+        new_file.close()
 
 if __name__ == "__main__":
     # Clearing Retained Messages

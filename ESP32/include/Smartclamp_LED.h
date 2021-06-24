@@ -55,6 +55,7 @@ public:
     void setColor(lz7_color color);
     void setWakeTime(uint16_t wakeTime);
     void setSleepTime(uint16_t sleepTime);
+    uint8_t getChannelFromColor(lz7_color clr);
     lz7_color getColor();
     uint16_t getWakeTime();
     uint16_t getSleepTime();

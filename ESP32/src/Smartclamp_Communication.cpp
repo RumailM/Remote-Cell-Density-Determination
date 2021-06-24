@@ -219,7 +219,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                     Serial.printf("default value: %d seconds\n", DEFAULT_SLEEP_TIME);
                 }
 
-                led_ptr->turnOnLight(LED_CH_RED);
+                led_ptr->turnOnLight(led_ptr->getChannelFromColor(led_ptr->getColor()));
                 delay(200);
                 sensor_ptr->automaticGainControl();
                 led_ptr->slp_millis = millis();
@@ -283,7 +283,7 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
                     Serial.println("Failed to unsubscribe from experimentStop topic.");
                 }
 
-                led_ptr->turnOffLight(LED_CH_RED);
+                led_ptr->turnOffLight(led_ptr->getChannelFromColor(led_ptr->getColor()));
                 led_ptr->isAwake = true;
 
                 // Sub to experimentStart topic

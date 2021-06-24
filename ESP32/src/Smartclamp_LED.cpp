@@ -90,6 +90,19 @@ void Smartclamp_LED::setSleepTime(uint16_t sleepTime)
     this->sleepTime = sleepTime;
 }
 
+uint8_t Smartclamp_LED::getChannelFromColor(lz7_color clr)
+{
+    switch(clr)
+    {
+        case LZ7_COLOR_RED:
+            return LED_CH_RED;
+        case LZ7_COLOR_GREEN:
+            return LED_CH_GREEN;
+        default:
+            return DEFAULT_LZ7_COLOR;
+    }
+}
+
 // Getters
 lz7_color Smartclamp_LED::getColor(){return color;}
 uint16_t Smartclamp_LED::getWakeTime(){return wakeTime;}

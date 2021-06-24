@@ -75,7 +75,7 @@ void loop(void)
             if (current_millis - lz7.slp_millis > lz7.wakeTime * 1000)
             {
                 lz7.isAwake = false;
-                lz7.turnOffLight(LED_CH_RED);
+                lz7.turnOffLight(lz7.getChannelFromColor(lz7.getColor()));
                 lz7.slp_millis = current_millis;
             }
             else
@@ -172,7 +172,7 @@ void loop(void)
             if (current_millis - lz7.slp_millis > lz7.sleepTime * 1000)
             {
                 lz7.isAwake = true;
-                lz7.turnOnLight(LED_CH_RED);
+                lz7.turnOnLight(lz7.getChannelFromColor(lz7.getColor()));
                 lz7.slp_millis = current_millis;
             }
             else

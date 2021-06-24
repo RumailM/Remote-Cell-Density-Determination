@@ -3,6 +3,7 @@
 // Sampling
 #include <stdint.h>
 #include <stdio.h>
+#include <vector>
 
 #include <Smartclamp_LED.h>
 #include <Smartclamp_Serial.h>
@@ -24,7 +25,7 @@ WiFiClient wifiClient;
 PubSubClient client(MQTT.getMqttServer(), 1883, wifiClient);
 
 // Variables
-unsigned long handshake_millis, wke_millis, slp_millis, current_millis;
+unsigned long handshake_millis, current_millis;
 
 ///////////////////   SETUP    ///////////////
 
@@ -69,90 +70,115 @@ void loop(void)
     }
     else if (MQTT.getFlagIdentification() && MQTT.getFlagStart())
     {
-        uint16_t readings[12];
-
-        switch(as7341.getReadBandMode())
+        if (lz7.isAwake)
         {
-            case AS7341_READ_ALL_CHANNELS:
-                if (!as7341.readAllChannels(readings))
-                {
-                    if (serialDebug){
-                        Serial.println("ERROR: Couldn't read all channels!");
-                    }
-                    return;
-                }
-                break;
-            case AS7341_READ_LOW_CHANNELS:
-                if (!as7341.readLowChannels(readings))
-                {
-                    if (serialDebug){
-                        Serial.println("ERROR: Couldn't read low channels!");
-                    }
-                    return;
-                }
-                break;
-            case AS7341_READ_HIGH_CHANNELS:
-                if (!as7341.readHighChannels(readings))
-                {
-                    if (serialDebug){
-                        Serial.println("ERROR: Couldn't read high channels!");
-                    }
-                    return;
-                }
-                break;
-        }
+            if (current_millis - lz7.slp_millis > lz7.wakeTime * 1000)
+            {
+                lz7.isAwake = false;
+                lz7.turnOffLight(LED_CH_RED);
+                lz7.slp_millis = current_millis;
+            }
+            else
+            {
+                uint16_t readings[12];
 
-        current_millis = millis();
-        as7341.updateSensorInfo();
-
-        StaticJsonDocument<256> doc;
-        doc["ID"] = MQTT.getIdentifier();
-        doc["TIME"] = current_millis;
-        doc["GAIN"] = as7341.as7341Info.gain;
-        doc["ATIME"] = as7341.as7341Info.atime;
-        doc["ASTEP"] = as7341.as7341Info.astep;
-
-        JsonArray data = doc.createNestedArray("DATA");
-
-        switch(as7341.getReadBandMode())
-        {
-            case AS7341_READ_ALL_CHANNELS:
-                for (int i = 0; i < 12; i++)
+                switch(as7341.getReadBandMode())
                 {
-                    // we skip the first set of duplicate clear/NIR readings
-                    // (indices 4 and 5)
-                    if (i == 4 || i == 5)
-                        continue;
-                    
-                    data.add(readings[i]);
+                    case AS7341_READ_ALL_CHANNELS:
+                        if (!as7341.readAllChannels(readings))
+                        {
+                            if (serialDebug){
+                                Serial.println("ERROR: Couldn't read all channels!");
+                            }
+                            return;
+                        }
+                        break;
+                    case AS7341_READ_LOW_CHANNELS:
+                        if (!as7341.readLowChannels(readings))
+                        {
+                            if (serialDebug){
+                                Serial.println("ERROR: Couldn't read low channels!");
+                            }
+                            return;
+                        }
+                        break;
+                    case AS7341_READ_HIGH_CHANNELS:
+                        if (!as7341.readHighChannels(readings))
+                        {
+                            if (serialDebug){
+                                Serial.println("ERROR: Couldn't read high channels!");
+                            }
+                            return;
+                        }
+                        break;
                 }
-                break;
-            case AS7341_READ_LOW_CHANNELS:
-                for (int i = 0; i < 6; i++)
-                {
-                    data.add(readings[i]);
-                }
-                break;
-            case AS7341_READ_HIGH_CHANNELS:
-                for (int i = 6; i < 12; i++)
-                {
-                    data.add(readings[i]);
-                }
-                break;
-        }
 
-        char buffer[256];
-        size_t n = serializeJson(doc, buffer); 
-        if (serialDebug){Serial.println(buffer);} 
-        
-        if (MQTT.publishData(buffer, n))
-        {
-            if (serialDebug){Serial.println("Data sent!");}
+                current_millis = millis();
+                as7341.updateSensorInfo();
+
+                StaticJsonDocument<256> doc;
+                doc["ID"] = MQTT.getIdentifier();
+                doc["TIME"] = current_millis;
+                doc["GAIN"] = as7341.as7341Info.gain;
+                doc["ATIME"] = as7341.as7341Info.atime;
+                doc["ASTEP"] = as7341.as7341Info.astep;
+
+                JsonArray data = doc.createNestedArray("DATA");
+
+                switch(as7341.getReadBandMode())
+                {
+                    case AS7341_READ_ALL_CHANNELS:
+                        for (int i = 0; i < 12; i++)
+                        {
+                            // we skip the first set of duplicate clear/NIR readings
+                            // (indices 4 and 5)
+                            if (i == 4 || i == 5)
+                                continue;
+                            
+                            data.add(readings[i]);
+                        }
+                        break;
+                    case AS7341_READ_LOW_CHANNELS:
+                        for (int i = 0; i < 6; i++)
+                        {
+                            data.add(readings[i]);
+                        }
+                        break;
+                    case AS7341_READ_HIGH_CHANNELS:
+                        for (int i = 6; i < 12; i++)
+                        {
+                            data.add(readings[i]);
+                        }
+                        break;
+                }
+
+                char buffer[256];
+                size_t n = serializeJson(doc, buffer); 
+                if (serialDebug){Serial.println(buffer);} 
+                
+                if (MQTT.publishData(buffer, n))
+                {
+                    if (serialDebug){Serial.println("Data sent!");}
+                }
+                else
+                {
+                    if (serialDebug){Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");}
+                    MQTT.connectMQTT();
+                }
+            }
         }
         else
         {
-            if (serialDebug){Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");}
-            MQTT.connectMQTT();
+            if (current_millis - lz7.slp_millis > lz7.sleepTime * 1000)
+            {
+                lz7.isAwake = true;
+                lz7.turnOnLight(LED_CH_RED);
+                lz7.slp_millis = current_millis;
+            }
+            else
+            {
+                // Do the communicating one batch
+            }
         }
     }
 }

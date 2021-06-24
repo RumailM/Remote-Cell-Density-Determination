@@ -193,6 +193,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
             led_ptr->turnOnLight(LED_CH_RED);
             delay(10);
             sensor_ptr->automaticGainControl();
+            led_ptr->slp_millis = millis();
 
             // Unsub from experimentStart topic
             if (client_ptr->unsubscribe(topic_experiment_start))

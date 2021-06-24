@@ -42,7 +42,7 @@ $(document).ready(function()
     $('#experiment_stop').click(function(event)
     {
         var message = $('#message_stop').val();
-        var data = '{"id": "' + message + '"}';
+        var data = '{"ID": "' + message + '"}';
         socket.emit('experimentStop', data=data);
     });
 

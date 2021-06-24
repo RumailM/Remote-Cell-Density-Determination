@@ -40,6 +40,7 @@ public:
     uint16_t wakeTime, sleepTime;
     uint8_t dutyCycle;
     bool isAwake;
+    unsigned long slp_millis;
 
     Smartclamp_LED();
     ~Smartclamp_LED();

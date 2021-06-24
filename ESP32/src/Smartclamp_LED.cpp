@@ -31,7 +31,10 @@ bool Smartclamp_LED::setupLED()
     ledcAttachPin(LED_PIN_RED, LED_CH_RED);
     ledcSetup(LED_CH_GREEN, LED_FREQ, LED_RES);
     ledcAttachPin(LED_PIN_GREEN, LED_CH_GREEN);
-    isAwake = false;
+
+    turnOffLight(LED_CH_RED);
+    
+    isAwake = true;
 
     return true;
 }

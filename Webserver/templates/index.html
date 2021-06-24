@@ -7,10 +7,15 @@
 
 {% block scripts %}
 {{ super() }}
+
+<!-- We load in these scripts for SocketIO and Google Charts -->
+<!-- Would be nice if could be stored locally to prevent reliance on an external Internet connection -->
+
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript" charset="utf-8">
 
+// Variables for Google Chart
 var data_table;
 var chart;
 var options;
@@ -19,6 +24,7 @@ $(document).ready(function()
 {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
 
+    // SocketIO Button click events -> Sends data to python script -> Python script publishes MQTT
     $('#publish').click(function(event)
     {
         var topic = $('#topic').val();
@@ -65,33 +71,31 @@ $(document).ready(function()
         $('#subscribe_topic').prop('readonly', false);
     });
 
+    // Triggers upon receiving an MQTT message
     socket.on('mqtt_message', function(data)
     {
+        // Prints the MQTT contents to the subscription text box
         var text = '(' + data['topic'] + ' qos: ' + data['qos'] + ') ' + data['payload'];
         var $textarea = $('#subscribe_messages');
         $textarea.val($textarea.val() + text + '\n');
 
+        // Plots data readings on the Google Chart
         if (!data["topic"].localeCompare("lab/data"))
         {
             var obj = JSON.parse(data["payload"]);
+            // This formula calculates basicCounts (value we care about) from sensor readings (raw data)
             var count = obj.readings[6]/(Math.pow(2, obj.gain-1)*0.00278*(obj.atime+1)*(obj.astep+1))
             data_table.addRow([data_table.getNumberOfRows()+1,Number(count)]);
             chart.draw(data_table , options);
         }
-
-        // out.x630nm = [out.x630nm row.readings(7)/(2^(row.gain-1) *0.00278*(row.atime+1)*(row.astep+1))];
-        // {"id":0,"timestamp":0,"gain":5,"atime":59,"astep":599,"readings":[7568,16379,54,0,0,0,5,31,218,38]}
-
-
-        //1)decode json object in data['payload']
-
-        //2) do something with decoded data, i.e. plot
     })
 });
 
+// Load in Google Charts
 google.charts.load('current', {'packages': ['corechart']});
 google.charts.setOnLoadCallback(drawChart);
 
+// Formatting of Google Chart
 function drawChart()
 {
     data_table = new google.visualization.DataTable();
@@ -128,7 +132,10 @@ function drawChart()
 {% endblock %}
 
 {% block content %}
+<!-- Google Chart div, disabled for now -->
 <!-- <div id="chart_div" style="width: 500px; height: 300px;"></div> -->
+
+<!-- Divs for remainder of webpage cellular elements -->
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
@@ -136,7 +143,7 @@ function drawChart()
     </div>
   </div>
 
-  
+    <!-- ExperiemntStart cell -->
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -147,6 +154,7 @@ function drawChart()
             <div class="row">
               <div class="form-horizontal">
                 
+                <!-- Form Inputs and Buttons -->
                 <div class="form-group">
                   <label class="control-label col-xs-4">ID: </label>
                   <div class="col-xs-8">
@@ -183,7 +191,7 @@ function drawChart()
     </div>
 
 
-
+    <!-- ExperimentStop cell -->
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -214,7 +222,7 @@ function drawChart()
     </div>
 
   
-
+    <!-- Subscription cell -->
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">

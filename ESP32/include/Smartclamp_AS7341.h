@@ -103,7 +103,7 @@ public:
     std::vector <unsigned long> times;
     std::vector <as7341_gain_t> gains;
     std::vector <uint8_t> atimes;
-    std::vector <uint8_t> asteps;
+    std::vector <uint16_t> asteps;
 
     Smartclamp_AS7341();
     ~Smartclamp_AS7341();

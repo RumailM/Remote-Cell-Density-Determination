@@ -35,6 +35,8 @@
 #include <FS.h>
 #include <Adafruit_AS7341.h>
 
+#include <vector>
+
 const float possibleGains[11] = {0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
 const as7341_gain_t AS7341_gain[11] = {AS7341_GAIN_0_5X, AS7341_GAIN_1X, AS7341_GAIN_2X,
                                        AS7341_GAIN_4X, AS7341_GAIN_8X, AS7341_GAIN_16X,
@@ -96,12 +98,19 @@ private:
 
 public:
     as7431_info_t as7341Info;
+    std::vector <uint16_t> readings;
+    uint16_t* readingsPointer;
+    std::vector <unsigned long> times;
+    std::vector <as7341_gain_t> gains;
+    std::vector <uint8_t> atimes;
+    std::vector <uint8_t> asteps;
 
     Smartclamp_AS7341();
     ~Smartclamp_AS7341();
 
     bool initializeSensor();
     void updateSensorInfo();
+    bool initializeReadings();
     bool readLowChannels(uint16_t *readings_buffer);
     bool readHighChannels(uint16_t *readings_buffer);
     bool printParameters(Stream &Serial);

@@ -68,6 +68,27 @@ void Smartclamp_AS7341::updateSensorInfo()
 }
 
 /**
+ * @brief Initializes empty samples vectors for data collection
+ * 
+ * @return true: success false: failure
+ */
+bool Smartclamp_AS7341::initializeReadings()
+{  
+    readings.clear();
+    readings.reserve(12 * 10 * 60); // max 12 readings per sample, max 10 samples per second, max 60 seconds
+    readingsPointer = readings.data();
+    
+    times.clear();
+    times.reserve(10 * 60); // max 10 samples per second, max 60 seconds
+    gains.clear();
+    gains.reserve(10 * 60); // max 10 samples per second, max 60 seconds
+    atimes.clear();
+    atimes.reserve(10 * 60); // max 10 samples per second, max 60 seconds
+    asteps.clear();
+    asteps.reserve(10 * 60); // max 10 samples per second, max 60 seconds
+}
+
+/**
  * @brief fills the provided buffer with the current measurements for Spectral
  * channels F1-4, Clear and NIR
  *

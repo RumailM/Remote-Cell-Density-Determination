@@ -3,7 +3,6 @@
 // Sampling
 #include <stdint.h>
 #include <stdio.h>
-#include <vector>
 
 #include <Smartclamp_LED.h>
 #include <Smartclamp_Serial.h>
@@ -77,15 +76,67 @@ void loop(void)
                 lz7.isAwake = false;
                 lz7.turnOffLight(lz7.getChannelFromColor(lz7.getColor()));
                 lz7.slp_millis = current_millis;
+
+                for (int j = 0; j < as7341.times.size(); ++j)
+                {
+                    StaticJsonDocument<256> doc;
+                    doc["ID"] = MQTT.getIdentifier();
+                    doc["TIME"] = as7341.times[j];
+                    doc["GAIN"] = as7341.gains[j];
+                    doc["ATIME"] = as7341.atimes[j];
+                    doc["ASTEP"] = as7341.asteps[j];
+
+                    JsonArray data = doc.createNestedArray("DATA");
+
+                    switch(as7341.getReadBandMode())
+                    {
+                        case AS7341_READ_ALL_CHANNELS:
+                            for (int i = 12*j; i < 12*j+12; ++i)
+                            {
+                                // we skip the first set of duplicate clear/NIR readings
+                                // (indices 4 and 5)
+                                if (i == 12*j+4 || i == 12*j+5)
+                                    continue;
+                                
+                                data.add(as7341.readings[i]);
+                            }
+                            break;
+                        case AS7341_READ_LOW_CHANNELS:
+                            for (int i = 12*j; i < 12*j+6; ++i)
+                            {
+                                data.add(as7341.readings[i]);
+                            }
+                            break;
+                        case AS7341_READ_HIGH_CHANNELS:
+                            for (int i = 12*j+6; i < 12*j+12; ++i)
+                            {
+                                data.add(as7341.readings[i]);
+                            }
+                            break;
+                    }
+                    char buffer[256];
+                    size_t n = serializeJson(doc, buffer); 
+                    if (serialDebug){Serial.println(buffer);} 
+                    
+                    if (MQTT.publishData(buffer, n))
+                    {
+                        if (serialDebug){Serial.println("Data sent!");}
+                    }
+                    else
+                    {
+                        if (serialDebug){Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");}
+                        MQTT.connectMQTT();
+                    }
+                }
+
+                as7341.initializeReadings();
             }
             else
             {
-                uint16_t readings[12];
-
                 switch(as7341.getReadBandMode())
                 {
                     case AS7341_READ_ALL_CHANNELS:
-                        if (!as7341.readAllChannels(readings))
+                        if (!as7341.readAllChannels(as7341.readingsPointer))
                         {
                             if (serialDebug){
                                 Serial.println("ERROR: Couldn't read all channels!");
@@ -94,7 +145,7 @@ void loop(void)
                         }
                         break;
                     case AS7341_READ_LOW_CHANNELS:
-                        if (!as7341.readLowChannels(readings))
+                        if (!as7341.readLowChannels(as7341.readingsPointer))
                         {
                             if (serialDebug){
                                 Serial.println("ERROR: Couldn't read low channels!");
@@ -103,7 +154,7 @@ void loop(void)
                         }
                         break;
                     case AS7341_READ_HIGH_CHANNELS:
-                        if (!as7341.readHighChannels(readings))
+                        if (!as7341.readHighChannels(as7341.readingsPointer))
                         {
                             if (serialDebug){
                                 Serial.println("ERROR: Couldn't read high channels!");
@@ -113,58 +164,12 @@ void loop(void)
                         break;
                 }
 
-                current_millis = millis();
                 as7341.updateSensorInfo();
-
-                StaticJsonDocument<256> doc;
-                doc["ID"] = MQTT.getIdentifier();
-                doc["TIME"] = current_millis;
-                doc["GAIN"] = as7341.as7341Info.gain;
-                doc["ATIME"] = as7341.as7341Info.atime;
-                doc["ASTEP"] = as7341.as7341Info.astep;
-
-                JsonArray data = doc.createNestedArray("DATA");
-
-                switch(as7341.getReadBandMode())
-                {
-                    case AS7341_READ_ALL_CHANNELS:
-                        for (int i = 0; i < 12; i++)
-                        {
-                            // we skip the first set of duplicate clear/NIR readings
-                            // (indices 4 and 5)
-                            if (i == 4 || i == 5)
-                                continue;
-                            
-                            data.add(readings[i]);
-                        }
-                        break;
-                    case AS7341_READ_LOW_CHANNELS:
-                        for (int i = 0; i < 6; i++)
-                        {
-                            data.add(readings[i]);
-                        }
-                        break;
-                    case AS7341_READ_HIGH_CHANNELS:
-                        for (int i = 6; i < 12; i++)
-                        {
-                            data.add(readings[i]);
-                        }
-                        break;
-                }
-
-                char buffer[256];
-                size_t n = serializeJson(doc, buffer); 
-                if (serialDebug){Serial.println(buffer);} 
-                
-                if (MQTT.publishData(buffer, n))
-                {
-                    if (serialDebug){Serial.println("Data sent!");}
-                }
-                else
-                {
-                    if (serialDebug){Serial.println("Data failed to send. Reconnecting to MQTT Broker and trying again");}
-                    MQTT.connectMQTT();
-                }
+                as7341.readingsPointer += 12;
+                as7341.times.push_back(current_millis);
+                as7341.gains.push_back(as7341.as7341Info.gain);
+                as7341.atimes.push_back(as7341.as7341Info.atime);
+                as7341.asteps.push_back(as7341.as7341Info.astep);
             }
         }
         else
@@ -177,7 +182,7 @@ void loop(void)
             }
             else
             {
-                // Do the communicating one batch
+
             }
         }
     }

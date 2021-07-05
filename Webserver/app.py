@@ -119,8 +119,8 @@ def handle_data(client, userdata, message):
         payload_dict = json.loads(message.payload.decode())
         date = clamp_list[int(payload_dict["ID"])].experiment_start_time
         
-        file_name = (clamp_list[int(payload_dict["ID"])].experiment_name + "_" +
-                    clamp_list[int(payload_dict["ID"])].experiment_mode + "_" +
+        file_name = (clamp_list[int(payload_dict["ID"])].experiment_name + "-" +
+                    clamp_list[int(payload_dict["ID"])].experiment_mode + "-" +
                     date + ".txt")
 
         file_descriptor = open(file_name,"a")
@@ -175,8 +175,8 @@ def handle_experimentStart(client, userdata, message):
         clamp_list[int(received_payload["ID"])].experiment_name = str(received_payload["experimentName"])
         experiment_name = clamp_list[int(received_payload["ID"])].experiment_name
         new_file = open(
-                    clamp_list[int(received_payload["ID"])].experiment_name + "_" +
-                    clamp_list[int(received_payload["ID"])].experiment_mode + "_" +
+                    clamp_list[int(received_payload["ID"])].experiment_name + "-" +
+                    clamp_list[int(received_payload["ID"])].experiment_mode + "-" +
                     date + ".txt","x")
         new_file.close()
 

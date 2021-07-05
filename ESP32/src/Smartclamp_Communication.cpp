@@ -220,7 +220,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                 }
 
                 led_ptr->turnOnLight(led_ptr->getChannelFromColor(led_ptr->getColor()));
-                delay(200);
+                delay(3000);
                 sensor_ptr->automaticGainControl();
                 led_ptr->slp_millis = millis();
                 sensor_ptr->initializeReadings();

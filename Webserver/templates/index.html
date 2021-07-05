@@ -41,7 +41,11 @@ $(document).ready(function()
         var astep = $('#message_start_astep').val();
         var atime = $('#message_start_atime').val();
         var read_band_mode = $('#message_start_read_band_mode').val();
-        var data = '{"ID": "' + message + '", "experimentName": "' + name + '", "ASTEP": "' + astep + '", "ATIME": "' + atime + '", "MODE": "' + read_band_mode +'"}';
+        var color = $('#message_start_color').val();
+        var wke_time = $('#message_start_wke_time').val();
+        var slp_time = $('#message_start_slp_time').val();
+        var data = '{"ID": "' + message + '", "experimentName": "' + name + '", "ASTEP": "' + astep 
+                              + '", "ATIME": "' + atime + '", "MODE": "' + read_band_mode + '", "CLR": "' + color + '", "WKE": "' + wke_time + '", "SLP": "' + slp_time +'"}';
         socket.emit('experimentStart', data=data);
     });
 
@@ -133,7 +137,7 @@ function drawChart()
 
 {% block content %}
 <!-- Google Chart div, disabled for now -->
-<!-- <div id="chart_div" style="width: 500px; height: 300px;"></div> -->
+<div id="chart_div" style="width: 500px; height: 300px;"></div>
 
 <!-- Divs for remainder of webpage cellular elements -->
 <div class="container-fluid">
@@ -172,9 +176,21 @@ function drawChart()
                   <div class="col-xs-8">
                     <input id="message_start_astep" class="form-control">
                   </div>
-                  <label class="control-label col-xs-4">READ_BAND_MODE: (0)</label>
+                  <label class="control-label col-xs-4">READ_BAND_MODE: (2)</label>
                   <div class="col-xs-8">
                     <input id="message_start_read_band_mode" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">COLOR: (0)</label>
+                  <div class="col-xs-8">
+                    <input id="message_start_color" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">WAKE TIME: (10)</label>
+                  <div class="col-xs-8">
+                    <input id="message_start_wke_time" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">SLEEP TIME: (50)</label>
+                  <div class="col-xs-8">
+                    <input id="message_start_slp_time" class="form-control">
                   </div>
                 </div>
                 

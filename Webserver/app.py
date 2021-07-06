@@ -119,8 +119,15 @@ def handle_data(client, userdata, message):
         payload_dict = json.loads(message.payload.decode())
         date = clamp_list[int(payload_dict["ID"])].experiment_start_time
         
-        file_name = (clamp_list[int(payload_dict["ID"])].experiment_name + "-" +
-                    clamp_list[int(payload_dict["ID"])].experiment_mode + "-" +
+        if clamp_list[int(payload_dict["ID"])].experiment_mode == "1":
+            mode = "LOW"
+        elif clamp_list[int(payload_dict["ID"])].experiment_mode == "2":
+            mode = "HIGH"
+        else:
+            mode = "ALL"
+
+        file_name = ("./tests/" + clamp_list[int(payload_dict["ID"])].experiment_name + "-" +
+                    mode + "-" +
                     date + ".txt")
 
         file_descriptor = open(file_name,"a")
@@ -168,15 +175,23 @@ def handle_experimentStart(client, userdata, message):
         received_payload = message.payload.decode()
         received_payload = json.loads(received_payload)
         now = datetime.now()
-        date = now.strftime("%d_%m_%Y_%H_%M_%S")
+        date = now.strftime("%d-%m-%Y-%H-%M-%S")
         clamp_list[int(received_payload["ID"])].experiment_start_time = date
         device_mac = clamp_list[int(received_payload["ID"])].mac_addr
         clamp_list[int(received_payload["ID"])].experiment_mode = str(received_payload["MODE"])
         clamp_list[int(received_payload["ID"])].experiment_name = str(received_payload["experimentName"])
         experiment_name = clamp_list[int(received_payload["ID"])].experiment_name
+
+        if clamp_list[int(received_payload["ID"])].experiment_mode == "1":
+            mode = "LOW"
+        elif clamp_list[int(received_payload["ID"])].experiment_mode == "2":
+            mode = "HIGH"
+        else:
+            mode = "ALL"
+
         new_file = open(
-                    clamp_list[int(received_payload["ID"])].experiment_name + "-" +
-                    clamp_list[int(received_payload["ID"])].experiment_mode + "-" +
+                    "./tests/" + clamp_list[int(received_payload["ID"])].experiment_name + "-" +
+                    mode + "-" +
                     date + ".txt","x")
         new_file.close()
 

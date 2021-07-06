@@ -74,7 +74,10 @@ void loop(void)
             if (current_millis - lz7.slp_millis > lz7.wakeTime * 1000)
             {
                 lz7.isAwake = false;
-                lz7.turnOffLight(lz7.getChannelFromColor(lz7.getColor()));
+                if (lz7.color != LZ7_COLOR_NONE)
+                {
+                    lz7.turnOffLight(lz7.getChannelFromColor(lz7.getColor()));
+                }
                 lz7.slp_millis = current_millis;
 
                 for (int j = 0; j < as7341.times.size(); ++j)
@@ -177,7 +180,10 @@ void loop(void)
             if (current_millis - lz7.slp_millis > lz7.sleepTime * 1000)
             {
                 lz7.isAwake = true;
-                lz7.turnOnLight(lz7.getChannelFromColor(lz7.getColor()));
+                if (lz7.color != LZ7_COLOR_NONE)
+                {
+                    lz7.turnOnLight(lz7.getChannelFromColor(lz7.getColor()));
+                }
                 lz7.slp_millis = current_millis;
             }
             else

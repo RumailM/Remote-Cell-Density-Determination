@@ -23,11 +23,12 @@ const uint8_t LED_CH_GREEN = 1;     // PWM Channel Green
 // LED Color
 typedef enum
 {
+    LZ7_COLOR_NONE,
     LZ7_COLOR_RED,
     LZ7_COLOR_GREEN,
 } lz7_color;
 
-const lz7_color DEFAULT_LZ7_COLOR = LZ7_COLOR_RED;
+const lz7_color DEFAULT_LZ7_COLOR = LZ7_COLOR_NONE;
 const uint16_t DEFAULT_WAKE_TIME = 10;
 const uint16_t DEFAULT_SLEEP_TIME = 50;
 

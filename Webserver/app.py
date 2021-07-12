@@ -201,6 +201,7 @@ if __name__ == "__main__":
     mqtt.publish("lab/control/loginResponse", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/control/logout", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/data", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/battery", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/control/AGCToggle", payload=None, qos=qos, retain=True)
@@ -209,6 +210,7 @@ if __name__ == "__main__":
     mqtt.subscribe("lab/control/login", qos)
     mqtt.subscribe("lab/control/logout", qos)
     mqtt.subscribe("lab/data", qos)
+    mqtt.subscribe("lab/battery", qos)
     mqtt.subscribe("lab/control/experimentStart", qos)
     mqtt.subscribe("lab/control/experimentStop", qos)
 

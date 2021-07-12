@@ -186,7 +186,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                     Serial.printf("default value: %d\n", DEFAULT_READ_BAND_MODE);
                 }
                 Serial.print("COLOR set to ");
-                if (color == LZ7_COLOR_RED || color == LZ7_COLOR_GREEN)
+                if (color == LZ7_COLOR_RED || color == LZ7_COLOR_GREEN || color == LZ7_COLOR_BLUE)
                 {
                     led_ptr->setColor(color);
                     Serial.printf("custom value: %d\n", color);
@@ -219,11 +219,12 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                     Serial.printf("default value: %d seconds\n", DEFAULT_SLEEP_TIME);
                 }
 
-                if (color != LZ7_COLOR_NONE)
+                if (led_ptr->color != LZ7_COLOR_NONE)
                 {
                     led_ptr->turnOnLight(led_ptr->getChannelFromColor(led_ptr->getColor()));
-                    delay(3000);
+                    delay(200);
                 }
+
                 sensor_ptr->automaticGainControl();
                 led_ptr->slp_millis = millis();
                 sensor_ptr->initializeReadings();

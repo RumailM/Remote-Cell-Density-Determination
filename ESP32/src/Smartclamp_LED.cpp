@@ -98,6 +98,8 @@ uint8_t Smartclamp_LED::getChannelFromColor(lz7_color clr)
             return LED_CH_RED;
         case LZ7_COLOR_GREEN:
             return LED_CH_GREEN;
+        case LZ7_COLOR_BLUE:
+            return LED_CH_BLUE;
         default:
             return LED_CH_RED;
     }

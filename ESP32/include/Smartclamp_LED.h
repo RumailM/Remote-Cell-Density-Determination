@@ -17,8 +17,10 @@ const double LED_FREQ = 5000; // PWM Frequency
 const uint8_t LED_RES = 8;    // 8-bit ADC Resolution
 const uint8_t LED_PIN_RED = 26;    // PWM Pin Red
 const uint8_t LED_PIN_GREEN = 4;    // PWM Pin Green
+const uint8_t LED_PIN_BLUE = 25;    // PWM Pin Blue
 const uint8_t LED_CH_RED = 0;     // PWM Channel Red
 const uint8_t LED_CH_GREEN = 1;     // PWM Channel Green
+const uint8_t LED_CH_BLUE = 2;    // PWM Channel Blue
 
 // LED Color
 typedef enum
@@ -26,6 +28,7 @@ typedef enum
     LZ7_COLOR_NONE,
     LZ7_COLOR_RED,
     LZ7_COLOR_GREEN,
+    LZ7_COLOR_BLUE,
 } lz7_color;
 
 const lz7_color DEFAULT_LZ7_COLOR = LZ7_COLOR_NONE;

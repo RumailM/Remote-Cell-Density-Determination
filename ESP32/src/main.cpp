@@ -35,21 +35,34 @@ void setup()
     while (!Serial){delay(1);}
     Serial.println("START");
 
-    // Initialize 
-    as7341.initializeSensor();
+    // Initialize AS7341 Optical Sensor
+    if (!as7341.initializeSensor())
+    {
+        Serial.println("ERROR: Failed to communicate with AS7341");
+        delay(10000);
+    }
 
+    // // Intialize BQ27441 Fuel Gauge
+    // if (lipo.begin())
+    //     lipo.setCapacity(2000);
+    // else
+    //     Serial.println("ERROR: Failed to communicate with BQ27441");
+
+    // Intitialize LZ7 LED Array
+    lz7.setupLED();
+
+    // Intitialize MQTT Communication
     if (!MQTT.setClientPtr(&client))
-        Serial.println("ERROR: client_ptr is null!");
+        Serial.println("ERROR: MQTT client_ptr is null!");
     if (!MQTT.setSensorPtr(&as7341))
-        Serial.println("ERROR: sensor_ptr is null!");
+        Serial.println("ERROR: MQTT sensor_ptr is null!");
     if (!MQTT.setLEDPtr(&lz7))
-        Serial.println("ERROR: led_ptr is null!");
+        Serial.println("ERROR: MQTT led_ptr is null!");
     MQTT.setIdentifier(-99);
     MQTT.connectWifi();
     MQTT.connectMQTT();
 
     handshake_millis = millis();
-    lz7.setupLED();
 }
 
 ///////////////////   LOOP    ///////////////
@@ -188,7 +201,6 @@ void loop(void)
             }
             else
             {
-
             }
         }
     }

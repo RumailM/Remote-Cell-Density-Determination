@@ -22,10 +22,11 @@ Ongoing developing a low-cost cell density monitoring accessory for standard lab
 This code is designed to be deployed using PlatformIO on either VSCode or Atom. Before attempting to build or upload the code, make sure to verify the upload_port parameter is correct on the platform.ini file.
 
 ## Raspberry Pi Hub Setup
-1. Follow instructions [here](https://diyi0t.com/microcontroller-to-raspberry-pi-wifi-mqtt-communication/) under the "Setup the MQTT Broker to Receive MQTT Data (Raspberry Pi)" section.
-2. Make sure the mosquitto (The MQTT Broker) is running
-3. cd into the repository
-4. cd into Webserver
-5. source env/bin/activate
-6. python3 app.py
-7. Run the app.py flask server
+1. Configure Raspberry Pi as an access point following instructions [here](https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md)
+2. Follow instructions [here](https://diyi0t.com/microcontroller-to-raspberry-pi-wifi-mqtt-communication/) under the "Setup the MQTT Broker to Receive MQTT Data (Raspberry Pi)" section.
+3. Make sure the mosquitto (The MQTT Broker) is running
+4. cd into the repository
+5. cd into Webserver
+6. source env/bin/activate
+7. python3 app.py
+8. Run the app.py flask server

@@ -10,6 +10,7 @@ from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 from datetime import datetime
 from dataclasses import dataclass
+import os
 
 @dataclass
 class Clamp():
@@ -197,14 +198,18 @@ def handle_experimentStart(client, userdata, message):
 
 if __name__ == "__main__":
     # Clearing Retained Messages
-    mqtt.publish("lab/control/login", payload=None, qos=qos, retain=True)
-    mqtt.publish("lab/control/loginResponse", payload=None, qos=qos, retain=True)
-    mqtt.publish("lab/control/logout", payload=None, qos=qos, retain=True)
-    mqtt.publish("lab/data", payload=None, qos=qos, retain=True)
-    mqtt.publish("lab/battery", payload=None, qos=qos, retain=True)
-    mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
-    mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
-    mqtt.publish("lab/control/AGCToggle", payload=None, qos=qos, retain=True)
+    #     mqtt.publish("lab/control/login", payload=None, qos=qos, retain=True)
+    #     mqtt.publish("lab/control/loginResponse", payload=None, qos=qos, retain=True)
+    #     mqtt.publish("lab/control/logout", payload=None, qos=qos, retain=True)
+    #     mqtt.publish("lab/data", payload=None, qos=qos, retain=True)
+    #     mqtt.publish("lab/battery", payload=None, qos=qos, retain=True)
+    #     mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
+    #     mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
+    #     mqtt.publish("lab/control/AGCToggle", payload=None, qos=qos, retain=True)
+    os.system("sudo systemctl stop mosquitto")
+    os.system("sudo rm /var/lib/mosquitto/mosquitto.db")
+    os.system("sudo systemctl start mosquitto")
+    
 
     # Subscribing to relevant MQTT Topics
     mqtt.subscribe("lab/control/login", qos)

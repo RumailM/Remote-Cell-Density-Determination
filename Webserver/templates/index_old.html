@@ -1,0 +1,268 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Flask-MQTT example{% endblock %}
+
+{% block styles %}
+{{ super() }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+var data_table;
+var chart;
+var options;
+
+$(document).ready(function()
+{
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    $('#publish').click(function(event)
+    {
+        var topic = $('#topic').val();
+        var message = $('#message').val();
+        var qos = $('#qos').val();
+        var data = '{"topic": "' + topic + '", "message": "' + message + '", "qos": ' + qos + '}';
+        socket.emit('publish', data=data);
+    });
+
+    $('#experiment_start').click(function(event)
+    {
+        var message = $('#message_start').val();
+        var name = $('#message_start_name').val();
+        var astep = $('#message_start_astep').val();
+        var atime = $('#message_start_atime').val();
+        var agc_freq = $('#message_start_agc_frequency').val();
+        var read_band_mode = $('#message_start_read_band_mode').val();
+        var data = '{"id": "' + message + '", "experimentName": "' + name + '", "AGC": "' + agc_freq + '", "ASTEP": "' + astep + '", "ATIME": "' + atime + '", "MODE": "' + read_band_mode +'"}';
+        socket.emit('experimentStart', data=data);
+    });
+
+    $('#experiment_stop').click(function(event)
+    {
+        var message = $('#message_stop').val();
+        var data = '{"id": "' + message + '"}';
+        socket.emit('experimentStop', data=data);
+    });
+
+    $('#subscribe').click(function(event)
+    {
+        var topic = $('#subscribe_topic').val();
+        var qos = $('#subscribe_qos').val();
+        var data = '{"topic": "' + topic + '", "qos": ' + qos + '}';
+        socket.emit('subscribe', data=data);
+        $('#subscribe').hide();
+        $('#unsubscribe').show();
+        $('#subscribe_topic').prop('readonly', true);
+    });
+
+    $('#unsubscribe').click(function(event)
+    {
+        socket.emit('unsubscribe_all');
+        $('#subscribe').show();
+        $('#unsubscribe').hide();
+        $('#subscribe_topic').prop('readonly', false);
+    });
+
+    socket.on('mqtt_message', function(data)
+    {
+        var text = '(' + data['topic'] + ' qos: ' + data['qos'] + ') ' + data['payload'];
+        var $textarea = $('#subscribe_messages');
+        $textarea.val($textarea.val() + text + '\n');
+
+        if (!data["topic"].localeCompare("lab/data"))
+        {
+            var obj = JSON.parse(data["payload"]);
+            var count = obj.readings[6]/(Math.pow(2, obj.gain-1)*0.00278*(obj.atime+1)*(obj.astep+1))
+            data_table.addRow([data_table.getNumberOfRows()+1,Number(count)]);
+            chart.draw(data_table , options);
+        }
+
+        // out.x630nm = [out.x630nm row.readings(7)/(2^(row.gain-1) *0.00278*(row.atime+1)*(row.astep+1))];
+        // {"id":0,"timestamp":0,"gain":5,"atime":59,"astep":599,"readings":[7568,16379,54,0,0,0,5,31,218,38]}
+
+
+        //1)decode json object in data['payload']
+
+        //2) do something with decoded data, i.e. plot
+    })
+});
+
+google.charts.load('current', {'packages': ['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart()
+{
+    data_table = new google.visualization.DataTable();
+    data_table.addColumn('number', 'time');
+    data_table.addColumn('number', 'value');
+
+    options = {
+        title: 'Counts',
+        hAxis:
+        {
+            title: 'Seconds',
+            titleTextStyle: {color: '#333'},
+            slantedText: true,
+            slantedTextAngle: 80
+        },
+        vAxis:
+        {
+            minValue: 0
+        },
+        explorer:
+        {
+            axis: 'horizontal',
+            keepInBounds: true,
+            maxZoomIn: 4.0
+        },
+        colors: ['#D44E41'],
+    };
+
+    chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    chart.draw(data_table , options);
+}
+
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- <div id="chart_div" style="width: 500px; height: 300px;"></div> -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>SmartClamp Webserver</h1>
+    </div>
+  </div>
+
+  
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Publish MQTT Control Message on topic lab/control/experimentStart</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="form-horizontal">
+                
+                <div class="form-group">
+                  <label class="control-label col-xs-4">ID: </label>
+                  <div class="col-xs-8">
+                    <input id="message_start" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">Experiment Name: </label>
+                  <div class="col-xs-8">
+                    <input id="message_start_name" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">ATIME: (59)</label>
+                  <div class="col-xs-8">
+                    <input id="message_start_atime" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">ASTEP: (599)</label>
+                  <div class="col-xs-8">
+                    <input id="message_start_astep" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">AGC_FREQ: (50)</label>
+                  <div class="col-xs-8">
+                    <input id="message_start_agc_frequency" class="form-control">
+                  </div>
+                  <label class="control-label col-xs-4">READ_BAND_MODE: (2)</label>
+                  <div class="col-xs-8">
+                    <input id="message_start_read_band_mode" class="form-control">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-xs-8 col-xs-offset-4">
+                    <button id="experiment_start" class="btn btn-primary">Publish</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Publish MQTT Control Message on topic lab/control/experimentStop</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="form-horizontal">
+                
+                <div class="form-group">
+                  <label class="control-label col-xs-4">ID: </label>
+                  <div class="col-xs-8">
+                    <input id="message_stop" class="form-control">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-xs-8 col-xs-offset-4">
+                    <button id="experiment_stop" class="btn btn-primary">Publish</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Subscribe MQTT Messages</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Topic:</label>
+                  <div class="col-xs-8">
+                    <input id="subscribe_topic" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Qos: </label>
+                  <div class="col-xs-8">
+                    <select id="subscribe_qos" class="form-control">
+                      <option value=0>0</option>
+                      <option value=1>1</option>
+                      <option value=2>2</option>
+                    </select>
+                  </div> 
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-8 col-xs-offset-4">
+                    <button id="subscribe" class="btn btn-primary">Subscribe</button>
+                    <button id="unsubscribe" class="btn btn-default" style="display: none;" >Unsubscribe</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Messages:</label>
+                  <div class="col-xs-8">
+                    <textarea id="subscribe_messages" class="form-control" rows=10></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

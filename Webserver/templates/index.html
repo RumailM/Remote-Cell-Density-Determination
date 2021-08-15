@@ -1,0 +1,588 @@
+<!doctype html>
+<html>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
+<!--<script src="http://prototypejs.org/javascripts/prototype.js" type="text/javascript"></script>-->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SmartClamp Webserver</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/smartclamp.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!-- Main Container -->
+<div class="container">
+    <!-- Header -->
+    <h1>SmartClamp</h1>
+    <!--Gallery Section-->
+    <div class="gallery" align="center">
+        <div class="thumbnail">
+            <div style="text-align: right; padding-right: 10px;">
+                <i class="material-icons" id="wifi1">wifi_tethering</i>
+                <i class="material-icons" id="battery1_high">battery_full</i>
+                <i class="material-icons" id="battery1_low">battery_alert</i>
+            </div>
+            <h4>FLASK 1</h4>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Experiment:</p>
+            <input type="text" style="width: 140px" id="ExFlask1">
+            <div style="float: left;">
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 8px">Email Address:</p>
+                <a href="mailto:rkm352@nyu.edu"></a><input type="text" style="width: 120px;float: left;" id="Email1" href="mailto:rkm352@nyu.edu"><br/>
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Notify when
+                <select id="NotifTypeFlask1" class="dropdown">
+                    <option value="NotifOD1">OD</option>
+                    <option value="NotifGFP1">GFP</option>
+                    <option value="NotifRFP1">RFP</option>
+                </select>
+                is
+                <select id="NotifCompareFlask1" class="dropdown" style="text-transform: lowercase;">
+                    <option value="NotifAbove1">above</option>
+                    <option value="NotifBelow1">below</option>
+                </select>
+                : &nbsp;<span id="demo1"></span></p>
+            <div>
+                <input type="range" min="1" max="100" value="50" class="slider" id="Range1">
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Frequency:
+                <select id="SelectFreqFlask1" class="dropdown">
+                    <option disabled selected value>value</option>
+                    <option value="Freq1.1">0.5x</option>
+                    <option value="Freq1.2">1x</option>
+                    <option value="Freq1.3">2x</option>
+                </select>
+                </p>
+                <p>&nbsp;</p><br/>
+                <p class="tag" style="text-align: left">Type:
+                    <label>
+                        <input type="checkbox" id="type1.1" name="type1.1" value="OD1" checked/> OD
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type1.2" name="type1.2" value="GFP1"/> GFP
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type1.3" name="type1.3" value="RFP1"/> RFP
+                     </label>
+            </p>
+            <h4>
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" id="buttonone" value="Start/Stop"/>
+                </h4>
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Plot of
+                    <select id="SelectedPlotFlask1" class="dropdown">
+                        <option value="PlotOD1">OD</option>
+                        <option value="PlotGFP1">GFP</option>
+                        <option value="PlotRFP1">RFP</option>
+                    </select>
+                    : &nbsp;</p>
+                    <p>&nbsp;</p><br/>
+
+                    <canvas id="lineChart1" width="300" height="300" ></canvas>
+
+                    <p>&nbsp;</p>
+
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" value="DOWNLOAD CSV"/>
+                </h4>
+              </h4>
+        </div>
+        <div class="thumbnail">
+            <div style="text-align: right; padding-right: 10px;">
+                <i class="material-icons" id="wifi2">wifi_tethering</i>
+                <i class="material-icons" id="battery2_high">battery_full</i>
+                <i class="material-icons" id="battery2_low">battery_alert</i>
+            </div>
+            <h4>FLASK 2</h4>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Experiment:</p>
+            <input type="text" style="width: 130px" id="ExFlask2"><br/>
+            <div style="float: left;">
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 8px">Email Address:</p>
+                <input type="text" style="width: 120px;float: left;" id="Email2"><br/>
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Notify when
+                <select id="NotifTypeFlask2" class="dropdown">
+                    <option value="NotifOD2">OD</option>
+                    <option value="NotifGFP2">GFP</option>
+                    <option value="NotifRFP2">RFP</option>
+                </select>
+                is
+                <select id="NotifCompareFlask2" class="dropdown" style="text-transform: lowercase;">
+                    <option value="NotifAbove2">above</option>
+                    <option value="NotifBelow2">below</option>
+                </select>
+                : &nbsp;<span id="demo2"></span></p>
+            <div>
+                <input type="range" min="1" max="100" value="50" class="slider" id="Range2">
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Frequency:
+                <select id="SelectFreqFlask2" class="dropdown">
+                    <option disabled selected value>value</option>
+                    <option value="Freq2.1">0.5x</option>
+                    <option value="Freq2.2">1x</option>
+                    <option value="Freq2.3">2x</option>
+                </select>
+                </p>
+                <p>&nbsp;</p><br/>
+                <p class="tag" style="text-align: left">Type:
+                    <label>
+                        <input type="checkbox" id="type2.1" name="type2.1" value="OD2" checked/> OD
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type2.2" name="type2.2" value="GFP2"/> GFP
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type2.3" name="type2.3" value="RFP2"/> RFP
+                     </label>
+            </p>
+            <h4>
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" id="buttontwo" value="Start/Stop"/>
+                </h4>
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Plot of
+                    <select id="SelectedPlotFlask2" class="dropdown">
+                        <option value="PlotOD2">OD</option>
+                        <option value="PlotGFP2">GFP</option>
+                        <option value="PlotRFP2">RFP</option>
+                    </select>
+                    : &nbsp;</p>
+                    <p>&nbsp;</p><br/>
+
+                    <canvas id="lineChart2" width="300" height="300"></canvas>
+
+                    <p>&nbsp;</p>
+
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" value="DOWNLOAD CSV"/>
+                </h4>
+              </h4>
+        </div>
+        <div class="thumbnail">
+            <div style="text-align: right; padding-right: 10px;">
+                <i class="material-icons" id="wifi3">wifi_tethering</i>
+                <i class="material-icons" id="battery3_high">battery_full</i>
+                <i class="material-icons" id="battery3_low">battery_alert</i>
+            </div>
+            <h4>FLASK 3</h4>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Experiment:</p>
+            <input type="text" style="width: 130px" id="ExFlask3"><br/>
+            <div style="float: left;">
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 8px">Email Address:</p>
+                <input type="text" style="width: 120px;float: left;" id="Email3"><br/>
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Notify when
+                <select id="NotifTypeFlask3" class="dropdown">
+                    <option value="NotifOD3">OD</option>
+                    <option value="NotifGFP3">GFP</option>
+                    <option value="NotifRFP3">RFP</option>
+                </select>
+                is
+                <select id="NotifCompareFlask3" class="dropdown" style="text-transform: lowercase;">
+                    <option value="NotifAbove3">above</option>
+                    <option value="NotifBelow3">below</option>
+                </select>
+                : &nbsp;<span id="demo3"></span></p>
+            <div>
+                <input type="range" min="1" max="100" value="50" class="slider" id="Range3">
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Frequency:
+                <select id="SelectFreqFlask3" class="dropdown">
+                    <option disabled selected value>value</option>
+                    <option value="Freq3.1">0.5x</option>
+                    <option value="Freq3.2">1x</option>
+                    <option value="Freq3.3">2x</option>
+                </select>
+                </p>
+                <p>&nbsp;</p><br/>
+                <p class="tag" style="text-align: left">Type:
+                    <label>
+                        <input type="checkbox" id="type3.1" name="type3.1" value="OD3" checked/> OD
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type3.2" name="type3.2" value="GFP3"/> GFP
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type3.3" name="type3.3" value="RFP3"/> RFP
+                     </label>
+            </p>
+            <h4>
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" id="buttonthree" value="Start/Stop"/>
+                </h4>
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Plot of
+                    <select id="SelectedPlotFlask3" class="dropdown">
+                        <option value="PlotOD3">OD</option>
+                        <option value="PlotGFP3">GFP</option>
+                        <option value="PlotRFP3">RFP</option>
+                    </select>
+                    : &nbsp;</p>
+                    <p>&nbsp;</p><br/>
+
+                    <canvas id="lineChart3" width="300" height="300"></canvas>
+
+                    <p>&nbsp;</p>
+
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" value="DOWNLOAD CSV"/>
+                </h4>
+              </h4>
+        </div>
+        <div class="thumbnail">
+            <div style="text-align: right; padding-right: 10px;">
+                <i class="material-icons" id="wifi4">wifi_tethering</i>
+                <i class="material-icons" id="battery4_high">battery_full</i>
+                <i class="material-icons" id="battery4_low">battery_alert</i>
+            </div>
+            <h4>FLASK 4</h4>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Experiment:</p>
+            <input type="text" style="width: 130px" id="ExFlask4"><br/>
+            <div style="float: left;">
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 8px">Email Address:</p>
+                <input type="text" style="width: 120px;float: left;" id="Email4"><br/>
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Notify when
+                <select id="NotifTypeFlask4" class="dropdown">
+                    <option value="NotifOD4">OD</option>
+                    <option value="NotifGFP4">GFP</option>
+                    <option value="NotifRFP4">RFP</option>
+                </select>
+                is
+                <select id="NotifCompareFlask4" class="dropdown" style="text-transform: lowercase;">
+                    <option value="NotifAbove4">above</option>
+                    <option value="NotifBelow4">below</option>
+                </select>
+                : &nbsp;<span id="demo4"></span></p>
+            <div>
+                <input type="range" min="1" max="100" value="50" class="slider" id="Range4">
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Frequency:
+                <select id="SelectFreqFlask4" class="dropdown">
+                    <option disabled selected value>value</option>
+                    <option value="Freq4.1">0.5x</option>
+                    <option value="Freq4.2">1x</option>
+                    <option value="Freq4.3">2x</option>
+                </select>
+                </p>
+                <p>&nbsp;</p><br/>
+            <p class="tag" style="text-align: left">Type:
+                    <label>
+                        <input type="checkbox" id="type4.1" name="type4.1" value="OD4" checked/> OD
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type4.2" name="type4.2" value="GFP4"/> GFP
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type4.3" name="type4.3" value="RFP4"/> RFP
+                     </label>
+            </p>
+            <h4>
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" id="buttonfour" value="Start/Stop"/>
+                </h4>
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Plot of
+                    <select id="SelectedPlotFlask4" class="dropdown">
+                        <option value="PlotOD4">OD</option>
+                        <option value="PlotGFP4">GFP</option>
+                        <option value="PlotRFP4">RFP</option>
+                    </select>
+                    : &nbsp;</p>
+                    <p>&nbsp;</p><br/>
+
+                    <canvas id="lineChart4" width="300" height="300"></canvas>
+
+                    <p>&nbsp;</p>
+
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" value="DOWNLOAD CSV"/>
+                </h4>
+              </h4>
+        </div>
+    </div>
+    <div class="gallery" align="center">
+        <div class="thumbnail">
+            <div style="text-align: right; padding-right: 10px;">
+                <i class="material-icons" id="wifi5">wifi_tethering</i>
+                <i class="material-icons" id="battery5_high">battery_full</i>
+                <i class="material-icons" id="battery5_low">battery_alert</i>
+            </div>
+            <h4>FLASK 5</h4>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Experiment:</p>
+            <input type="text" style="width: 130px" id="ExFlask5"><br/>
+            <div style="float: left;">
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 8px">Email Address:</p>
+                <input type="text" style="width: 120px;float: left;" id="Email5"><br/>
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Notify when
+                <select id="NotifTypeFlask5" class="dropdown">
+                    <option value="NotifOD5">OD</option>
+                    <option value="NotifGFP5">GFP</option>
+                    <option value="NotifRFP5">RFP</option>
+                </select>
+                is
+                <select id="NotifCompareFlask5" class="dropdown" style="text-transform: lowercase;">
+                    <option value="NotifAbove5">above</option>
+                    <option value="NotifBelow5">below</option>
+                </select>
+                : &nbsp;<span id="demo5"></span></p>
+            <div>
+                <input type="range" min="1" max="100" value="50" class="slider" id="Range5">
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Frequency:
+                <select id="SelectFreqFlask5" class="dropdown">
+                    <option disabled selected value>value</option>
+                    <option value="Freq5.1">0.5x</option>
+                    <option value="Freq5.2">1x</option>
+                    <option value="Freq5.3">2x</option>
+                </select>
+                </p>
+                <p>&nbsp;</p><br/>
+            <p class="tag" style="text-align: left">Type:
+                    <label>
+                        <input type="checkbox" id="type5.1" name="type5.1" value="OD5" checked/> OD
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type5.2" name="type5.2" value="GFP5"/> GFP
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type5.3" name="type5.3" value="RFP5"/> RFP
+                     </label>
+            </p>
+            <h4>
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" id="buttonfive" value="Start/Stop"/>
+                </h4>
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Plot of
+                    <select id="SelectedPlotFlask5" class="dropdown">
+                        <option value="PlotOD5">OD</option>
+                        <option value="PlotGFP5">GFP</option>
+                        <option value="PlotRFP5">RFP</option>
+                    </select>
+                    : &nbsp;</p>
+                    <p>&nbsp;</p><br/>
+
+                    <canvas id="lineChart5" width="300" height="300"></canvas>
+
+                    <p>&nbsp;</p>
+
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" value="DOWNLOAD CSV"/>
+                </h4>
+              </h4>
+        </div>
+        <div class="thumbnail">
+            <div style="text-align: right; padding-right: 10px;">
+                <i class="material-icons" id="wifi6">wifi_tethering</i>
+                <i class="material-icons" id="battery6_high">battery_full</i>
+                <i class="material-icons" id="battery6_low">battery_alert</i>
+            </div>
+            <h4>FLASK 6</h4>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Experiment:</p>
+            <input type="text" style="width: 130px" id="ExFlask6"><br/>
+            <div style="float: left;">
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 8px">Email Address:</p>
+                <input type="text" style="width: 120px;float: left;" id="Email6"><br/>
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Notify when
+                <select id="NotifTypeFlask6" class="dropdown">
+                    <option value="NotifOD6">OD</option>
+                    <option value="NotifGFP6">GFP</option>
+                    <option value="NotifRFP6">RFP</option>
+                </select>
+                is
+                <select id="NotifCompareFlask6" class="dropdown" style="text-transform: lowercase;">
+                    <option value="NotifAbove6">above</option>
+                    <option value="NotifBelow6">below</option>
+                </select>
+                : &nbsp;<span id="demo6"></span></p>
+            <div>
+                <input type="range" min="1" max="100" value="50" class="slider" id="Range6">
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Frequency:
+                <select id="SelectFreqFlask6" class="dropdown">
+                    <option disabled selected value>value</option>
+                    <option value="Freq6.1">0.5x</option>
+                    <option value="Freq6.2">1x</option>
+                    <option value="Freq6.3">2x</option>
+                </select>
+                </p>
+                <p>&nbsp;</p><br/>
+            <p class="tag" style="text-align: left">Type:
+                    <label>
+                        <input type="checkbox" id="type6.1" name="type6.1" value="OD6" checked/> OD
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type6.2" name="type6.2" value="GFP6"/> GFP
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type6.3" name="type6.3" value="RFP6"/> RFP
+                     </label>
+            </p>
+            <h4>
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" id="buttonsix" value="Start/Stop"/>
+                </h4>
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Plot of
+                    <select id="SelectedPlotFlask6" class="dropdown">
+                        <option value="PlotOD6">OD</option>
+                        <option value="PlotGFP6">GFP</option>
+                        <option value="PlotRFP6">RFP</option>
+                    </select>
+                    : &nbsp;</p>
+                    <p>&nbsp;</p><br/>
+
+                    <canvas id="lineChart6" width="300" height="300"></canvas>
+
+                    <p>&nbsp;</p>
+
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" value="DOWNLOAD CSV"/>
+                </h4>
+                </h4>
+        </div>
+        <div class="thumbnail">
+            <div style="text-align: right; padding-right: 10px;">
+                <i class="material-icons" id="wifi7">wifi_tethering</i>
+                <i class="material-icons" id="battery7_high">battery_full</i>
+                <i class="material-icons" id="battery7_low">battery_alert</i>
+            </div>
+            <h4>FLASK 7</h4>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Experiment:</p>
+            <input type="text" style="width: 130px" id="ExFlask7"><br/>
+            <div style="float: left;">
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 8px">Email Address:</p>
+                <input type="text" style="width: 120px;float: left;" id="Email7"><br/>
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Notify when
+                <select id="NotifTypeFlask7" class="dropdown">
+                    <option value="NotifOD7">OD</option>
+                    <option value="NotifGFP7">GFP</option>
+                    <option value="NotifRFP7">RFP</option>
+                </select>
+                is
+                <select id="NotifCompareFlask7" class="dropdown" style="text-transform: lowercase;">
+                    <option value="NotifAbove7">above</option>
+                    <option value="NotifBelow7">below</option>
+                </select>
+                : &nbsp;<span id="demo7"></span></p>
+            <div>
+                <input type="range" min="1" max="100" value="50" class="slider" id="Range7">
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Frequency:
+                <select id="SelectedFreqFlask7" class="dropdown">
+                    <option disabled selected value>value</option>
+                    <option value="Freq7.1">0.5x</option>
+                    <option value="Freq7.2">1x</option>
+                    <option value="Freq7.3">2x</option>
+                </select>
+                </p>
+                <p>&nbsp;</p><br/>
+            <p class="tag" style="text-align: left">Type:
+                    <label>
+                        <input type="checkbox" id="type7.1" name="type7.1" value="OD7" checked/> OD
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type7.2" name="type7.2" value="GFP7"/> GFP
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type7.3" name="type7.3" value="RFP7"/> RFP
+                     </label>
+            </p>
+            <h4>
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" id="buttonseven" value="Start/Stop"/>
+                </h4>
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Plot of
+                    <select id="SelectedPlotFlask7" class="dropdown">
+                        <option value="PlotOD7">OD</option>
+                        <option value="PlotGFP7">GFP</option>
+                        <option value="PlotRFP7">RFP</option>
+                    </select>
+                    : &nbsp;</p>
+                    <p>&nbsp;</p><br/>
+
+                    <canvas id="lineChart7" width="300" height="300"></canvas>
+
+                    <p>&nbsp;</p>
+
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" value="DOWNLOAD CSV"/>
+                </h4>
+              </h4>
+        </div>
+        <div class="thumbnail">
+            <div style="text-align: right; padding-right: 10px;">
+                <i class="material-icons" id="wifi8">wifi_tethering</i>
+                <i class="material-icons" id="battery8_high">battery_full</i>
+                <i class="material-icons" id="battery8_low">battery_alert</i>
+            </div>
+            <h4>FLASK 8</h4>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Experiment:</p>
+            <input type="text" style="width: 130px" id="ExFlask8"><br/>
+            <div style="float: left;">
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 8px">Email Address:</p>
+                <input type="text" style="width: 120px;float: left;" id="Email8"><br/>
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Notify when
+                <select id="NotifTypeFlask8" class="dropdown">
+                    <option value="NotifOD8">OD</option>
+                    <option value="NotifGFP8">GFP</option>
+                    <option value="NotifRFP8">RFP</option>
+                </select>
+                is
+                <select id="NotifCompareFlask8" class="dropdown" style="text-transform: lowercase;">
+                    <option value="NotifAbove8">above</option>
+                    <option value="NotifBelow8">below</option>
+                </select>
+                : &nbsp;<span id="demo8"></span></p>
+            <div>
+                <input type="range" min="1" max="100" value="50" class="slider" id="Range8">
+            </div>
+            <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Frequency:
+                <select id="SelectFlask8" class="dropdown">
+                    <option disabled selected value>value</option>
+                    <option value="Freq8.1">0.5x</option>
+                    <option value="Freq8.2">1x</option>
+                    <option value="Freq8.3">2x</option>
+                </select>
+                </p>
+                <p>&nbsp;</p><br/>
+            <p class="tag" style="text-align: left">Type:
+                    <label>
+                        <input type="checkbox" id="type8.1" name="type8.1" value="OD8" checked/> OD
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type8.2" name="type8.2" value="GFP8"/> GFP
+                     </label>
+                     <label>
+                        <input type="checkbox" id="type8.3" name="type8.3" value="RFP8"/> RFP
+                     </label>
+            </p>
+            <h4>
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" id="buttoneight" value="Start/Stop"/>
+                </h4>
+                <p class="tag" style="display: inline;text-align: left;float: left;padding-right: 0px">Plot of
+                    <select id="SelectedPlotFlask8" class="dropdown">
+                        <option value="PlotOD8">OD</option>
+                        <option value="PlotGFP8">GFP</option>
+                        <option value="PlotRFP8">RFP</option>
+                    </select>
+                    : &nbsp;</p>
+                    <p>&nbsp;</p><br/>
+
+                    <canvas id="lineChart8" width="300" height="300"></canvas>
+
+                    <p>&nbsp;</p>
+
+                <h4 style="text-align: left;">
+                    <input class="button" type="button" value="DOWNLOAD CSV"/>
+                </h4>
+              </h4>
+        </div>
+    </div>
+    <!-- Main Container Ends -->
+</div>
+<script src="{{url_for('static', filename='SmartClamp.js')}}"></script>
+</body>
+</html>

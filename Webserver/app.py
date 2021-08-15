@@ -9,7 +9,8 @@ from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 from datetime import datetime
-from dataclasses import dataclass
+from dataclasses import dataclass,field
+from typing import List
 import os
 
 @dataclass
@@ -18,7 +19,9 @@ class Clamp():
     experiment_name: str = None
     experiment_start_time: str = None
     experiment_mode: str = None
-
+    experiment_od_array:  List[int] = field(default_factory=list)
+    experiment_RFP_array: List[int] = field(default_factory=list)
+    experiment_GFP_array: List[int] = field(default_factory=list)
 eventlet.monkey_patch()
 
 app = Flask(__name__)
@@ -72,6 +75,10 @@ def pop_mac(mac_str):
 def index():
     return render_template("index.html")
 
+@app.route("/old")
+def index_old():
+    return render_template("index_old.html")
+
 @socketio.on("publish")
 def handle_publish(json_str):
     data = json.loads(json_str)
@@ -119,7 +126,10 @@ def handle_data(client, userdata, message):
     if clamp_list:
         payload_dict = json.loads(message.payload.decode())
         date = clamp_list[int(payload_dict["ID"])].experiment_start_time
-        
+        clamp_list[int(payload_dict["ID"])].experiment_od_array.append(int(payload_dict["DATA"][0]))
+        clamp_list[int(payload_dict["ID"])].experiment_RFP_array.append(int(payload_dict["DATA"][1]))
+        clamp_list[int(payload_dict["ID"])].experiment_GFP_array.append(int(payload_dict["DATA"][2]))
+        print(clamp_list[int(payload_dict["ID"])].experiment_od_array)
         if clamp_list[int(payload_dict["ID"])].experiment_mode == "1":
             mode = "LOW"
         elif clamp_list[int(payload_dict["ID"])].experiment_mode == "2":
@@ -206,9 +216,9 @@ if __name__ == "__main__":
     #     mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
     #     mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
     #     mqtt.publish("lab/control/AGCToggle", payload=None, qos=qos, retain=True)
-    os.system("sudo systemctl stop mosquitto")
+    os.system("sudo service mosquitto stop")
     os.system("sudo rm /var/lib/mosquitto/mosquitto.db")
-    os.system("sudo systemctl start mosquitto")
+    os.system("sudo service mosquitto start")
     
 
     # Subscribing to relevant MQTT Topics

@@ -208,17 +208,24 @@ def handle_experimentStart(client, userdata, message):
 
 if __name__ == "__main__":
     # Clearing Retained Messages
-    #     mqtt.publish("lab/control/login", payload=None, qos=qos, retain=True)
-    #     mqtt.publish("lab/control/loginResponse", payload=None, qos=qos, retain=True)
-    #     mqtt.publish("lab/control/logout", payload=None, qos=qos, retain=True)
-    #     mqtt.publish("lab/data", payload=None, qos=qos, retain=True)
-    #     mqtt.publish("lab/battery", payload=None, qos=qos, retain=True)
-    #     mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
-    #     mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
-    #     mqtt.publish("lab/control/AGCToggle", payload=None, qos=qos, retain=True)
-    os.system("sudo service mosquitto stop")
+    mqtt.publish("lab/control/login", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/loginResponse", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/logout", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/data", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/battery", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
+    mqtt.publish("lab/control/AGCToggle", payload=None, qos=qos, retain=True)
+    
+    #on MACOS
+    os.system("brew services stop mosquitto")
     os.system("sudo rm /var/lib/mosquitto/mosquitto.db")
-    os.system("sudo service mosquitto start")
+    os.system("brew services start mosquitto")
+    
+    # ON WSL
+    #os.system("sudo service mosquitto stop")
+    #os.system("sudo rm /var/lib/mosquitto/mosquitto.db")
+    #os.system("sudo service mosquitto start")
     
 
     # Subscribing to relevant MQTT Topics

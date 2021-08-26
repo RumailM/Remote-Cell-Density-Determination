@@ -4,7 +4,7 @@ Flask-MQTT Webserver for Raspberry Pi remote processing unit
 import logging
 import eventlet
 import json
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
@@ -46,23 +46,30 @@ qos = 0
 
 #Parameters
 clamp_list = []
-
+isPushed = False
+Connectivity = "Not Connected";
 def push_mac(mac_str):
     #Adds MAC Address and returns device ID, call when device logs in
     id = 0
-    isPushed = False
+    global isPushed
+    global Connectivity
     for i in range(len(clamp_list)):
         if clamp_list[i].mac_addr==mac_str:
             isPushed = True
+            Connectivity = "Connected"
             id = i
             print("Existing cached MAC Address " + mac_str + " found at id " + str(id))
             break
     if not isPushed:
+        Connectivity = "Not Connected"
         clamp_list.append(Clamp(mac_addr=mac_str))
         id = len(clamp_list) - 1
         print("Succesfully cached MAC Address " + mac_str + " at id " + str(id))
-    
+
     return id
+
+
+
 
 def pop_mac(mac_str):
     # Removes MAC Adress and frees up an ID, call when device logs out
@@ -73,11 +80,17 @@ def pop_mac(mac_str):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    #return render_template("index.html")
+    return (render_template('index.html'))
+
+@app.route("/update_device_status", methods=['GET','POST'])
+def updatestatus():
+    return jsonify(Connectivity)
+
 
 @app.route("/old")
 def index_old():
-    return render_template("index_old.html")
+    return render_template('index_old.html', x=Connectivity)
 
 @socketio.on("publish")
 def handle_publish(json_str):
@@ -85,7 +98,7 @@ def handle_publish(json_str):
     mqtt.publish(data["topic"], data["message"], data["qos"])
 
 @socketio.on("experimentStart")
-def handle_experimentStart(json_str):   
+def handle_experimentStart(json_str):
     mqtt.publish("lab/control/experimentStart", json_str, qos)
 
 @socketio.on("experimentStop")
@@ -119,7 +132,7 @@ def handle_logging(client, userdata, level, buf):
 
 @mqtt.on_topic("lab/data")
 def handle_data(client, userdata, message):
-    
+
     print("Received message on topic {}: {}"
         .format(message.topic, message.payload.decode()))
 
@@ -137,9 +150,9 @@ def handle_data(client, userdata, message):
         else:
             mode = "ALL"
 
-        file_name = ("./tests/" + clamp_list[int(payload_dict["ID"])].experiment_name + "-" +
-                    mode + "-" +
-                    date + ".txt")
+        file_name = ("./tests/" + str(clamp_list[int(payload_dict["ID"])].experiment_name) + str("-") +
+                    str(mode) + str("-") +
+                    str(date) + ".txt")
 
         file_descriptor = open(file_name,"a")
         file_descriptor.write(message.payload.decode())
@@ -170,10 +183,10 @@ def _login(client, userdata, message):
 
     print("Received message on topic {}: {}"
         .format(message.topic, message.payload.decode()))
-    
+
     payload_dict = json.loads(message.payload.decode())
     pop_mac(payload_dict["MAC"])
-        
+
 
 @mqtt.on_topic("lab/control/experimentStart")
 def handle_experimentStart(client, userdata, message):
@@ -216,17 +229,17 @@ if __name__ == "__main__":
     mqtt.publish("lab/control/experimentStart", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/control/experimentStop", payload=None, qos=qos, retain=True)
     mqtt.publish("lab/control/AGCToggle", payload=None, qos=qos, retain=True)
-    
+
     #on MACOS
     os.system("brew services stop mosquitto")
     os.system("sudo rm /var/lib/mosquitto/mosquitto.db")
     os.system("brew services start mosquitto")
-    
+
     # ON WSL
     #os.system("sudo service mosquitto stop")
     #os.system("sudo rm /var/lib/mosquitto/mosquitto.db")
     #os.system("sudo service mosquitto start")
-    
+
 
     # Subscribing to relevant MQTT Topics
     mqtt.subscribe("lab/control/login", qos)

@@ -20,12 +20,160 @@ let IntervalFunction5;
 let IntervalFunction6;
 let IntervalFunction7;
 let IntervalFunction8;
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+jQuery(function ($) {
+  // The dollar sign will equal jQuery in this scope
+
+  $(function(){
+  	window.setInterval(function(){
+	  	loadDeviceStatus()
+	  }, 500)
+
+	  function loadDeviceStatus(){
+	  	$.ajax({
+	  		url:"/update_device_status",
+	  		type: "POST",
+	  		dataType: "json",
+		  	success: function(data){
+
+          console.log(data);
+         if (data == 'Not Connected')
+         {
+           document.getElementById("thumbnail1").className = "thumbnailRed"
+           document.getElementById("wifi1").innerHTML = "wifi_off";
+           document.getElementById("thumbnail2").className = "thumbnailRed"
+           document.getElementById("wifi2").innerHTML = "wifi_off";
+           document.getElementById("thumbnail3").className = "thumbnailRed"
+           document.getElementById("wifi3").innerHTML = "wifi_off";
+           document.getElementById("thumbnail4").className = "thumbnailRed"
+           document.getElementById("wifi4").innerHTML = "wifi_off";
+           document.getElementById("thumbnail5").className = "thumbnailRed"
+           document.getElementById("wifi5").innerHTML = "wifi_off";
+           document.getElementById("thumbnail6").className = "thumbnailRed"
+           document.getElementById("wifi6").innerHTML = "wifi_off";
+           document.getElementById("thumbnail7").className = "thumbnailRed"
+           document.getElementById("wifi7").innerHTML = "wifi_off";
+           document.getElementById("thumbnail8").className = "thumbnailRed"
+           document.getElementById("wifi8").innerHTML = "wifi_off";
+          }
+        
+				  //$(devicestatus1).replaceWith(data)
+				  //$(devicestatus2).replaceWith(data)
+				  //$(devicestatus3).replaceWith(data)
+				  //$(devicestatus4).replaceWith(data)
+				  //$(devicestatus5).replaceWith(data)
+				  //$(devicestatus6).replaceWith(data)
+				  //$(devicestatus7).replaceWith(data)
+				  //$(devicestatus8).replaceWith(data)
+			  }
+		  });
+	  }
+  });
+});
+
+var notiftypeflask="";
+var notifcompareflask="";
+
+  // to display slider value:
+      var slider1 = document.getElementById("Range1");
+      var output1 = document.getElementById("demo1");
+       // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+    slider1.oninput = function() {
+    output1.innerHTML = ((this.value)/100).toFixed(2);
+
+}
+
+// to display slider value:
+var slider2 = document.getElementById("Range2");
+var output2 = document.getElementById("demo2");
+output2.innerHTML = ((slider2.value)/100).toFixed(2); // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider2.oninput = function() {
+  output2.innerHTML = ((this.value)/100).toFixed(2);
+
+}
+
+// to display slider value:
+var slider3 = document.getElementById("Range3");
+var output3 = document.getElementById("demo3");
+output3.innerHTML = ((slider3.value)/100).toFixed(2); // Display the default slider value
+
+
+// Update the current slider value (each time you drag the slider handle)
+slider3.oninput = function() {
+  output3.innerHTML = ((this.value)/100).toFixed(2);
+
+}
+
+// to display slider value:
+var slider4 = document.getElementById("Range4");
+var output4 = document.getElementById("demo4");
+output4.innerHTML = ((slider4.value)/100).toFixed(2); // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider4.oninput = function() {
+  output4.innerHTML = ((this.value)/100).toFixed(2);
+}
+
+// to display slider value:
+var slider5 = document.getElementById("Range5");
+var output5 = document.getElementById("demo5");
+output5.innerHTML = ((slider5.value)/100).toFixed(2); // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider5.oninput = function() {
+  output5.innerHTML = ((this.value)/100).toFixed(2);
+}
+
+// to display slider value:
+var slider6 = document.getElementById("Range6");
+var output6 = document.getElementById("demo6");
+output6.innerHTML = ((slider6.value)/100).toFixed(2); // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider6.oninput = function() {
+  output6.innerHTML = ((this.value)/100).toFixed(2);
+}
+
+// to display slider value:
+var slider7 = document.getElementById("Range7");
+var output7 = document.getElementById("demo7");
+output7.innerHTML = ((slider7.value)/100).toFixed(2); // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider7.oninput = function() {
+  output7.innerHTML = ((this.value)/100).toFixed(2);
+}
+
+// to display slider value:
+var slider8 = document.getElementById("Range8");
+var output8 = document.getElementById("demo8");
+output8.innerHTML = ((slider8.value)/100).toFixed(2); // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider8.oninput = function() {
+  output8.innerHTML = ((this.value)/100).toFixed(2);
+  console.log(output8.HTML);
+}
+
 
 //Function to calculate time elapsed, create live plot
 
 //$('lineChart1').hide(); //Do not show plot until Start/Stop is pressed
 $('buttonone').observe('click', function(event) { //check whether Start/Stop of Flask 1 is pressed
 	clicks1++;
+
+	var FlaskID = 0;
+	var name = document.getElementById('ExFlask1').value;
+
+	//var read_band_mode = $('#message_start_read_band_mode').val();
+
+	var data = '{"CLR": "' + 1 + '", "ID": "' + FlaskID + '", "experimentName": "' + name + '", "WKE": "' + 10 + '", "SLP": "' + 50 + '", "MODE": "' + 2 +'"}';
+	socket.emit('experimentStart', data=data);
 
 	var dropdownvalue1="";
   var e = document.getElementById("SelectedPlotFlask1");
@@ -35,14 +183,13 @@ $('buttonone').observe('click', function(event) { //check whether Start/Stop of 
     if (clicks1 == 1)
   {
 
-    var Email1 = document.getElementById('Email1').value
-    if (Email1 == "")
-    {
-      alert("Please enter your email address!")
-    }
 
     startTime = new Date();
     //$('lineChart1').show();
+		var dropdownvalue1="";
+		var e = document.getElementById("SelectedPlotFlask1");
+		dropdownvalue1 = e.options[e.selectedIndex].text; //read the drop down menu value
+		console.log(dropdownvalue1);
 
 var canvas = document.getElementById('lineChart1');
 var data = {
@@ -119,7 +266,7 @@ var myLineChart = Chart.Line(canvas,{
   else if (clicks1 == 2)
   {
   	clearInterval(IntervalFunction1);
-    
+
   	endTime = new Date();
     TimeDiff = endTime - startTime;
     TimeDiff /= 1000;
@@ -182,6 +329,30 @@ var myLineChart_new = Chart.Line(canvas_new,{
   options:option_new
 });
 
+var Email1 = document.getElementById('Email1').value;
+ // console.log(Email1);
+	if (Email1 == "")
+	{
+		alert("Please enter your email address!")
+	}
+	else
+	{
+
+			var notiftypeflask1 = "";
+			var flask1_type = document.getElementById("NotifTypeFlask1");
+			notiftypeflask1 = flask1_type.options[flask1_type.selectedIndex].text;
+
+			//console.log(notiftypeflask1);
+
+			var notifcompareflask1="";
+			var compare_flask1 = document.getElementById("NotifCompareFlask1");
+			notifcompareflask1 = compare_flask1.options[compare_flask1.selectedIndex].text;
+		console.log(Email1);
+	  console.log(notifcompareflask1);
+		console.log(output1.innerHTML);
+		console.log(notifcompareflask1);
+		sendEmail(Email1, output1.innerHTML, notiftypeflask1, notifcompareflask1);
+	}
   }
 
 });
@@ -198,12 +369,7 @@ $('buttontwo').observe('click', function(event) { //check whether Start/Stop of 
   //alert(clicks);
     if (clicks2 == 1) //check if the user wishes to start the experiment (number of clicks  = 1)
   {
-    var Email2 = document.getElementById('Email1').value
-    if (Email2 == "")
-    {
-      alert("Please enter your email address!")
-    }
-    startTime = new Date();
+  	startTime = new Date();
     //$('lineChart2').show(); //display plot when Start is pressed
 
 var canvas = document.getElementById('lineChart2');
@@ -289,6 +455,26 @@ var myLineChart = Chart.Line(canvas,{
 
       // get seconds
      var seconds = Math.round(TimeDiff);
+
+     var Email2 = document.getElementById('Email2').value
+     if (Email2 == "")
+     {
+       alert("Please enter your email address!")
+     }
+
+       var notiftypeflask2 = "";
+       var flask2_type = document.getElementById("NotifTypeFlask2");
+       notiftypeflask2 = flask2_type.options[flask2_type.selectedIndex].text;
+
+       //console.log(notiftypeflask1);
+
+       var notifcompareflask2="";
+       var compare_flask2 = document.getElementById("NotifCompareFlask2");
+       notifcompareflask2 = compare_flask2.options[compare_flask2.selectedIndex].text;
+
+  // console.log(notifcompareflask1);
+ 		sendEmail(Email2, output2.innerHTML, notiftypeflask2, notifcompareflask2);
+
     // alert('The time elapsed is ' + seconds + 's');
 
 	//	console.log(data_final);
@@ -349,6 +535,7 @@ var myLineChart_new = Chart.Line(canvas_new,{
 
 });
 
+
 //Function to calculate time elapsed, create live plot
 //$('lineChart3').hide(); //Do not show plot until Start/Stop is pressed
 $('buttonthree').observe('click', function(event) { //check whether Start/Stop of Flask 1 is pressed
@@ -360,11 +547,7 @@ $('buttonthree').observe('click', function(event) { //check whether Start/Stop o
   //alert(clicks);
     if (clicks3 == 1) //check if the user wishes to start the experiment (number of clicks  = 1)
   {
-    var Email3 = document.getElementById('Email1').value
-    if (Email3 == "")
-    {
-      alert("Please enter your email address!")
-    }
+
     startTime = new Date();
   //  $('lineChart3').show(); //display plot when Start is pressed
 
@@ -450,6 +633,24 @@ var myLineChart = Chart.Line(canvas,{
 
       // get seconds
      var seconds = Math.round(TimeDiff);
+
+     var Email3 = document.getElementById('Email3').value
+     if (Email3 == "")
+     {
+       alert("Please enter your email address!")
+     }
+     var notiftypeflask3 = "";
+     var flask3_type = document.getElementById("NotifTypeFlask3");
+     notiftypeflask3 = flask3_type.options[flask3_type.selectedIndex].text;
+
+     //console.log(notiftypeflask1);
+
+     var notifcompareflask3="";
+     var compare_flask3 = document.getElementById("NotifCompareFlask3");
+     notifcompareflask3 = compare_flask3.options[compare_flask3.selectedIndex].text;
+
+// console.log(notifcompareflask1);
+  sendEmail(Email3, output3.innerHTML, notiftypeflask3, notifcompareflask3);
   //   alert('The time elapsed is ' + seconds + 's');
 
 	//	console.log(data_final);
@@ -510,6 +711,7 @@ var myLineChart_new = Chart.Line(canvas_new,{
 
 });
 
+
 //Function to calculate time elapsed, create live plot
 //$('lineChart4').hide(); //Do not show plot until Start/Stop is pressed
 $('buttonfour').observe('click', function(event) { //check whether Start/Stop of Flask 1 is pressed
@@ -521,11 +723,7 @@ $('buttonfour').observe('click', function(event) { //check whether Start/Stop of
   //alert(clicks);
     if (clicks4 == 1) //check if the user wishes to start the experiment (number of clicks = 1)
   {
-    var Email4 = document.getElementById('Email1').value
-    if (Email4 == "")
-    {
-      alert("Please enter your email address!")
-    }
+
     startTime = new Date();
   //  $('lineChart4').show(); //display plot when Start is pressed
 
@@ -611,6 +809,26 @@ var myLineChart = Chart.Line(canvas,{
 
       // get seconds
      var seconds = Math.round(TimeDiff);
+
+     var Email4 = document.getElementById('Email4').value
+     if (Email4 == "")
+     {
+       alert("Please enter your email address!")
+     }
+
+     var notiftypeflask4 = "";
+     var flask4_type = document.getElementById("NotifTypeFlask4");
+     notiftypeflask4 = flask4_type.options[flask4_type.selectedIndex].text;
+
+     //console.log(notiftypeflask1);
+
+     var notifcompareflask4="";
+     var compare_flask4 = document.getElementById("NotifCompareFlask4");
+     notifcompareflask4 = compare_flask4.options[compare_flask4.selectedIndex].text;
+
+// console.log(notifcompareflask1);
+  sendEmail(Email4, output4.innerHTML, notiftypeflask4, notifcompareflask4);
+
   //   alert('The time elapsed is ' + seconds + 's');
 
 	//	console.log(data_final);
@@ -671,6 +889,7 @@ var myLineChart_new = Chart.Line(canvas_new,{
 
 });
 
+
 //Function to calculate time elapsed, create live plot
 //$('lineChart5').hide(); //Do not show plot until Start/Stop is pressed
 $('buttonfive').observe('click', function(event) { //check whether Start/Stop of Flask 1 is pressed
@@ -682,11 +901,6 @@ $('buttonfive').observe('click', function(event) { //check whether Start/Stop of
   //alert(clicks);
     if (clicks5 == 1) //check if the user wishes to start the experiment (number of clicks  = 1)
   {
-    var Email5 = document.getElementById('Email1').value
-    if (Email5 == "")
-    {
-      alert("Please enter your email address!")
-    }
     startTime = new Date();
 //    $('lineChart5').show(); //display plot when Start is pressed
 
@@ -772,6 +986,24 @@ var myLineChart = Chart.Line(canvas,{
 
       // get seconds
      var seconds = Math.round(TimeDiff);
+
+     var Email5 = document.getElementById('Email5').value
+     if (Email5 == "")
+     {
+       alert("Please enter your email address!")
+     }
+     var notiftypeflask5 = "";
+     var flask5_type = document.getElementById("NotifTypeFlask5");
+     notiftypeflask5 = flask5_type.options[flask5_type.selectedIndex].text;
+
+     //console.log(notiftypeflask1);
+
+     var notifcompareflask5="";
+     var compare_flask5 = document.getElementById("NotifCompareFlask5");
+     notifcompareflask5 = compare_flask5.options[compare_flask5.selectedIndex].text;
+
+// console.log(notifcompareflask1);
+  sendEmail(Email5, output5.innerHTML, notiftypeflask5, notifcompareflask5);
   //   alert('The time elapsed is ' + seconds + 's');
 
 	//	console.log(data_final);
@@ -843,11 +1075,6 @@ $('buttonsix').observe('click', function(event) { //check whether Start/Stop of 
   //alert(clicks);
     if (clicks6 == 1) //check if the user wishes to start the experiment (number of clicks  = 1)
   {
-    var Email6 = document.getElementById('Email1').value
-    if (Email6 == "")
-    {
-      alert("Please enter your email address!")
-    }
     startTime = new Date();
   //  $('lineChart6').show(); //display plot when Start is pressed
 
@@ -933,6 +1160,24 @@ var myLineChart = Chart.Line(canvas,{
 
       // get seconds
      var seconds = Math.round(TimeDiff);
+
+     var Email6 = document.getElementById('Email6').value
+     if (Email6 == "")
+     {
+       alert("Please enter your email address!")
+     }
+     var notiftypeflask6 = "";
+     var flask6_type = document.getElementById("NotifTypeFlask6");
+     notiftypeflask6 = flask6_type.options[flask6_type.selectedIndex].text;
+
+     //console.log(notiftypeflask1);
+
+     var notifcompareflask6="";
+     var compare_flask6 = document.getElementById("NotifCompareFlask6");
+     notifcompareflask6 = compare_flask6.options[compare_flask6.selectedIndex].text;
+
+// console.log(notifcompareflask1);
+  sendEmail(Email6, output6.innerHTML, notiftypeflask6, notifcompareflask6);
   //   alert('The time elapsed is ' + seconds + 's');
 
 	//	console.log(data_final);
@@ -1005,11 +1250,6 @@ $('buttonseven').observe('click', function(event) { //check whether Start/Stop o
   //alert(clicks);
     if (clicks7 == 1) //check if the user wishes to start the experiment (number of clicks  = 1)
   {
-    var Email7 = document.getElementById('Email1').value
-    if (Email7 == "")
-    {
-      alert("Please enter your email address!")
-    }
     startTime = new Date();
     //$('lineChart7').show(); //display plot when Start is pressed
 
@@ -1095,6 +1335,24 @@ var myLineChart = Chart.Line(canvas,{
 
       // get seconds
      var seconds = Math.round(TimeDiff);
+
+     var Email7 = document.getElementById('Email7').value
+     if (Email7 == "")
+     {
+       alert("Please enter your email address!")
+     }
+     var notiftypeflask7 = "";
+     var flask7_type = document.getElementById("NotifTypeFlask7");
+     notiftypeflask7 = flask7_type.options[flask7_type.selectedIndex].text;
+
+     //console.log(notiftypeflask1);
+
+     var notifcompareflask7="";
+     var compare_flask7 = document.getElementById("NotifCompareFlask7");
+     notifcompareflask7 = compare_flask7.options[compare_flask7.selectedIndex].text;
+
+// console.log(notifcompareflask1);
+  sendEmail(Email7, output7.innerHTML, notiftypeflask7, notifcompareflask7);
   //   alert('The time elapsed is ' + seconds + 's');
 
 	//	console.log(data_final);
@@ -1166,11 +1424,6 @@ $('buttoneight').observe('click', function(event) { //check whether Start/Stop o
   //alert(clicks);
     if (clicks8 == 1) //check if the user wishes to start the experiment (number of clicks = 1)
   {
-    var Email8 = document.getElementById('Email1').value
-    if (Email8 == "")
-    {
-      alert("Please enter your email address!")
-    }
     startTime = new Date();
   //  $('lineChart8').show(); //display plot when Start is pressed
 
@@ -1256,6 +1509,24 @@ var myLineChart = Chart.Line(canvas,{
 
       // get seconds
      var seconds = Math.round(TimeDiff);
+
+     var Email8 = document.getElementById('Email8').value
+     if (Email8 == "")
+     {
+       alert("Please enter your email address!")
+     }
+     var notiftypeflask8 = "";
+     var flask8_type = document.getElementById("NotifTypeFlask8");
+     notiftypeflask8 = flask8_type.options[flask8_type.selectedIndex].text;
+
+     //console.log(notiftypeflask1);
+
+     var notifcompareflask8="";
+     var compare_flask8 = document.getElementById("NotifCompareFlask8");
+     notifcompareflask8 = compare_flask8.options[compare_flask8.selectedIndex].text;
+
+// console.log(notifcompareflask1);
+  sendEmail(Email8, output8.innerHTML, notiftypeflask8, notifcompareflask8);
   //   alert('The time elapsed is ' + seconds + 's');
 
 	//	console.log(data_final);
@@ -1454,82 +1725,14 @@ navigator.getBattery()
 
 });
 
-// to display slider value:
-var slider1 = document.getElementById("Range1");
-var output1 = document.getElementById("demo1");
-output1.innerHTML = ((slider1.value)/100).toFixed(2); // Display the default slider value
-
-// Update the current slider value (each time you drag the slider handle)
-  slider1.oninput = function() {
-  output1.innerHTML = ((this.value)/100).toFixed(2);
-}
-
-// to display slider value:
-var slider2 = document.getElementById("Range2");
-var output2 = document.getElementById("demo2");
-output2.innerHTML = ((slider2.value)/100).toFixed(2); // Display the default slider value
-
-// Update the current slider value (each time you drag the slider handle)
-slider2.oninput = function() {
-  output2.innerHTML = ((this.value)/100).toFixed(2);
-}
-
-// to display slider value:
-var slider3 = document.getElementById("Range3");
-var output3 = document.getElementById("demo3");
-output3.innerHTML = ((slider3.value)/100).toFixed(2); // Display the default slider value
-
-// Update the current slider value (each time you drag the slider handle)
-slider3.oninput = function() {
-  output3.innerHTML = ((this.value)/100).toFixed(2);
-}
-
-// to display slider value:
-var slider4 = document.getElementById("Range4");
-var output4 = document.getElementById("demo4");
-output4.innerHTML = ((slider4.value)/100).toFixed(2); // Display the default slider value
-
-// Update the current slider value (each time you drag the slider handle)
-slider4.oninput = function() {
-  output4.innerHTML = ((this.value)/100).toFixed(2);
-}
-
-// to display slider value:
-var slider5 = document.getElementById("Range5");
-var output5 = document.getElementById("demo5");
-output5.innerHTML = ((slider5.value)/100).toFixed(2); // Display the default slider value
-
-// Update the current slider value (each time you drag the slider handle)
-slider5.oninput = function() {
-  output5.innerHTML = ((this.value)/100).toFixed(2);
-}
-
-// to display slider value:
-var slider6 = document.getElementById("Range6");
-var output6 = document.getElementById("demo6");
-output6.innerHTML = ((slider6.value)/100).toFixed(2); // Display the default slider value
-
-// Update the current slider value (each time you drag the slider handle)
-slider6.oninput = function() {
-  output6.innerHTML = ((this.value)/100).toFixed(2);
-}
-
-// to display slider value:
-var slider7 = document.getElementById("Range7");
-var output7 = document.getElementById("demo7");
-output7.innerHTML = ((slider7.value)/100).toFixed(2); // Display the default slider value
-
-// Update the current slider value (each time you drag the slider handle)
-slider7.oninput = function() {
-  output7.innerHTML = ((this.value)/100).toFixed(2);
-}
-
-// to display slider value:
-var slider8 = document.getElementById("Range8");
-var output8 = document.getElementById("demo8");
-output8.innerHTML = ((slider8.value)/100).toFixed(2); // Display the default slider value
-
-// Update the current slider value (each time you drag the slider handle)
-slider8.oninput = function() {
-  output8.innerHTML = ((this.value)/100).toFixed(2);
+function sendEmail(email_address, value, type, comparison) {
+	Email.send({
+    Host : "smtp.elasticemail.com",
+    Username : "smartclampautomated@gmail.com",
+    Password : "B733BFEC6C07FB900B7FEB56623610D13999",
+    To: email_address,
+    From : "smartclampautomated@gmail.com",
+    Subject : "WARNING: " + type + " Level Alert",
+    Body : "The value of " + type + " is " + comparison + " " + value,
+  });
 }

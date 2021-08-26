@@ -72,8 +72,22 @@ h1 {
 	margin-right: 1%;
 	border-radius: 10px;
 	padding-top: 20px;
-	border-bottom: 10px solid #93d46e;
-	border-top: 10px solid #93d46e;
+	border-bottom: 12px solid #93d46e;
+	border-top: 12px solid #93d46e;
+}
+.thumbnailRed {
+		width: 21%;
+		text-align: center;
+		float: left;
+		margin-top: 35px;
+		background-color: #F5F5F5;
+		padding-bottom: 20px;
+		margin-left: 1%;
+		margin-right: 1%;
+		border-radius: 10px;
+		padding-top: 20px;
+		border-bottom: 12px solid #a73a1f;
+		border-top: 12px solid #a73a1f;
 }
 .gallery .thumbnail h4 {
 	margin-top: 5px;
@@ -91,6 +105,30 @@ h1 {
 	padding-left: 20px;
 }
 .gallery .thumbnail .statusResult {
+	color: #5D5E5D;
+	padding-bottom: 4px;
+	padding-top: 4px;
+	text-align: left;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.gallery .thumbnailRed h4 {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: #000000;
+	text-align: left;
+	padding-left: 20px;
+	padding-right: 20px;
+	font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+}
+.gallery .thumbnailRed p {
+	margin: 0;
+	color: #B3B3B3;
+	text-align: left;
+	padding-left: 20px;
+}
+.gallery .thumbnailRed .statusResult {
 	color: #5D5E5D;
 	padding-bottom: 4px;
 	padding-top: 4px;
@@ -204,6 +242,15 @@ footer {
 	width: 50%;
 }
 .gallery .thumbnail .tag {
+	color: #5D5E5D;
+	padding-bottom: 4px;
+	padding-top: 4px;
+	text-align: left;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.gallery .thumbnailRed .tag {
 	color: #5D5E5D;
 	padding-bottom: 4px;
 	padding-top: 4px;

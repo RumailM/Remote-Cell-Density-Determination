@@ -36,7 +36,8 @@ bool Smartclamp_AS7341::initializeSensor()
 {
     if (!Smartclamp_AS7341::begin())
     {
-        Serial.println("Could not find AS7341");
+        if(serialDebug)
+            Serial.println("Could not find AS7341");
         return false;
     }
     // Set up the integration time step count

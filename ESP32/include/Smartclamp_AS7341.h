@@ -37,6 +37,8 @@
 
 #include <vector>
 
+const extern bool serialDebug;
+
 const float possibleGains[11] = {0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
 const as7341_gain_t AS7341_gain[11] = {AS7341_GAIN_0_5X, AS7341_GAIN_1X, AS7341_GAIN_2X,
                                        AS7341_GAIN_4X, AS7341_GAIN_8X, AS7341_GAIN_16X,

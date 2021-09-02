@@ -11,7 +11,7 @@
 
 ///////////////////   CONSTANTS    ///////////////
 
-const extern bool serialDebug = false;
+const bool serialDebug = false;
 const bool rawCountsMode = true;
 
 ///////////////////   GLOBAL     ///////////////
@@ -38,7 +38,8 @@ void setup()
     // Initialize AS7341 Optical Sensor
     if (!as7341.initializeSensor())
     {
-        Serial.println("ERROR: Failed to communicate with AS7341");
+        if(serialDebug)
+            Serial.println("ERROR: Failed to communicate with AS7341");
         delay(10000);
     }
 
@@ -53,11 +54,14 @@ void setup()
 
     // Intitialize MQTT Communication
     if (!MQTT.setClientPtr(&client))
-        Serial.println("ERROR: MQTT client_ptr is null!");
+        if(serialDebug)
+            Serial.println("ERROR: MQTT client_ptr is null!");
     if (!MQTT.setSensorPtr(&as7341))
-        Serial.println("ERROR: MQTT sensor_ptr is null!");
+        if(serialDebug)
+            Serial.println("ERROR: MQTT sensor_ptr is null!");
     if (!MQTT.setLEDPtr(&lz7))
-        Serial.println("ERROR: MQTT led_ptr is null!");
+        if(serialDebug)
+            Serial.println("ERROR: MQTT led_ptr is null!");
     MQTT.setIdentifier(-99);
     MQTT.connectWifi();
     MQTT.connectMQTT();

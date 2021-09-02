@@ -37,29 +37,36 @@ bool Smartclamp_Communication::deserializeJsonHandleError(JsonDocument& doc, byt
 
     if (err)
     {
-        Serial.print(F("deserializeJson() failed: "));
-        Serial.println(err.f_str());
+        if(serialDebug)
+            Serial.print(F("deserializeJson() failed: "));
+        if(serialDebug)
+            Serial.println(err.f_str());
 
         switch (err.code())
         {
             case DeserializationError::EmptyInput:
-                Serial.println(F("Resetting handshake and identification flags..."));
+                if(serialDebug)
+                    Serial.println(F("Resetting handshake and identification flags..."));
                 flag_handshake = false;
                 flag_identification = false;
                 flag_start = false;
                 led_ptr->setupLED();
                 break;
             case DeserializationError::Ok:
-                Serial.println(F("Deserialization succeeded"));
+                if(serialDebug)
+                    Serial.println(F("Deserialization succeeded"));
                 break;
             case DeserializationError::InvalidInput:
-                Serial.println(F("Invalid input!"));
+                if(serialDebug)
+                    Serial.println(F("Invalid input!"));
                 break;
             case DeserializationError::NoMemory:
-                Serial.println(F("Not enough memory"));
+                if(serialDebug)
+                    Serial.println(F("Not enough memory"));
                 break;
             default:
-                Serial.println(F("Default error"));
+                if(serialDebug) 
+                    Serial.println(F("Default error"));
                 break;
         }
     }
@@ -76,7 +83,8 @@ bool Smartclamp_Communication::deserializeJsonHandleError(JsonDocument& doc, byt
 void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int length)
 {
     flag_handshake = true;
-    Serial.println("Login Response received.");
+    if(serialDebug)
+        Serial.println("Login Response received.");
     
     StaticJsonDocument<256> doc;
     if (!deserializeJsonHandleError(doc, payload, length))
@@ -87,35 +95,42 @@ void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int
         {
             // Assign unique identifier and unsub from loginResponse topic
             identifier = doc["ID"];
-            Serial.printf("Device ID: %d\n", identifier);
+            if(serialDebug)
+                Serial.printf("Device ID: %d\n", identifier);
 
             if (client_ptr->unsubscribe(topic_login_response))
             {
-                Serial.println("Unsubscribed from loginResponse topic!");
+                if(serialDebug)
+                    Serial.println("Unsubscribed from loginResponse topic!");
             }
             else
             {
-                Serial.println("Failed to unsubscribe from loginResponse topic.");
+                if(serialDebug)
+                    Serial.println("Failed to unsubscribe from loginResponse topic.");
             }
 
             // Sub to experimentToggle topic
             if (client_ptr->subscribe(topic_experiment_start))
             {
-                Serial.println("Subscribed to experimentStart topic!");
+                if(serialDebug)
+                    Serial.println("Subscribed to experimentStart topic!");
             }
             else
             {
-                Serial.println("Failed to subscribe to experimentStart topic.");
+                if(serialDebug)
+                    Serial.println("Failed to subscribe to experimentStart topic.");
             }
 
             // Sub to AGCToggle topic
             if (client_ptr->subscribe(topic_AGC_toggle))
             {
-                Serial.println("Subscribed to AGCToggle topic!");
+                if(serialDebug)
+                    Serial.println("Subscribed to AGCToggle topic!");
             }
             else
             {
-                Serial.println("Failed to subscribe to AGCToggle topic.");
+                if(serialDebug)
+                    Serial.println("Failed to subscribe to AGCToggle topic.");
             }
 
             // Raise identification flag
@@ -152,71 +167,89 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                 uint16_t wakeTime = (uint16_t) doc["WKE"]; 
                 uint16_t sleepTime = (uint16_t) doc["SLP"]; 
 
-                Serial.print("ATIME set to ");
+                if(serialDebug)
+                    Serial.print("ATIME set to ");
                 if (atime != 0)
                 {
                     sensor_ptr->setATIME(atime);
-                    Serial.printf("custom value: %d\n", atime);
+                    if(serialDebug)
+                        Serial.printf("custom value: %d\n", atime);
                 }
                 else
                 {
                     sensor_ptr->setATIME(DEFAULT_ATIME);
-                    Serial.printf("default value: %d\n", DEFAULT_ATIME);
+                    if(serialDebug)
+                        Serial.printf("default value: %d\n", DEFAULT_ATIME);
                 }
-                Serial.print("ASTEP set to ");
+                if(serialDebug)
+                    Serial.print("ASTEP set to ");
                 if (astep != 0)
                 {
                     sensor_ptr->setASTEP(astep);
-                    Serial.printf("custom value: %d\n", astep);
+                    if(serialDebug)
+                        Serial.printf("custom value: %d\n", astep);
                 }
                 else
                 {
                     sensor_ptr->setASTEP(DEFAULT_ASTEP);
-                    Serial.printf("default value: %d\n", DEFAULT_ASTEP);
+                    if(serialDebug)
+                        Serial.printf("default value: %d\n", DEFAULT_ASTEP);
                 }
-                Serial.print("READ_BAND_MODE set to ");
+                if(serialDebug)
+                    Serial.print("READ_BAND_MODE set to ");
                 if (readMode == AS7341_READ_LOW_CHANNELS || readMode == AS7341_READ_HIGH_CHANNELS)
                 {
                     sensor_ptr->setReadBandMode(readMode);
-                    Serial.printf("custom value: %d\n", readMode);
+                    if(serialDebug)
+                        Serial.printf("custom value: %d\n", readMode);
                 }
                 else
                 {
                     sensor_ptr->setReadBandMode(DEFAULT_READ_BAND_MODE);
-                    Serial.printf("default value: %d\n", DEFAULT_READ_BAND_MODE);
+                    if(serialDebug)
+                        Serial.printf("default value: %d\n", DEFAULT_READ_BAND_MODE);
                 }
-                Serial.print("COLOR set to ");
+                if(serialDebug)
+                    Serial.print("COLOR set to ");
                 if (color == LZ7_COLOR_RED || color == LZ7_COLOR_GREEN || color == LZ7_COLOR_BLUE)
                 {
                     led_ptr->setColor(color);
-                    Serial.printf("custom value: %d\n", color);
+                    if(serialDebug)
+                        Serial.printf("custom value: %d\n", color);
                 }
                 else
                 {
                     led_ptr->setColor(DEFAULT_LZ7_COLOR);
-                    Serial.printf("default value: %d\n", DEFAULT_LZ7_COLOR);
+                    if(serialDebug)
+                        Serial.printf("default value: %d\n", DEFAULT_LZ7_COLOR);
                 }
-                Serial.print("WAKETIME set to ");
+                if(serialDebug)
+                    Serial.print("WAKETIME set to ");
                 if (wakeTime != 0)
                 {
                     led_ptr->setWakeTime(wakeTime);
-                    Serial.printf("custom value: %d seconds\n", wakeTime);
+                    if(serialDebug)
+                        Serial.printf("custom value: %d seconds\n", wakeTime);
                 }
                 else
                 {
                     led_ptr->setWakeTime(DEFAULT_WAKE_TIME);
-                    Serial.printf("default value: %d seconds\n", DEFAULT_WAKE_TIME);
+                    if(serialDebug)
+                        Serial.printf("default value: %d seconds\n", DEFAULT_WAKE_TIME);
                 }
-                Serial.print("SLEEPTIME set to ");
+                if(serialDebug)
+                    Serial.print("SLEEPTIME set to ");
                 if (sleepTime != 0)
                 {
                     led_ptr->setSleepTime(sleepTime);
-                    Serial.printf("custom value: %d seconds\n", sleepTime);
+                    if(serialDebug)
+                        Serial.printf("custom value: %d seconds\n", sleepTime);
                 }
                 else
                 {
                     led_ptr->setSleepTime(DEFAULT_SLEEP_TIME);
-                    Serial.printf("default value: %d seconds\n", DEFAULT_SLEEP_TIME);
+                    if(serialDebug)
+                        Serial.printf("default value: %d seconds\n", DEFAULT_SLEEP_TIME);
                 }
 
                 if (led_ptr->color != LZ7_COLOR_NONE)
@@ -232,28 +265,33 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                 // Unsub from experimentStart topic
                 if (client_ptr->unsubscribe(topic_experiment_start))
                 {
-                    Serial.println("Unsubscribed from experimentStart topic!");
+                    if(serialDebug) 
+                        Serial.println("Unsubscribed from experimentStart topic!");
                 }
                 else
                 {
-                    Serial.println("Failed to unsubscribe from experimentStart topic.");
+                    if(serialDebug)
+                        Serial.println("Failed to unsubscribe from experimentStart topic.");
                 }
 
                 // Sub to experimentStop topic
                 if (client_ptr->subscribe(topic_experiment_stop))
                 {
-                    Serial.println("Subscribed to experimentStop topic!");
+                    if(serialDebug)
+                        Serial.println("Subscribed to experimentStop topic!");
                 }
                 else
                 {
-                    Serial.println("Failed to subscribe to experimentStop topic.");
+                    if(serialDebug)
+                        Serial.println("Failed to subscribe to experimentStop topic.");
                 }
 
                 // Raise flag_start
                 flag_start = true;
             }
 
-            Serial.println("Experiment successfully started!");
+            if(serialDebug)
+                Serial.println("Experiment successfully started!");
         }
     }
 }
@@ -281,11 +319,13 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
                 // Unsub from experimentStop topic
                 if (client_ptr->unsubscribe(topic_experiment_stop))
                 {
-                    Serial.println("Unsubscribed from experimentStop topic!");
+                    if(serialDebug)
+                        Serial.println("Unsubscribed from experimentStop topic!");
                 }
                 else
                 {
-                    Serial.println("Failed to unsubscribe from experimentStop topic.");
+                    if(serialDebug)
+                        Serial.println("Failed to unsubscribe from experimentStop topic.");
                 }
 
                 if (led_ptr->color != LZ7_COLOR_NONE)
@@ -347,18 +387,21 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
                 // Sub to experimentStart topic
                 if (client_ptr->subscribe(topic_experiment_start))
                 {
-                    Serial.println("Subscribed to experimentStart topic!");
+                    if(serialDebug)
+                        Serial.println("Subscribed to experimentStart topic!");
                 }
                 else
                 {
-                    Serial.println("Failed to subscribe to experimentStart topic.");
+                    if(serialDebug)
+                        Serial.println("Failed to subscribe to experimentStart topic.");
                 }
 
                 // Lower flag_start
                 flag_start = false;
             }
 
-            Serial.println("Experiment successfully stopped!");
+            if(serialDebug)
+                Serial.println("Experiment successfully stopped!");
         }
     }
 }
@@ -382,7 +425,8 @@ void Smartclamp_Communication::callbackAGCToggle(byte* payload, unsigned int len
             {
                 sensor_ptr->automaticGainControl();
             }
-            Serial.println("Performed Automatic Gain Calibration (AGC)!");
+            if(serialDebug)
+                Serial.println("Performed Automatic Gain Calibration (AGC)!");
         }
     }
 }
@@ -400,14 +444,19 @@ void Smartclamp_Communication::callbackDefault(char* topic, byte* payload, unsig
     StaticJsonDocument<256> doc;
     deserializeJsonHandleError(doc, payload, length);
 
-    Serial.println("WARNING: Message arrived on unexpected topic");
-    Serial.println(topic);
-    Serial.println("Message payload:");
+    if(serialDebug)
+        Serial.println("WARNING: Message arrived on unexpected topic");
+    if(serialDebug)
+        Serial.println(topic);
+    if(serialDebug)
+        Serial.println("Message payload:");
     for (int i = 0; i < length; i++)
     {
-        Serial.print((char)payload[i]);
+        if(serialDebug)
+            Serial.print((char)payload[i]);
     }
-    Serial.println();
+    if(serialDebug)
+        Serial.println();
 }
 
 /**
@@ -448,7 +497,8 @@ void Smartclamp_Communication::callback(char* topic, uint8_t* payload, unsigned 
  */
 void Smartclamp_Communication::connectWifi()
 {
-    Serial.printf("Connecting to %s\n", ssid);
+    if(serialDebug)
+        Serial.printf("Connecting to %s\n", ssid);
 
     // Connect to the WiFi
     WiFi.begin(ssid, wifi_password);
@@ -461,9 +511,12 @@ void Smartclamp_Communication::connectWifi()
     }
 
     // Debugging - Output the IP Address and MAC Address
-    Serial.println("WiFi connected");
-    Serial.printf("IP address: %d.%d.%d.%d\n", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
-    Serial.printf("MAC address: %s\n", WiFi.macAddress().c_str());
+    if(serialDebug)
+        Serial.println("WiFi connected");
+    if(serialDebug)
+        Serial.printf("IP address: %d.%d.%d.%d\n", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
+    if(serialDebug)
+        Serial.printf("MAC address: %s\n", WiFi.macAddress().c_str());
 }
 
 /**
@@ -473,11 +526,13 @@ void Smartclamp_Communication::connectWifi()
 void Smartclamp_Communication::connectMQTT()
 {
     // Connect to MQTT Broker
-    Serial.println("Attempting to connect to MQTT server...");
+    if(serialDebug)
+        Serial.println("Attempting to connect to MQTT server...");
 
     if (client_ptr->connect(clientID, mqtt_username, mqtt_password))
     {
-        Serial.println("Connected to MQTT Broker!");
+        if(serialDebug)
+            Serial.println("Connected to MQTT Broker!");
         using std::placeholders::_1;
         using std::placeholders::_2;
         using std::placeholders::_3;
@@ -485,7 +540,8 @@ void Smartclamp_Communication::connectMQTT()
     }
     else
     {
-        Serial.println("Connection to MQTT Broker failed...");
+        if(serialDebug)
+            Serial.println("Connection to MQTT Broker failed...");
     }
 }
 
@@ -504,20 +560,24 @@ void Smartclamp_Communication::identifyHandshake()
     
     if (client_ptr->subscribe(topic_login_response))
     {
-        Serial.println("Subscribed to login response topic!");
+        if(serialDebug)
+            Serial.println("Subscribed to login response topic!");
     }
     else
     {
-        Serial.println("Failed to subscribe to login response topic.");
+        if(serialDebug)
+            Serial.println("Failed to subscribe to login response topic.");
     }
 
     if (client_ptr->publish(topic_login, buffer, n))
     {
-        Serial.println("MAC sent!");
+        if(serialDebug)
+            Serial.println("MAC sent!");
     }
     else
     {
-        Serial.println("String failed to send. Reconnecting to MQTT Broker and trying again");
+        if(serialDebug)
+            Serial.println("String failed to send. Reconnecting to MQTT Broker and trying again");
         connectMQTT();
     }
 }

@@ -22,6 +22,10 @@
 #include <Smartclamp_AS7341.h>
 #include <Smartclamp_LED.h>
 
+
+const extern bool serialDebug;
+
+
 class Smartclamp_Communication
 {
 public:

@@ -100,19 +100,25 @@ private:
 
 public:
     as7431_info_t as7341Info;
-    std::vector <uint16_t> readings;
-    uint16_t* readingsPointer;
-    std::vector <unsigned long> times;
-    std::vector <as7341_gain_t> gains;
-    std::vector <uint8_t> atimes;
-    std::vector <uint16_t> asteps;
+    // std::vector <uint16_t> readings;
+    // uint16_t* readingsPointer;
+    // std::vector <unsigned long> times;
+    // std::vector <as7341_gain_t> gains;
+    // std::vector <uint8_t> atimes;
+    // std::vector <uint16_t> asteps;
+    uint16_t subSamples[150][12];
+    unsigned long times[150];
+    as7341_gain_t gains[150];
+    uint8_t atimes[150];
+    uint16_t asteps[150];
+    int subSampleIndex = 0;
 
     Smartclamp_AS7341();
     ~Smartclamp_AS7341();
 
     bool initializeSensor();
     void updateSensorInfo();
-    bool initializeReadings();
+    // bool initializeReadings();
     bool readLowChannels(uint16_t *readings_buffer);
     bool readHighChannels(uint16_t *readings_buffer);
     bool printParameters(Stream &Serial);

@@ -259,8 +259,8 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                 }
 
                 sensor_ptr->automaticGainControl();
-                led_ptr->slp_millis = millis();
-                sensor_ptr->initializeReadings();
+                // led_ptr->slp_millis = millis();
+                // sensor_ptr->initializeReadings();
 
                 // Unsub from experimentStart topic
                 if (client_ptr->unsubscribe(topic_experiment_start))
@@ -336,7 +336,7 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
 
                 // Temporary copy paste inclusion
 
-                for (int j = 0; j < sensor_ptr->times.size(); ++j)
+                for (int j = 0; j < sensor_ptr->subSampleIndex; ++j)
                 {
                     StaticJsonDocument<256> doc;
                     doc["ID"] = getIdentifier();
@@ -350,26 +350,26 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
                     switch(sensor_ptr->getReadBandMode())
                     {
                         case AS7341_READ_ALL_CHANNELS:
-                            for (int i = 12*j; i < 12*j+12; ++i)
+                            for (int i = 0; i < 12; ++i)
                             {
                                 // we skip the first set of duplicate clear/NIR readings
                                 // (indices 4 and 5)
-                                if (i == 12*j+4 || i == 12*j+5)
+                                if (i == 4 || i == 5)
                                     continue;
                                 
-                                data.add(sensor_ptr->readings[i]);
+                                data.add(sensor_ptr->subSamples[j][i]);
                             }
                             break;
                         case AS7341_READ_LOW_CHANNELS:
-                            for (int i = 12*j; i < 12*j+6; ++i)
+                            for (int i = 0; i < 6; ++i)
                             {
-                                data.add(sensor_ptr->readings[i]);
+                                data.add(sensor_ptr->subSamples[j][i]);
                             }
                             break;
                         case AS7341_READ_HIGH_CHANNELS:
-                            for (int i = 12*j+6; i < 12*j+12; ++i)
+                            for (int i = 6; i < 12; ++i)
                             {
-                                data.add(sensor_ptr->readings[i]);
+                                data.add(sensor_ptr->subSamples[j][i]);
                             }
                             break;
                     }
@@ -382,7 +382,7 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
                     }
                 }
 
-                sensor_ptr->initializeReadings();
+                // sensor_ptr->initializeReadings();
 
                 // Sub to experimentStart topic
                 if (client_ptr->subscribe(topic_experiment_start))

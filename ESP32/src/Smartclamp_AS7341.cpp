@@ -68,26 +68,26 @@ void Smartclamp_AS7341::updateSensorInfo()
     as7341Info.intTime = (uint32_t)ceil((as7341Info.atime + 1) * (as7341Info.astep + 1) * 2.78 * 0.001);
 }
 
-/**
- * @brief Initializes empty samples vectors for data collection
- * 
- * @return true: success false: failure
- */
-bool Smartclamp_AS7341::initializeReadings()
-{  
-    readings.clear();
-    readings.reserve(12 * 10 * 60); // max 12 readings per sample, max 10 samples per second, max 60 seconds
-    readingsPointer = readings.data();
+// /**
+//  * @brief Initializes empty samples vectors for data collection
+//  * 
+//  * @return true: success false: failure
+//  */
+// bool Smartclamp_AS7341::initializeReadings()
+// {  
+//     readings.clear();
+//     readings.reserve(12 * 10 * 60); // max 12 readings per sample, max 10 samples per second, max 60 seconds
+//     readingsPointer = readings.data();
     
-    times.clear();
-    times.reserve(10 * 60); // max 10 samples per second, max 60 seconds
-    gains.clear();
-    gains.reserve(10 * 60); // max 10 samples per second, max 60 seconds
-    atimes.clear();
-    atimes.reserve(10 * 60); // max 10 samples per second, max 60 seconds
-    asteps.clear();
-    asteps.reserve(10 * 60); // max 10 samples per second, max 60 seconds
-}
+//     times.clear();
+//     times.reserve(10 * 60); // max 10 samples per second, max 60 seconds
+//     gains.clear();
+//     gains.reserve(10 * 60); // max 10 samples per second, max 60 seconds
+//     atimes.clear();
+//     atimes.reserve(10 * 60); // max 10 samples per second, max 60 seconds
+//     asteps.clear();
+//     asteps.reserve(10 * 60); // max 10 samples per second, max 60 seconds
+// }
 
 /**
  * @brief fills the provided buffer with the current measurements for Spectral

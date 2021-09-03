@@ -93,22 +93,32 @@ void loop(void)
     else if(startCalledBack == true && MQTT.getFlagStart() == false) 
     { // If recently stopped experiment, reset local flag
         startCalledBack = false;
-        if(serialDebug3)
+        if(serialDebug3){
             Serial.println("Reset startcalledbackf flag");
+            Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
+        }
     }
     else if (MQTT.getFlagIdentification() && MQTT.getFlagStart())
     {
+        Serial.println(">>flag started");
+        Serial.println("important flag is  :" + String(MQTT.getFlagStart()));
         if (startCalledBack == false )
         {
                 startCalledBack = true;
                 lz7.slp_millis = current_millis;
-                if(serialDebug3)
+                if(serialDebug3){
                     Serial.println("Updated sleep millis");
+                    Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
+
+                }
         }
 
         if (lz7.isAwake)
-        {
-            if (current_millis - lz7.slp_millis > 10 * 1000)
+        {               
+            Serial.println("line 116 lz7.isAwake");
+            Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
+            Serial.println("lz7.wakeTime is :" + String(lz7.wakeTime));
+            if (current_millis - lz7.slp_millis > lz7.wakeTime * 1000)
             {
                 lz7.isAwake = false;
                 if (lz7.color != LZ7_COLOR_NONE)
@@ -225,7 +235,11 @@ void loop(void)
         }
         else
         {
-            if (current_millis - lz7.slp_millis > 10 * 1000)
+            Serial.println("line 236 lz7.isAwake not awake");
+            Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
+            Serial.println("lz7.sleepTime is :" + String(lz7.sleepTime));
+
+            if (current_millis - lz7.slp_millis > lz7.sleepTime * 1000)
             {
                 lz7.isAwake = true;
                 if (lz7.color != LZ7_COLOR_NONE)
@@ -240,8 +254,13 @@ void loop(void)
                     Serial.println("slp_millis is : "+String(lz7.slp_millis));
                 if(serialDebug2)
                     Serial.println("current millis is : "+String(current_millis));
-                // delay(1000);
+                 delay(500);
             }
         }
+    } else {
+        Serial.println("For some reason some weird stuff is happenign and we are here now");
+        Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
+        Serial.println("important flag is  :" + String(MQTT.getFlagStart()));
+        delay(2000);
     }
 }

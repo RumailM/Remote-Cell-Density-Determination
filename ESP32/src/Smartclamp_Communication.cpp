@@ -45,7 +45,7 @@ bool Smartclamp_Communication::deserializeJsonHandleError(JsonDocument& doc, byt
         switch (err.code())
         {
             case DeserializationError::EmptyInput:
-                if(serialDebug)
+                // if(serialDebug)
                     Serial.println(F("Resetting handshake and identification flags..."));
                 flag_handshake = false;
                 flag_identification = false;
@@ -151,14 +151,17 @@ void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int
  */
 void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr)
 {
+    Serial.println("callback is being triggered");
     if (flag_identification)
     {
         StaticJsonDocument<256> doc;
         if (!deserializeJsonHandleError(doc, payload, length))
         {
+            Serial.println("has been desearlized");
             // Check identifier
             if (identifier == (int) doc["ID"])
             {
+                Serial.println("id is corrects");
                 // Set ATIME and ASTEP values
                 uint8_t atime = (uint8_t) doc["ATIME"];
                 uint16_t astep = (uint16_t) doc["ASTEP"];
@@ -288,6 +291,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
 
                 // Raise flag_start
                 flag_start = true;
+                Serial.println("does this get called?");
             }
 
             if(serialDebug)

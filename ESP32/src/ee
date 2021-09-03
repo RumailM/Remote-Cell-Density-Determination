@@ -1,0 +1,995 @@
+01:15:56.055 > lz7.wakeTime is :10
+01:15:56.176 > just read into subsample infdex : 36
+01:15:56.176 > >>flag started
+01:15:56.176 > important flag is  :1
+01:15:56.182 > line 116 lz7.isAwake
+01:15:56.182 > Sleep Millis : 14507 Current Millis: 19210
+01:15:56.185 > lz7.wakeTime is :10
+01:15:56.306 > just read into subsample infdex : 37
+01:15:56.306 > >>flag started
+01:15:56.306 > important flag is  :1
+01:15:56.312 > line 116 lz7.isAwake
+01:15:56.312 > Sleep Millis : 14507 Current Millis: 19340
+01:15:56.315 > lz7.wakeTime is :10
+01:15:56.436 > just read into subsample infdex : 38
+01:15:56.436 > >>flag started
+01:15:56.436 > important flag is  :1
+01:15:56.442 > line 116 lz7.isAwake
+01:15:56.442 > Sleep Millis : 14507 Current Millis: 19470
+01:15:56.445 > lz7.wakeTime is :10
+01:15:56.566 > just read into subsample infdex : 39
+01:15:56.566 > >>flag started
+01:15:56.566 > important flag is  :1
+01:15:56.572 > line 116 lz7.isAwake
+01:15:56.572 > Sleep Millis : 14507 Current Millis: 19600
+01:15:56.575 > lz7.wakeTime is :10
+01:15:56.698 > just read into subsample infdex : 40
+01:15:56.698 > >>flag started
+01:15:56.698 > important flag is  :1
+01:15:56.704 > line 116 lz7.isAwake
+01:15:56.704 > Sleep Millis : 14507 Current Millis: 19732
+01:15:56.707 > lz7.wakeTime is :10
+01:15:56.829 > just read into subsample infdex : 41
+01:15:56.829 > >>flag started
+01:15:56.829 > important flag is  :1
+01:15:56.835 > line 116 lz7.isAwake
+01:15:56.835 > Sleep Millis : 14507 Current Millis: 19863
+01:15:56.838 > lz7.wakeTime is :10
+01:15:56.959 > just read into subsample infdex : 42
+01:15:56.959 > >>flag started
+01:15:56.959 > important flag is  :1
+01:15:56.965 > line 116 lz7.isAwake
+01:15:56.965 > Sleep Millis : 14507 Current Millis: 19993
+01:15:56.968 > lz7.wakeTime is :10
+01:15:57.089 > just read into subsample infdex : 43
+01:15:57.089 > >>flag started
+01:15:57.089 > important flag is  :1
+01:15:57.095 > line 116 lz7.isAwake
+01:15:57.095 > Sleep Millis : 14507 Current Millis: 20123
+01:15:57.098 > lz7.wakeTime is :10
+01:15:57.220 > just read into subsample infdex : 44
+01:15:57.220 > >>flag started
+01:15:57.220 > important flag is  :1
+01:15:57.226 > line 116 lz7.isAwake
+01:15:57.226 > Sleep Millis : 14507 Current Millis: 20254
+01:15:57.229 > lz7.wakeTime is :10
+01:15:57.350 > just read into subsample infdex : 45
+01:15:57.350 > >>flag started
+01:15:57.350 > important flag is  :1
+01:15:57.356 > line 116 lz7.isAwake
+01:15:57.356 > Sleep Millis : 14507 Current Millis: 20384
+01:15:57.359 > lz7.wakeTime is :10
+01:15:57.481 > just read into subsample infdex : 46
+01:15:57.481 > >>flag started
+01:15:57.481 > important flag is  :1
+01:15:57.487 > line 116 lz7.isAwake
+01:15:57.487 > Sleep Millis : 14507 Current Millis: 20515
+01:15:57.490 > lz7.wakeTime is :10
+01:15:57.611 > just read into subsample infdex : 47
+01:15:57.611 > >>flag started
+01:15:57.611 > important flag is  :1
+01:15:57.617 > line 116 lz7.isAwake
+01:15:57.617 > Sleep Millis : 14507 Current Millis: 20645
+01:15:57.620 > lz7.wakeTime is :10
+01:15:57.741 > just read into subsample infdex : 48
+01:15:57.741 > >>flag started
+01:15:57.741 > important flag is  :1
+01:15:57.747 > line 116 lz7.isAwake
+01:15:57.747 > Sleep Millis : 14507 Current Millis: 20775
+01:15:57.751 > lz7.wakeTime is :10
+01:15:57.871 > just read into subsample infdex : 49
+01:15:57.871 > >>flag started
+01:15:57.871 > important flag is  :1
+01:15:57.877 > line 116 lz7.isAwake
+01:15:57.877 > Sleep Millis : 14507 Current Millis: 20905
+01:15:57.880 > lz7.wakeTime is :10
+01:15:58.001 > just read into subsample infdex : 50
+01:15:58.001 > >>flag started
+01:15:58.001 > important flag is  :1
+01:15:58.007 > line 116 lz7.isAwake
+01:15:58.007 > Sleep Millis : 14507 Current Millis: 21035
+01:15:58.010 > lz7.wakeTime is :10
+01:15:58.134 > just read into subsample infdex : 51
+01:15:58.134 > >>flag started
+01:15:58.134 > important flag is  :1
+01:15:58.140 > line 116 lz7.isAwake
+01:15:58.140 > Sleep Millis : 14507 Current Millis: 21168
+01:15:58.143 > lz7.wakeTime is :10
+01:15:58.264 > just read into subsample infdex : 52
+01:15:58.264 > >>flag started
+01:15:58.264 > important flag is  :1
+01:15:58.270 > line 116 lz7.isAwake
+01:15:58.270 > Sleep Millis : 14507 Current Millis: 21298
+01:15:58.273 > lz7.wakeTime is :10
+01:15:58.394 > just read into subsample infdex : 53
+01:15:58.394 > >>flag started
+01:15:58.394 > important flag is  :1
+01:15:58.400 > line 116 lz7.isAwake
+01:15:58.400 > Sleep Millis : 14507 Current Millis: 21428
+01:15:58.402 > lz7.wakeTime is :10
+01:15:58.525 > just read into subsample infdex : 54
+01:15:58.525 > >>flag started
+01:15:58.525 > important flag is  :1
+01:15:58.531 > line 116 lz7.isAwake
+01:15:58.531 > Sleep Millis : 14507 Current Millis: 21559
+01:15:58.534 > lz7.wakeTime is :10
+01:15:58.655 > just read into subsample infdex : 55
+01:15:58.655 > >>flag started
+01:15:58.655 > important flag is  :1
+01:15:58.661 > line 116 lz7.isAwake
+01:15:58.661 > Sleep Millis : 14507 Current Millis: 21689
+01:15:58.663 > lz7.wakeTime is :10
+01:15:58.785 > just read into subsample infdex : 56
+01:15:58.785 > >>flag started
+01:15:58.785 > important flag is  :1
+01:15:58.791 > line 116 lz7.isAwake
+01:15:58.791 > Sleep Millis : 14507 Current Millis: 21819
+01:15:58.794 > lz7.wakeTime is :10
+01:15:58.915 > just read into subsample infdex : 57
+01:15:58.915 > >>flag started
+01:15:58.915 > important flag is  :1
+01:15:58.921 > line 116 lz7.isAwake
+01:15:58.921 > Sleep Millis : 14507 Current Millis: 21949
+01:15:58.924 > lz7.wakeTime is :10
+01:15:59.045 > just read into subsample infdex : 58
+01:15:59.045 > >>flag started
+01:15:59.045 > important flag is  :1
+01:15:59.051 > line 116 lz7.isAwake
+01:15:59.051 > Sleep Millis : 14507 Current Millis: 22079
+01:15:59.054 > lz7.wakeTime is :10
+01:15:59.175 > just read into subsample infdex : 59
+01:15:59.175 > >>flag started
+01:15:59.175 > important flag is  :1
+01:15:59.181 > line 116 lz7.isAwake
+01:15:59.181 > Sleep Millis : 14507 Current Millis: 22209
+01:15:59.184 > lz7.wakeTime is :10
+01:15:59.306 > just read into subsample infdex : 60
+01:15:59.306 > >>flag started
+01:15:59.306 > important flag is  :1
+01:15:59.312 > line 116 lz7.isAwake
+01:15:59.312 > Sleep Millis : 14507 Current Millis: 22340
+01:15:59.315 > lz7.wakeTime is :10
+01:15:59.436 > just read into subsample infdex : 61
+01:15:59.436 > >>flag started
+01:15:59.436 > important flag is  :1
+01:15:59.442 > line 116 lz7.isAwake
+01:15:59.442 > Sleep Millis : 14507 Current Millis: 22470
+01:15:59.445 > lz7.wakeTime is :10
+01:15:59.568 > just read into subsample infdex : 62
+01:15:59.568 > >>flag started
+01:15:59.568 > important flag is  :1
+01:15:59.574 > line 116 lz7.isAwake
+01:15:59.574 > Sleep Millis : 14507 Current Millis: 22602
+01:15:59.577 > lz7.wakeTime is :10
+01:15:59.698 > just read into subsample infdex : 63
+01:15:59.698 > >>flag started
+01:15:59.698 > important flag is  :1
+01:15:59.704 > line 116 lz7.isAwake
+01:15:59.704 > Sleep Millis : 14507 Current Millis: 22732
+01:15:59.707 > lz7.wakeTime is :10
+01:15:59.828 > just read into subsample infdex : 64
+01:15:59.828 > >>flag started
+01:15:59.828 > important flag is  :1
+01:15:59.834 > line 116 lz7.isAwake
+01:15:59.834 > Sleep Millis : 14507 Current Millis: 22862
+01:15:59.837 > lz7.wakeTime is :10
+01:15:59.958 > just read into subsample infdex : 65
+01:15:59.958 > >>flag started
+01:15:59.958 > important flag is  :1
+01:15:59.964 > line 116 lz7.isAwake
+01:15:59.964 > Sleep Millis : 14507 Current Millis: 22992
+01:15:59.967 > lz7.wakeTime is :10
+01:16:00.089 > just read into subsample infdex : 66
+01:16:00.089 > >>flag started
+01:16:00.089 > important flag is  :1
+01:16:00.095 > line 116 lz7.isAwake
+01:16:00.095 > Sleep Millis : 14507 Current Millis: 23123
+01:16:00.098 > lz7.wakeTime is :10
+01:16:00.219 > just read into subsample infdex : 67
+01:16:00.219 > >>flag started
+01:16:00.219 > important flag is  :1
+01:16:00.225 > line 116 lz7.isAwake
+01:16:00.225 > Sleep Millis : 14507 Current Millis: 23253
+01:16:00.227 > lz7.wakeTime is :10
+01:16:00.350 > just read into subsample infdex : 68
+01:16:00.351 > >>flag started
+01:16:00.351 > important flag is  :1
+01:16:00.356 > line 116 lz7.isAwake
+01:16:00.356 > Sleep Millis : 14507 Current Millis: 23384
+01:16:00.359 > lz7.wakeTime is :10
+01:16:00.481 > just read into subsample infdex : 69
+01:16:00.481 > >>flag started
+01:16:00.481 > important flag is  :1
+01:16:00.487 > line 116 lz7.isAwake
+01:16:00.487 > Sleep Millis : 14507 Current Millis: 23515
+01:16:00.490 > lz7.wakeTime is :10
+01:16:00.611 > just read into subsample infdex : 70
+01:16:00.611 > >>flag started
+01:16:00.611 > important flag is  :1
+01:16:00.617 > line 116 lz7.isAwake
+01:16:00.617 > Sleep Millis : 14507 Current Millis: 23645
+01:16:00.620 > lz7.wakeTime is :10
+01:16:00.741 > just read into subsample infdex : 71
+01:16:00.741 > >>flag started
+01:16:00.741 > important flag is  :1
+01:16:00.747 > line 116 lz7.isAwake
+01:16:00.747 > Sleep Millis : 14507 Current Millis: 23775
+01:16:00.750 > lz7.wakeTime is :10
+01:16:00.871 > just read into subsample infdex : 72
+01:16:00.871 > >>flag started
+01:16:00.871 > important flag is  :1
+01:16:00.877 > line 116 lz7.isAwake
+01:16:00.877 > Sleep Millis : 14507 Current Millis: 23905
+01:16:00.880 > lz7.wakeTime is :10
+01:16:01.002 > just read into subsample infdex : 73
+01:16:01.002 > >>flag started
+01:16:01.002 > important flag is  :1
+01:16:01.008 > line 116 lz7.isAwake
+01:16:01.008 > Sleep Millis : 14507 Current Millis: 24036
+01:16:01.011 > lz7.wakeTime is :10
+01:16:01.133 > just read into subsample infdex : 74
+01:16:01.134 > >>flag started
+01:16:01.134 > important flag is  :1
+01:16:01.139 > line 116 lz7.isAwake
+01:16:01.139 > Sleep Millis : 14507 Current Millis: 24167
+01:16:01.142 > lz7.wakeTime is :10
+01:16:01.263 > just read into subsample infdex : 75
+01:16:01.263 > >>flag started
+01:16:01.263 > important flag is  :1
+01:16:01.269 > line 116 lz7.isAwake
+01:16:01.269 > Sleep Millis : 14507 Current Millis: 24297
+01:16:01.273 > lz7.wakeTime is :10
+01:16:01.394 > just read into subsample infdex : 76
+01:16:01.394 > >>flag started
+01:16:01.394 > important flag is  :1
+01:16:01.400 > line 116 lz7.isAwake
+01:16:01.400 > Sleep Millis : 14507 Current Millis: 24428
+01:16:01.403 > lz7.wakeTime is :10
+01:16:01.525 > just read into subsample infdex : 77
+01:16:01.525 > >>flag started
+01:16:01.525 > important flag is  :1
+01:16:01.531 > line 116 lz7.isAwake
+01:16:01.531 > Sleep Millis : 14507 Current Millis: 24559
+01:16:01.536 > lz7.wakeTime is :10
+01:16:01.536 > going through subsamples
+01:16:01.536 > going through subsamples
+01:16:01.542 > going through subsamples
+01:16:01.542 > going through subsamples
+01:16:01.548 > going through subsamples
+01:16:01.548 > going through subsamples
+01:16:01.553 > going through subsamples
+01:16:01.553 > going through subsamples
+01:16:01.553 > going through subsamples
+01:16:01.559 > going through subsamples
+01:16:01.559 > going through subsamples
+01:16:01.564 > going through subsamples
+01:16:01.564 > going through subsamples
+01:16:01.564 > going through subsamples
+01:16:01.570 > going through subsamples
+01:16:01.570 > going through subsamples
+01:16:01.575 > going through subsamples
+01:16:01.575 > going through subsamples
+01:16:01.575 > going through subsamples
+01:16:01.581 > going through subsamples
+01:16:01.581 > going through subsamples
+01:16:01.586 > going through subsamples
+01:16:01.586 > going through subsamples
+01:16:01.586 > going through subsamples
+01:16:01.592 > going through subsamples
+01:16:01.592 > going through subsamples
+01:16:01.598 > going through subsamples
+01:16:01.598 > going through subsamples
+01:16:01.598 > going through subsamples
+01:16:01.604 > going through subsamples
+01:16:01.604 > going through subsamples
+01:16:01.609 > going through subsamples
+01:16:01.609 > going through subsamples
+01:16:01.609 > going through subsamples
+01:16:01.614 > going through subsamples
+01:16:01.614 > going through subsamples
+01:16:01.620 > going through subsamples
+01:16:01.620 > going through subsamples
+01:16:01.625 > going through subsamples
+01:16:01.625 > going through subsamples
+01:16:01.625 > going through subsamples
+01:16:01.631 > going through subsamples
+01:16:01.631 > going through subsamples
+01:16:01.636 > going through subsamples
+01:16:01.636 > going through subsamples
+01:16:01.636 > going through subsamples
+01:16:01.642 > going through subsamples
+01:16:01.642 > going through subsamples
+01:16:01.648 > going through subsamples
+01:16:01.648 > going through subsamples
+01:16:01.648 > going through subsamples
+01:16:01.655 > going through subsamples
+01:16:01.655 > going through subsamples
+01:16:01.659 > going through subsamples
+01:16:01.659 > going through subsamples
+01:16:01.659 > going through subsamples
+01:16:01.664 > going through subsamples
+01:16:01.664 > going through subsamples
+01:16:01.670 > going through subsamples
+01:16:01.670 > going through subsamples
+01:16:01.670 > going through subsamples
+01:16:01.675 > going through subsamples
+01:16:01.675 > going through subsamples
+01:16:01.681 > going through subsamples
+01:16:01.681 > going through subsamples
+01:16:01.681 > going through subsamples
+01:16:01.686 > going through subsamples
+01:16:01.686 > going through subsamples
+01:16:01.692 > going through subsamples
+01:16:01.692 > going through subsamples
+01:16:01.698 > going through subsamples
+01:16:01.698 > going through subsamples
+01:16:01.698 > going through subsamples
+01:16:01.703 > going through subsamples
+01:16:01.703 > going through subsamples
+01:16:01.709 > going through subsamples
+01:16:01.709 > going through subsamples
+01:16:01.709 > >>flag started
+01:16:01.714 > important flag is  :1
+01:16:01.714 > line 236 lz7.isAwake not awake
+01:16:01.714 > Sleep Millis : 24559 Current Millis: 24738
+01:16:01.720 > lz7.sleepTime is :50
+01:16:01.720 > slp_millis is : 24559
+01:16:01.723 > current millis is : 24738
+01:16:02.218 > >>flag started
+01:16:02.218 > important flag is  :1
+01:16:02.218 > line 236 lz7.isAwake not awake
+01:16:02.224 > Sleep Millis : 24559 Current Millis: 25252
+01:16:02.224 > lz7.sleepTime is :50
+01:16:02.229 > slp_millis is : 24559
+01:16:02.229 > current millis is : 25252
+01:16:02.723 > >>flag started
+01:16:02.723 > important flag is  :1
+01:16:02.723 > line 236 lz7.isAwake not awake
+01:16:02.729 > Sleep Millis : 24559 Current Millis: 25757
+01:16:02.729 > lz7.sleepTime is :50
+01:16:02.733 > slp_millis is : 24559
+01:16:02.733 > current millis is : 25757
+01:16:03.228 > >>flag started
+01:16:03.228 > important flag is  :1
+01:16:03.228 > line 236 lz7.isAwake not awake
+01:16:03.234 > Sleep Millis : 24559 Current Millis: 26262
+01:16:03.234 > lz7.sleepTime is :50
+01:16:03.239 > slp_millis is : 24559
+01:16:03.239 > current millis is : 26262
+01:16:03.733 > >>flag started
+01:16:03.733 > important flag is  :1
+01:16:03.733 > line 236 lz7.isAwake not awake
+01:16:03.739 > Sleep Millis : 24559 Current Millis: 26767
+01:16:03.739 > lz7.sleepTime is :50
+01:16:03.743 > slp_millis is : 24559
+01:16:03.743 > current millis is : 26767
+01:16:04.244 > Reset startcalledbackf flag
+01:16:04.244 > Sleep Millis : 24559 Current Millis: 27278
+01:16:04.250 > For some reason some weird stuff is happenign and we are here now
+01:16:04.256 > Sleep Millis : 24559 Current Millis: 27279
+01:16:04.256 > important flag is  :0
+01:16:06.252 > For some reason some weird stuff is happenign and we are here now
+01:16:06.257 > Sleep Millis : 24559 Current Millis: 29286
+01:16:06.257 > important flag is  :0
+01:16:08.253 > For some reason some weird stuff is happenign and we are here now
+01:16:08.258 > Sleep Millis : 24559 Current Millis: 31287
+01:16:08.258 > important flag is  :0
+01:16:10.253 > For some reason some weird stuff is happenign and we are here now
+01:16:10.259 > Sleep Millis : 24559 Current Millis: 33287
+01:16:10.259 > important flag is  :0
+01:16:12.254 > For some reason some weird stuff is happenign and we are here now
+01:16:12.260 > Sleep Millis : 24559 Current Millis: 35288
+01:16:12.260 > important flag is  :0
+01:16:14.255 > For some reason some weird stuff is happenign and we are here now
+01:16:14.260 > Sleep Millis : 24559 Current Millis: 37289
+01:16:14.260 > important flag is  :0
+01:16:16.256 > For some reason some weird stuff is happenign and we are here now
+01:16:16.262 > Sleep Millis : 24559 Current Millis: 39290
+01:16:16.262 > important flag is  :0
+01:16:18.257 > For some reason some weird stuff is happenign and we are here now
+01:16:18.262 > Sleep Millis : 24559 Current Millis: 41291
+01:16:18.262 > important flag is  :0
+01:16:20.262 > For some reason some weird stuff is happenign and we are here now
+01:16:20.267 > Sleep Millis : 24559 Current Millis: 43296
+01:16:20.267 > important flag is  :0
+01:16:22.263 > For some reason some weird stuff is happenign and we are here now
+01:16:22.269 > Sleep Millis : 24559 Current Millis: 45297
+01:16:22.269 > important flag is  :0
+01:16:24.263 > For some reason some weird stuff is happenign and we are here now
+01:16:24.269 > Sleep Millis : 24559 Current Millis: 47298
+01:16:24.269 > important flag is  :0
+01:16:26.476 > >>flag started
+01:16:26.476 > important flag is  :1
+01:16:26.476 > Updated sleep millis
+01:16:26.476 > Sleep Millis : 49511 Current Millis: 49511
+01:16:26.483 > line 116 lz7.isAwake
+01:16:26.483 > Sleep Millis : 49511 Current Millis: 49511
+01:16:26.487 > lz7.wakeTime is :10
+01:16:26.613 > just read into subsample infdex : 1
+01:16:26.613 > >>flag started
+01:16:26.613 > important flag is  :1
+01:16:26.619 > line 116 lz7.isAwake
+01:16:26.619 > Sleep Millis : 49511 Current Millis: 49648
+01:16:26.621 > lz7.wakeTime is :10
+01:16:26.744 > just read into subsample infdex : 2
+01:16:26.744 > >>flag started
+01:16:26.744 > important flag is  :1
+01:16:26.750 > line 116 lz7.isAwake
+01:16:26.750 > Sleep Millis : 49511 Current Millis: 49779
+01:16:26.752 > lz7.wakeTime is :10
+01:16:26.874 > just read into subsample infdex : 3
+01:16:26.874 > >>flag started
+01:16:26.874 > important flag is  :1
+01:16:26.880 > line 116 lz7.isAwake
+01:16:26.880 > Sleep Millis : 49511 Current Millis: 49908
+01:16:26.882 > lz7.wakeTime is :10
+01:16:27.007 > just read into subsample infdex : 4
+01:16:27.008 > >>flag started
+01:16:27.008 > important flag is  :1
+01:16:27.014 > line 116 lz7.isAwake
+01:16:27.014 > Sleep Millis : 49511 Current Millis: 50042
+01:16:27.016 > lz7.wakeTime is :10
+01:16:27.138 > just read into subsample infdex : 5
+01:16:27.139 > >>flag started
+01:16:27.139 > important flag is  :1
+01:16:27.145 > line 116 lz7.isAwake
+01:16:27.145 > Sleep Millis : 49511 Current Millis: 50173
+01:16:27.147 > lz7.wakeTime is :10
+01:16:27.269 > just read into subsample infdex : 6
+01:16:27.269 > >>flag started
+01:16:27.269 > important flag is  :1
+01:16:27.275 > line 116 lz7.isAwake
+01:16:27.275 > Sleep Millis : 49511 Current Millis: 50303
+01:16:27.277 > lz7.wakeTime is :10
+01:16:27.399 > just read into subsample infdex : 7
+01:16:27.399 > >>flag started
+01:16:27.399 > important flag is  :1
+01:16:27.405 > line 116 lz7.isAwake
+01:16:27.405 > Sleep Millis : 49511 Current Millis: 50433
+01:16:27.407 > lz7.wakeTime is :10
+01:16:27.528 > just read into subsample infdex : 8
+01:16:27.528 > >>flag started
+01:16:27.528 > important flag is  :1
+01:16:27.534 > line 116 lz7.isAwake
+01:16:27.534 > Sleep Millis : 49511 Current Millis: 50563
+01:16:27.537 > lz7.wakeTime is :10
+01:16:27.658 > just read into subsample infdex : 9
+01:16:27.658 > >>flag started
+01:16:27.658 > important flag is  :1
+01:16:27.664 > line 116 lz7.isAwake
+01:16:27.664 > Sleep Millis : 49511 Current Millis: 50693
+01:16:27.667 > lz7.wakeTime is :10
+01:16:27.788 > just read into subsample infdex : 10
+01:16:27.789 > >>flag started
+01:16:27.789 > important flag is  :1
+01:16:27.795 > line 116 lz7.isAwake
+01:16:27.795 > Sleep Millis : 49511 Current Millis: 50823
+01:16:27.798 > lz7.wakeTime is :10
+01:16:27.919 > just read into subsample infdex : 11
+01:16:27.919 > >>flag started
+01:16:27.919 > important flag is  :1
+01:16:27.925 > line 116 lz7.isAwake
+01:16:27.925 > Sleep Millis : 49511 Current Millis: 50954
+01:16:27.928 > lz7.wakeTime is :10
+01:16:28.049 > just read into subsample infdex : 12
+01:16:28.049 > >>flag started
+01:16:28.049 > important flag is  :1
+01:16:28.055 > line 116 lz7.isAwake
+01:16:28.055 > Sleep Millis : 49511 Current Millis: 51084
+01:16:28.058 > lz7.wakeTime is :10
+01:16:28.180 > just read into subsample infdex : 13
+01:16:28.180 > >>flag started
+01:16:28.180 > important flag is  :1
+01:16:28.186 > line 116 lz7.isAwake
+01:16:28.186 > Sleep Millis : 49511 Current Millis: 51215
+01:16:28.189 > lz7.wakeTime is :10
+01:16:28.311 > just read into subsample infdex : 14
+01:16:28.311 > >>flag started
+01:16:28.311 > important flag is  :1
+01:16:28.317 > line 116 lz7.isAwake
+01:16:28.317 > Sleep Millis : 49511 Current Millis: 51345
+01:16:28.319 > lz7.wakeTime is :10
+01:16:28.443 > just read into subsample infdex : 15
+01:16:28.443 > >>flag started
+01:16:28.443 > important flag is  :1
+01:16:28.449 > line 116 lz7.isAwake
+01:16:28.449 > Sleep Millis : 49511 Current Millis: 51477
+01:16:28.451 > lz7.wakeTime is :10
+01:16:28.573 > just read into subsample infdex : 16
+01:16:28.573 > >>flag started
+01:16:28.573 > important flag is  :1
+01:16:28.579 > line 116 lz7.isAwake
+01:16:28.579 > Sleep Millis : 49511 Current Millis: 51607
+01:16:28.581 > lz7.wakeTime is :10
+01:16:28.703 > just read into subsample infdex : 17
+01:16:28.703 > >>flag started
+01:16:28.703 > important flag is  :1
+01:16:28.709 > line 116 lz7.isAwake
+01:16:28.709 > Sleep Millis : 49511 Current Millis: 51737
+01:16:28.712 > lz7.wakeTime is :10
+01:16:28.832 > just read into subsample infdex : 18
+01:16:28.832 > >>flag started
+01:16:28.832 > important flag is  :1
+01:16:28.838 > line 116 lz7.isAwake
+01:16:28.838 > Sleep Millis : 49511 Current Millis: 51867
+01:16:28.841 > lz7.wakeTime is :10
+01:16:28.964 > just read into subsample infdex : 19
+01:16:28.964 > >>flag started
+01:16:28.964 > important flag is  :1
+01:16:28.970 > line 116 lz7.isAwake
+01:16:28.970 > Sleep Millis : 49511 Current Millis: 51998
+01:16:28.972 > lz7.wakeTime is :10
+01:16:29.094 > just read into subsample infdex : 20
+01:16:29.094 > >>flag started
+01:16:29.094 > important flag is  :1
+01:16:29.100 > line 116 lz7.isAwake
+01:16:29.100 > Sleep Millis : 49511 Current Millis: 52128
+01:16:29.102 > lz7.wakeTime is :10
+01:16:29.224 > just read into subsample infdex : 21
+01:16:29.224 > >>flag started
+01:16:29.224 > important flag is  :1
+01:16:29.230 > line 116 lz7.isAwake
+01:16:29.230 > Sleep Millis : 49511 Current Millis: 52259
+01:16:29.233 > lz7.wakeTime is :10
+01:16:29.354 > just read into subsample infdex : 22
+01:16:29.355 > >>flag started
+01:16:29.355 > important flag is  :1
+01:16:29.361 > line 116 lz7.isAwake
+01:16:29.361 > Sleep Millis : 49511 Current Millis: 52389
+01:16:29.363 > lz7.wakeTime is :10
+01:16:29.485 > just read into subsample infdex : 23
+01:16:29.485 > >>flag started
+01:16:29.485 > important flag is  :1
+01:16:29.490 > line 116 lz7.isAwake
+01:16:29.490 > Sleep Millis : 49511 Current Millis: 52519
+01:16:29.493 > lz7.wakeTime is :10
+01:16:29.615 > just read into subsample infdex : 24
+01:16:29.615 > >>flag started
+01:16:29.615 > important flag is  :1
+01:16:29.620 > line 116 lz7.isAwake
+01:16:29.620 > Sleep Millis : 49511 Current Millis: 52649
+01:16:29.623 > lz7.wakeTime is :10
+01:16:29.744 > just read into subsample infdex : 25
+01:16:29.745 > >>flag started
+01:16:29.745 > important flag is  :1
+01:16:29.749 > line 116 lz7.isAwake
+01:16:29.749 > Sleep Millis : 49511 Current Millis: 52779
+01:16:29.753 > lz7.wakeTime is :10
+01:16:29.876 > just read into subsample infdex : 26
+01:16:29.876 > >>flag started
+01:16:29.876 > important flag is  :1
+01:16:29.881 > line 116 lz7.isAwake
+01:16:29.881 > Sleep Millis : 49511 Current Millis: 52911
+01:16:29.885 > lz7.wakeTime is :10
+01:16:30.007 > just read into subsample infdex : 27
+01:16:30.007 > >>flag started
+01:16:30.007 > important flag is  :1
+01:16:30.013 > line 116 lz7.isAwake
+01:16:30.013 > Sleep Millis : 49511 Current Millis: 53042
+01:16:30.016 > lz7.wakeTime is :10
+01:16:30.138 > just read into subsample infdex : 28
+01:16:30.138 > >>flag started
+01:16:30.138 > important flag is  :1
+01:16:30.143 > line 116 lz7.isAwake
+01:16:30.143 > Sleep Millis : 49511 Current Millis: 53172
+01:16:30.146 > lz7.wakeTime is :10
+01:16:30.269 > just read into subsample infdex : 29
+01:16:30.269 > >>flag started
+01:16:30.269 > important flag is  :1
+01:16:30.274 > line 116 lz7.isAwake
+01:16:30.274 > Sleep Millis : 49511 Current Millis: 53303
+01:16:30.277 > lz7.wakeTime is :10
+01:16:30.399 > just read into subsample infdex : 30
+01:16:30.399 > >>flag started
+01:16:30.399 > important flag is  :1
+01:16:30.404 > line 116 lz7.isAwake
+01:16:30.404 > Sleep Millis : 49511 Current Millis: 53433
+01:16:30.407 > lz7.wakeTime is :10
+01:16:30.529 > just read into subsample infdex : 31
+01:16:30.529 > >>flag started
+01:16:30.529 > important flag is  :1
+01:16:30.534 > line 116 lz7.isAwake
+01:16:30.534 > Sleep Millis : 49511 Current Millis: 53563
+01:16:30.537 > lz7.wakeTime is :10
+01:16:30.659 > just read into subsample infdex : 32
+01:16:30.659 > >>flag started
+01:16:30.659 > important flag is  :1
+01:16:30.664 > line 116 lz7.isAwake
+01:16:30.664 > Sleep Millis : 49511 Current Millis: 53693
+01:16:30.667 > lz7.wakeTime is :10
+01:16:30.789 > just read into subsample infdex : 33
+01:16:30.789 > >>flag started
+01:16:30.789 > important flag is  :1
+01:16:30.794 > line 116 lz7.isAwake
+01:16:30.794 > Sleep Millis : 49511 Current Millis: 53823
+01:16:30.797 > lz7.wakeTime is :10
+01:16:30.919 > just read into subsample infdex : 34
+01:16:30.919 > >>flag started
+01:16:30.919 > important flag is  :1
+01:16:30.924 > line 116 lz7.isAwake
+01:16:30.924 > Sleep Millis : 49511 Current Millis: 53953
+01:16:30.927 > lz7.wakeTime is :10
+01:16:31.050 > just read into subsample infdex : 35
+01:16:31.050 > >>flag started
+01:16:31.050 > important flag is  :1
+01:16:31.055 > line 116 lz7.isAwake
+01:16:31.055 > Sleep Millis : 49511 Current Millis: 54084
+01:16:31.058 > lz7.wakeTime is :10
+01:16:31.180 > just read into subsample infdex : 36
+01:16:31.180 > >>flag started
+01:16:31.180 > important flag is  :1
+01:16:31.185 > line 116 lz7.isAwake
+01:16:31.185 > Sleep Millis : 49511 Current Millis: 54214
+01:16:31.188 > lz7.wakeTime is :10
+01:16:31.311 > just read into subsample infdex : 37
+01:16:31.311 > >>flag started
+01:16:31.311 > important flag is  :1
+01:16:31.316 > line 116 lz7.isAwake
+01:16:31.316 > Sleep Millis : 49511 Current Millis: 54345
+01:16:31.319 > lz7.wakeTime is :10
+01:16:31.441 > just read into subsample infdex : 38
+01:16:31.441 > >>flag started
+01:16:31.441 > important flag is  :1
+01:16:31.446 > line 116 lz7.isAwake
+01:16:31.446 > Sleep Millis : 49511 Current Millis: 54475
+01:16:31.449 > lz7.wakeTime is :10
+01:16:31.571 > just read into subsample infdex : 39
+01:16:31.571 > >>flag started
+01:16:31.571 > important flag is  :1
+01:16:31.576 > line 116 lz7.isAwake
+01:16:31.576 > Sleep Millis : 49511 Current Millis: 54605
+01:16:31.579 > lz7.wakeTime is :10
+01:16:31.701 > just read into subsample infdex : 40
+01:16:31.701 > >>flag started
+01:16:31.701 > important flag is  :1
+01:16:31.706 > line 116 lz7.isAwake
+01:16:31.706 > Sleep Millis : 49511 Current Millis: 54735
+01:16:31.709 > lz7.wakeTime is :10
+01:16:31.831 > just read into subsample infdex : 41
+01:16:31.831 > >>flag started
+01:16:31.831 > important flag is  :1
+01:16:31.836 > line 116 lz7.isAwake
+01:16:31.836 > Sleep Millis : 49511 Current Millis: 54865
+01:16:31.839 > lz7.wakeTime is :10
+01:16:31.961 > just read into subsample infdex : 42
+01:16:31.961 > >>flag started
+01:16:31.961 > important flag is  :1
+01:16:31.966 > line 116 lz7.isAwake
+01:16:31.966 > Sleep Millis : 49511 Current Millis: 54995
+01:16:31.969 > lz7.wakeTime is :10
+01:16:32.092 > just read into subsample infdex : 43
+01:16:32.092 > >>flag started
+01:16:32.092 > important flag is  :1
+01:16:32.097 > line 116 lz7.isAwake
+01:16:32.097 > Sleep Millis : 49511 Current Millis: 55126
+01:16:32.100 > lz7.wakeTime is :10
+01:16:32.222 > just read into subsample infdex : 44
+01:16:32.222 > >>flag started
+01:16:32.222 > important flag is  :1
+01:16:32.227 > line 116 lz7.isAwake
+01:16:32.227 > Sleep Millis : 49511 Current Millis: 55257
+01:16:32.231 > lz7.wakeTime is :10
+01:16:32.354 > just read into subsample infdex : 45
+01:16:32.354 > >>flag started
+01:16:32.354 > important flag is  :1
+01:16:32.359 > line 116 lz7.isAwake
+01:16:32.359 > Sleep Millis : 49511 Current Millis: 55388
+01:16:32.362 > lz7.wakeTime is :10
+01:16:32.484 > just read into subsample infdex : 46
+01:16:32.484 > >>flag started
+01:16:32.484 > important flag is  :1
+01:16:32.489 > line 116 lz7.isAwake
+01:16:32.489 > Sleep Millis : 49511 Current Millis: 55518
+01:16:32.492 > lz7.wakeTime is :10
+01:16:32.615 > just read into subsample infdex : 47
+01:16:32.615 > >>flag started
+01:16:32.615 > important flag is  :1
+01:16:32.620 > line 116 lz7.isAwake
+01:16:32.620 > Sleep Millis : 49511 Current Millis: 55649
+01:16:32.623 > lz7.wakeTime is :10
+01:16:32.746 > just read into subsample infdex : 48
+01:16:32.746 > >>flag started
+01:16:32.746 > important flag is  :1
+01:16:32.751 > line 116 lz7.isAwake
+01:16:32.751 > Sleep Millis : 49511 Current Millis: 55780
+01:16:32.754 > lz7.wakeTime is :10
+01:16:32.877 > just read into subsample infdex : 49
+01:16:32.877 > >>flag started
+01:16:32.877 > important flag is  :1
+01:16:32.882 > line 116 lz7.isAwake
+01:16:32.882 > Sleep Millis : 49511 Current Millis: 55911
+01:16:32.885 > lz7.wakeTime is :10
+01:16:33.007 > just read into subsample infdex : 50
+01:16:33.007 > >>flag started
+01:16:33.007 > important flag is  :1
+01:16:33.012 > line 116 lz7.isAwake
+01:16:33.012 > Sleep Millis : 49511 Current Millis: 56041
+01:16:33.015 > lz7.wakeTime is :10
+01:16:33.138 > just read into subsample infdex : 51
+01:16:33.138 > >>flag started
+01:16:33.138 > important flag is  :1
+01:16:33.143 > line 116 lz7.isAwake
+01:16:33.143 > Sleep Millis : 49511 Current Millis: 56172
+01:16:33.146 > lz7.wakeTime is :10
+01:16:33.269 > just read into subsample infdex : 52
+01:16:33.269 > >>flag started
+01:16:33.269 > important flag is  :1
+01:16:33.274 > line 116 lz7.isAwake
+01:16:33.274 > Sleep Millis : 49511 Current Millis: 56303
+01:16:33.277 > lz7.wakeTime is :10
+01:16:33.399 > just read into subsample infdex : 53
+01:16:33.399 > >>flag started
+01:16:33.399 > important flag is  :1
+01:16:33.404 > line 116 lz7.isAwake
+01:16:33.404 > Sleep Millis : 49511 Current Millis: 56433
+01:16:33.407 > lz7.wakeTime is :10
+01:16:33.530 > just read into subsample infdex : 54
+01:16:33.530 > >>flag started
+01:16:33.530 > important flag is  :1
+01:16:33.535 > line 116 lz7.isAwake
+01:16:33.535 > Sleep Millis : 49511 Current Millis: 56564
+01:16:33.538 > lz7.wakeTime is :10
+01:16:33.661 > just read into subsample infdex : 55
+01:16:33.661 > >>flag started
+01:16:33.661 > important flag is  :1
+01:16:33.666 > line 116 lz7.isAwake
+01:16:33.666 > Sleep Millis : 49511 Current Millis: 56695
+01:16:33.669 > lz7.wakeTime is :10
+01:16:33.791 > just read into subsample infdex : 56
+01:16:33.791 > >>flag started
+01:16:33.791 > important flag is  :1
+01:16:33.796 > line 116 lz7.isAwake
+01:16:33.796 > Sleep Millis : 49511 Current Millis: 56825
+01:16:33.799 > lz7.wakeTime is :10
+01:16:33.921 > just read into subsample infdex : 57
+01:16:33.921 > >>flag started
+01:16:33.921 > important flag is  :1
+01:16:33.926 > line 116 lz7.isAwake
+01:16:33.926 > Sleep Millis : 49511 Current Millis: 56955
+01:16:33.929 > lz7.wakeTime is :10
+01:16:34.051 > just read into subsample infdex : 58
+01:16:34.051 > >>flag started
+01:16:34.051 > important flag is  :1
+01:16:34.056 > line 116 lz7.isAwake
+01:16:34.056 > Sleep Millis : 49511 Current Millis: 57085
+01:16:34.059 > lz7.wakeTime is :10
+01:16:34.181 > just read into subsample infdex : 59
+01:16:34.181 > >>flag started
+01:16:34.181 > important flag is  :1
+01:16:34.186 > line 116 lz7.isAwake
+01:16:34.186 > Sleep Millis : 49511 Current Millis: 57215
+01:16:34.189 > lz7.wakeTime is :10
+01:16:34.311 > just read into subsample infdex : 60
+01:16:34.311 > >>flag started
+01:16:34.311 > important flag is  :1
+01:16:34.316 > line 116 lz7.isAwake
+01:16:34.316 > Sleep Millis : 49511 Current Millis: 57345
+01:16:34.319 > lz7.wakeTime is :10
+01:16:34.441 > just read into subsample infdex : 61
+01:16:34.441 > >>flag started
+01:16:34.441 > important flag is  :1
+01:16:34.450 > line 116 lz7.isAwake
+01:16:34.450 > Sleep Millis : 49511 Current Millis: 57475
+01:16:34.450 > lz7.wakeTime is :10
+01:16:34.572 > just read into subsample infdex : 62
+01:16:34.572 > >>flag started
+01:16:34.572 > important flag is  :1
+01:16:34.577 > line 116 lz7.isAwake
+01:16:34.577 > Sleep Millis : 49511 Current Millis: 57606
+01:16:34.580 > lz7.wakeTime is :10
+01:16:34.702 > just read into subsample infdex : 63
+01:16:34.702 > >>flag started
+01:16:34.702 > important flag is  :1
+01:16:34.707 > line 116 lz7.isAwake
+01:16:34.707 > Sleep Millis : 49511 Current Millis: 57736
+01:16:34.710 > lz7.wakeTime is :10
+01:16:34.832 > just read into subsample infdex : 64
+01:16:34.832 > >>flag started
+01:16:34.832 > important flag is  :1
+01:16:34.837 > line 116 lz7.isAwake
+01:16:34.837 > Sleep Millis : 49511 Current Millis: 57866
+01:16:34.840 > lz7.wakeTime is :10
+01:16:34.962 > just read into subsample infdex : 65
+01:16:34.963 > >>flag started
+01:16:34.963 > important flag is  :1
+01:16:34.968 > line 116 lz7.isAwake
+01:16:34.968 > Sleep Millis : 49511 Current Millis: 57997
+01:16:34.971 > lz7.wakeTime is :10
+01:16:35.093 > just read into subsample infdex : 66
+01:16:35.094 > >>flag started
+01:16:35.094 > important flag is  :1
+01:16:35.099 > line 116 lz7.isAwake
+01:16:35.099 > Sleep Millis : 49511 Current Millis: 58128
+01:16:35.102 > lz7.wakeTime is :10
+01:16:35.224 > just read into subsample infdex : 67
+01:16:35.224 > >>flag started
+01:16:35.224 > important flag is  :1
+01:16:35.229 > line 116 lz7.isAwake
+01:16:35.229 > Sleep Millis : 49511 Current Millis: 58258
+01:16:35.232 > lz7.wakeTime is :10
+01:16:35.354 > just read into subsample infdex : 68
+01:16:35.355 > >>flag started
+01:16:35.355 > important flag is  :1
+01:16:35.359 > line 116 lz7.isAwake
+01:16:35.359 > Sleep Millis : 49511 Current Millis: 58389
+01:16:35.363 > lz7.wakeTime is :10
+01:16:35.485 > just read into subsample infdex : 69
+01:16:35.486 > >>flag started
+01:16:35.486 > important flag is  :1
+01:16:35.493 > line 116 lz7.isAwake
+01:16:35.493 > Sleep Millis : 49511 Current Millis: 58520
+01:16:35.494 > lz7.wakeTime is :10
+01:16:35.615 > just read into subsample infdex : 70
+01:16:35.615 > >>flag started
+01:16:35.615 > important flag is  :1
+01:16:35.620 > line 116 lz7.isAwake
+01:16:35.620 > Sleep Millis : 49511 Current Millis: 58650
+01:16:35.623 > lz7.wakeTime is :10
+01:16:35.747 > just read into subsample infdex : 71
+01:16:35.747 > >>flag started
+01:16:35.747 > important flag is  :1
+01:16:35.752 > line 116 lz7.isAwake
+01:16:35.752 > Sleep Millis : 49511 Current Millis: 58781
+01:16:35.755 > lz7.wakeTime is :10
+01:16:35.877 > just read into subsample infdex : 72
+01:16:35.877 > >>flag started
+01:16:35.877 > important flag is  :1
+01:16:35.882 > line 116 lz7.isAwake
+01:16:35.882 > Sleep Millis : 49511 Current Millis: 58911
+01:16:35.885 > lz7.wakeTime is :10
+01:16:36.009 > just read into subsample infdex : 73
+01:16:36.009 > >>flag started
+01:16:36.009 > important flag is  :1
+01:16:36.014 > line 116 lz7.isAwake
+01:16:36.014 > Sleep Millis : 49511 Current Millis: 59043
+01:16:36.017 > lz7.wakeTime is :10
+01:16:36.140 > just read into subsample infdex : 74
+01:16:36.140 > >>flag started
+01:16:36.140 > important flag is  :1
+01:16:36.145 > line 116 lz7.isAwake
+01:16:36.145 > Sleep Millis : 49511 Current Millis: 59174
+01:16:36.148 > lz7.wakeTime is :10
+01:16:36.270 > just read into subsample infdex : 75
+01:16:36.270 > >>flag started
+01:16:36.270 > important flag is  :1
+01:16:36.275 > line 116 lz7.isAwake
+01:16:36.275 > Sleep Millis : 49511 Current Millis: 59304
+01:16:36.278 > lz7.wakeTime is :10
+01:16:36.401 > just read into subsample infdex : 76
+01:16:36.401 > >>flag started
+01:16:36.401 > important flag is  :1
+01:16:36.406 > line 116 lz7.isAwake
+01:16:36.406 > Sleep Millis : 49511 Current Millis: 59435
+01:16:36.409 > lz7.wakeTime is :10
+01:16:36.530 > just read into subsample infdex : 77
+01:16:36.531 > >>flag started
+01:16:36.531 > important flag is  :1
+01:16:36.536 > line 116 lz7.isAwake
+01:16:36.536 > Sleep Millis : 49511 Current Millis: 59565
+01:16:36.542 > lz7.wakeTime is :10
+01:16:36.542 > going through subsamples
+01:16:36.542 > going through subsamples
+01:16:36.547 > going through subsamples
+01:16:36.547 > going through subsamples
+01:16:36.553 > going through subsamples
+01:16:36.553 > going through subsamples
+01:16:36.559 > going through subsamples
+01:16:36.559 > going through subsamples
+01:16:36.559 > going through subsamples
+01:16:36.564 > going through subsamples
+01:16:36.564 > going through subsamples
+01:16:36.569 > going through subsamples
+01:16:36.569 > going through subsamples
+01:16:36.569 > going through subsamples
+01:16:36.575 > going through subsamples
+01:16:36.575 > going through subsamples
+01:16:36.580 > going through subsamples
+01:16:36.580 > going through subsamples
+01:16:36.580 > going through subsamples
+01:16:36.585 > going through subsamples
+01:16:36.585 > going through subsamples
+01:16:36.592 > going through subsamples
+01:16:36.592 > going through subsamples
+01:16:36.592 > going through subsamples
+01:16:36.598 > going through subsamples
+01:16:36.598 > going through subsamples
+01:16:36.603 > going through subsamples
+01:16:36.603 > going through subsamples
+01:16:36.603 > going through subsamples
+01:16:36.609 > going through subsamples
+01:16:36.609 > going through subsamples
+01:16:36.613 > going through subsamples
+01:16:36.613 > going through subsamples
+01:16:36.613 > going through subsamples
+01:16:36.619 > going through subsamples
+01:16:36.619 > going through subsamples
+01:16:36.624 > going through subsamples
+01:16:36.624 > going through subsamples
+01:16:36.630 > going through subsamples
+01:16:36.630 > going through subsamples
+01:16:36.630 > going through subsamples
+01:16:36.635 > going through subsamples
+01:16:36.635 > going through subsamples
+01:16:36.641 > going through subsamples
+01:16:36.641 > going through subsamples
+01:16:36.641 > going through subsamples
+01:16:36.647 > going through subsamples
+01:16:36.647 > going through subsamples
+01:16:36.652 > going through subsamples
+01:16:36.652 > going through subsamples
+01:16:36.652 > going through subsamples
+01:16:36.658 > going through subsamples
+01:16:36.658 > going through subsamples
+01:16:36.663 > going through subsamples
+01:16:36.663 > going through subsamples
+01:16:36.663 > going through subsamples
+01:16:36.669 > going through subsamples
+01:16:36.669 > going through subsamples
+01:16:36.674 > going through subsamples
+01:16:36.674 > going through subsamples
+01:16:36.674 > going through subsamples
+01:16:36.680 > going through subsamples
+01:16:36.680 > going through subsamples
+01:16:36.685 > going through subsamples
+01:16:36.685 > going through subsamples
+01:16:36.685 > going through subsamples
+01:16:36.691 > going through subsamples
+01:16:36.691 > going through subsamples
+01:16:36.697 > going through subsamples
+01:16:36.697 > going through subsamples
+01:16:36.703 > going through subsamples
+01:16:36.703 > going through subsamples
+01:16:36.703 > going through subsamples
+01:16:36.710 > going through subsamples
+01:16:36.710 > going through subsamples
+01:16:36.714 > going through subsamples
+01:16:36.714 > going through subsamples
+01:16:36.714 > >>flag started
+01:16:36.719 > important flag is  :1
+01:16:36.719 > line 236 lz7.isAwake not awake
+01:16:36.719 > Sleep Millis : 59565 Current Millis: 59743
+01:16:36.724 > lz7.sleepTime is :50
+01:16:36.724 > slp_millis is : 59565
+01:16:36.729 > current millis is : 59743
+01:16:37.224 > >>flag started
+01:16:37.224 > important flag is  :1
+01:16:37.224 > line 236 lz7.isAwake not awake
+01:16:37.228 > Sleep Millis : 59565 Current Millis: 60258
+01:16:37.228 > lz7.sleepTime is :50
+01:16:37.234 > slp_millis is : 59565
+01:16:37.234 > current millis is : 60258
+01:16:37.728 > >>flag started
+01:16:37.728 > important flag is  :1
+01:16:37.728 > line 236 lz7.isAwake not awake
+01:16:37.733 > Sleep Millis : 59565 Current Millis: 60763
+01:16:37.733 > lz7.sleepTime is :50
+01:16:37.739 > slp_millis is : 59565
+01:16:37.739 > current millis is : 60763
+01:16:38.233 > >>flag started
+01:16:38.233 > important flag is  :1
+01:16:38.233 > line 236 lz7.isAwake not awake
+01:16:38.239 > Sleep Millis : 59565 Current Millis: 61268
+01:16:38.239 > lz7.sleepTime is :50
+01:16:38.243 > slp_millis is : 59565
+01:16:38.243 > current millis is : 61268
+01:16:38.738 > >>flag started
+01:16:38.739 > important flag is  :1
+01:16:38.739 > line 236 lz7.isAwake not awake
+01:16:38.743 > Sleep Millis : 59565 Current Millis: 61773
+01:16:38.743 > lz7.sleepTime is :50
+01:16:38.748 > slp_millis is : 59565
+01:16:38.748 > current millis is : 61773
+01:16:39.243 > >>flag started
+01:16:39.243 > important flag is  :1
+01:16:39.243 > line 236 lz7.isAwake not awake
+01:16:39.248 > Sleep Millis : 59565 Current Millis: 62278
+01:16:39.248 > lz7.sleepTime is :50
+01:16:39.253 > slp_millis is : 59565
+01:16:39.253 > current millis is : 62278
+01:16:39.748 > >>flag started
+01:16:39.749 > important flag is  :1
+01:16:39.749 > line 236 lz7.isAwake not awake
+01:16:39.754 > Sleep Millis : 59565 Current Millis: 62783
+01:16:39.754 > lz7.sleepTime is :50
+01:16:39.759 > slp_millis is : 59565
+01:16:39.759 > current millis is : 62783

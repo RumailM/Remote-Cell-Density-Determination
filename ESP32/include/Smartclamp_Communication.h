@@ -24,6 +24,8 @@
 
 
 const extern bool serialDebug;
+const extern bool serialDebug4;
+extern bool isSendingData;
 
 
 class Smartclamp_Communication
@@ -50,7 +52,9 @@ public:
     const char* topic_login = "lab/control/login";
     const char* topic_login_response = "lab/control/loginResponse";
     const char* topic_experiment_start = "lab/control/experimentStart";
+    const char* topic_experiment_start_ack = "lab/control/experimentStartACK";
     const char* topic_experiment_stop = "lab/control/experimentStop";
+    const char* topic_experiment_stop_ack = "lab/control/experimentStopACK";
     const char* topic_AGC_toggle = "lab/control/AGCToggle";
     const char* topic_experiment_data = "lab/data";
 
@@ -72,6 +76,11 @@ public:
     void connectWifi();
     void connectMQTT();
     void identifyHandshake();
+
+    ///////////////////   ACKs    ///////////////
+        
+    void sendExperimentStartACK();
+    void sendExperimentStopACK();
 
     ///////////////////   SETTERS AND GETTERS    ///////////////
     void setIdentifier(int identifier);

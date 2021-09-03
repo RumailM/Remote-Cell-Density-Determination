@@ -10,11 +10,16 @@
 #include <Smartclamp_Communication.h>
 
 ///////////////////   CONSTANTS    ///////////////
-
-const bool serialDebug = false;
 const bool rawCountsMode = true;
+const bool serialDebug = false;
 const bool serialDebug2 = false;
 const bool serialDebug3 = false;
+const bool serialDebug4 = false;
+
+// const bool serialDebug = true;
+// const bool serialDebug2 = true;
+// const bool serialDebug3 = true;
+// const bool serialDebug4 = true;
 
 ///////////////////   GLOBAL     ///////////////
 
@@ -28,9 +33,7 @@ PubSubClient client(MQTT.getMqttServer(), 1883, wifiClient);
 // Variables
 unsigned long handshake_millis, current_millis;
 bool startCalledBack = false;
-int globalSubSampleIndex;
-
-
+bool isSendingData;
 ///////////////////   SETUP    ///////////////
 
 void setup()
@@ -92,16 +95,22 @@ void loop(void)
     }
     else if(startCalledBack == true && MQTT.getFlagStart() == false) 
     { // If recently stopped experiment, reset local flag
+        // MQTT.sendExperimentStopACK();
         startCalledBack = false;
         if(serialDebug3){
             Serial.println("Reset startcalledbackf flag");
             Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
         }
+        
     }
     else if (MQTT.getFlagIdentification() && MQTT.getFlagStart())
     {
-        Serial.println(">>flag started");
-        Serial.println("important flag is  :" + String(MQTT.getFlagStart()));
+        // MQTT.sendExperimentStartACK();
+        if(serialDebug4)
+        {
+            Serial.println(">>flag started");
+            Serial.println("important flag is  :" + String(MQTT.getFlagStart()));
+        }
         if (startCalledBack == false )
         {
                 startCalledBack = true;
@@ -109,24 +118,25 @@ void loop(void)
                 if(serialDebug3){
                     Serial.println("Updated sleep millis");
                     Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
-
                 }
         }
 
         if (lz7.isAwake)
         {               
-            Serial.println("line 116 lz7.isAwake");
-            Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
-            Serial.println("lz7.wakeTime is :" + String(lz7.wakeTime));
-            if (current_millis - lz7.slp_millis > lz7.wakeTime * 1000)
+            if(serialDebug4)
             {
+                Serial.println("line 116 lz7.isAwake");
+                Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
+            }
+            if (current_millis - lz7.slp_millis > lz7.wakeTime * 1000)
+            {   Serial.println("lz7 is now asleep");
                 lz7.isAwake = false;
                 if (lz7.color != LZ7_COLOR_NONE)
                 {
                     lz7.turnOffLight(lz7.getChannelFromColor(lz7.getColor()));
                 }
                 lz7.slp_millis = current_millis;
-
+                isSendingData = true;
                 for (int j = 0; j < as7341.subSampleIndex; ++j)
                 {
                     if(serialDebug3)
@@ -235,18 +245,22 @@ void loop(void)
         }
         else
         {
-            Serial.println("line 236 lz7.isAwake not awake");
-            Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
-            Serial.println("lz7.sleepTime is :" + String(lz7.sleepTime));
+            if(serialDebug4){
+                Serial.println("line 236 lz7.isAwake not awake");
+                Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
+                // Serial.println("lz7.sleepTime is :" + String(lz7.sleepTime));
+            }
 
-            if (current_millis - lz7.slp_millis > lz7.sleepTime * 1000)
+            if ((current_millis - lz7.slp_millis > lz7.sleepTime * 1000) )
             {
+                Serial.println("lz7 is now awake");
                 lz7.isAwake = true;
                 if (lz7.color != LZ7_COLOR_NONE)
                 {
                     lz7.turnOnLight(lz7.getChannelFromColor(lz7.getColor()));
                 }
                 lz7.slp_millis = current_millis;
+                isSendingData = false;
             }
             else
             {
@@ -258,9 +272,12 @@ void loop(void)
             }
         }
     } else {
-        Serial.println("For some reason some weird stuff is happenign and we are here now");
-        Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
-        Serial.println("important flag is  :" + String(MQTT.getFlagStart()));
-        delay(2000);
+        if(serialDebug3)
+        {
+            Serial.println("For some reason some weird stuff is happenign and we are here now");
+            Serial.println("Sleep Millis : " + String(lz7.slp_millis) + " Current Millis: " + String(current_millis));
+            Serial.println("important flag is  :" + String(MQTT.getFlagStart()));
+            delay(200);
+        }
     }
 }

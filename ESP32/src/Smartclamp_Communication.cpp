@@ -151,17 +151,20 @@ void Smartclamp_Communication::callbackLoginResponse(byte* payload, unsigned int
  */
 void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned int length, Smartclamp_AS7341* sensor_ptr)
 {
-    Serial.println("callback is being triggered");
+    if(serialDebug4)
+        Serial.println("callback is being triggered");
     if (flag_identification)
     {
         StaticJsonDocument<256> doc;
         if (!deserializeJsonHandleError(doc, payload, length))
         {
-            Serial.println("has been desearlized");
+            if(serialDebug4)
+                Serial.println("has been desearlized");
             // Check identifier
             if (identifier == (int) doc["ID"])
             {
-                Serial.println("id is corrects");
+                if(serialDebug4)
+                    Serial.println("id is corrects");
                 // Set ATIME and ASTEP values
                 uint8_t atime = (uint8_t) doc["ATIME"];
                 uint16_t astep = (uint16_t) doc["ASTEP"];
@@ -258,6 +261,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                 if (led_ptr->color != LZ7_COLOR_NONE)
                 {
                     led_ptr->turnOnLight(led_ptr->getChannelFromColor(led_ptr->getColor()));
+                    led_ptr->isAwake = true;
                     delay(200);
                 }
 
@@ -291,7 +295,10 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
 
                 // Raise flag_start
                 flag_start = true;
-                Serial.println("does this get called?");
+                
+                if(serialDebug4)
+                    Serial.println("does this get called?");
+                sendExperimentStartACK();
             }
 
             if(serialDebug)
@@ -331,61 +338,62 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
                     if(serialDebug)
                         Serial.println("Failed to unsubscribe from experimentStop topic.");
                 }
-
-                if (led_ptr->color != LZ7_COLOR_NONE)
+                if(!isSendingData)
                 {
-                    led_ptr->turnOffLight(led_ptr->getChannelFromColor(led_ptr->getColor()));
-                }
-                led_ptr->isAwake = true;
-
-                // Temporary copy paste inclusion
-
-                for (int j = 0; j < sensor_ptr->subSampleIndex; ++j)
-                {
-                    StaticJsonDocument<256> doc;
-                    doc["ID"] = getIdentifier();
-                    doc["TIME"] = sensor_ptr->times[j];
-                    doc["GAIN"] = sensor_ptr->gains[j];
-                    doc["ATIME"] = sensor_ptr->atimes[j];
-                    doc["ASTEP"] = sensor_ptr->asteps[j];
-
-                    JsonArray data = doc.createNestedArray("DATA");
-
-                    switch(sensor_ptr->getReadBandMode())
+                    if (led_ptr->color != LZ7_COLOR_NONE)
                     {
-                        case AS7341_READ_ALL_CHANNELS:
-                            for (int i = 0; i < 12; ++i)
-                            {
-                                // we skip the first set of duplicate clear/NIR readings
-                                // (indices 4 and 5)
-                                if (i == 4 || i == 5)
-                                    continue;
-                                
-                                data.add(sensor_ptr->subSamples[j][i]);
-                            }
-                            break;
-                        case AS7341_READ_LOW_CHANNELS:
-                            for (int i = 0; i < 6; ++i)
-                            {
-                                data.add(sensor_ptr->subSamples[j][i]);
-                            }
-                            break;
-                        case AS7341_READ_HIGH_CHANNELS:
-                            for (int i = 6; i < 12; ++i)
-                            {
-                                data.add(sensor_ptr->subSamples[j][i]);
-                            }
-                            break;
+                        led_ptr->turnOffLight(led_ptr->getChannelFromColor(led_ptr->getColor()));
                     }
-                    char buffer[256];
-                    size_t n = serializeJson(doc, buffer); 
-                    
-                    if (!publishData(buffer, n))
+                    led_ptr->isAwake = true;
+
+                    // Temporary copy paste inclusion
+
+                    for (int j = 0; j < sensor_ptr->subSampleIndex; ++j)
                     {
-                        connectMQTT();
+                        StaticJsonDocument<256> doc;
+                        doc["ID"] = getIdentifier();
+                        doc["TIME"] = sensor_ptr->times[j];
+                        doc["GAIN"] = sensor_ptr->gains[j];
+                        doc["ATIME"] = sensor_ptr->atimes[j];
+                        doc["ASTEP"] = sensor_ptr->asteps[j];
+
+                        JsonArray data = doc.createNestedArray("DATA");
+
+                        switch(sensor_ptr->getReadBandMode())
+                        {
+                            case AS7341_READ_ALL_CHANNELS:
+                                for (int i = 0; i < 12; ++i)
+                                {
+                                    // we skip the first set of duplicate clear/NIR readings
+                                    // (indices 4 and 5)
+                                    if (i == 4 || i == 5)
+                                        continue;
+                                    
+                                    data.add(sensor_ptr->subSamples[j][i]);
+                                }
+                                break;
+                            case AS7341_READ_LOW_CHANNELS:
+                                for (int i = 0; i < 6; ++i)
+                                {
+                                    data.add(sensor_ptr->subSamples[j][i]);
+                                }
+                                break;
+                            case AS7341_READ_HIGH_CHANNELS:
+                                for (int i = 6; i < 12; ++i)
+                                {
+                                    data.add(sensor_ptr->subSamples[j][i]);
+                                }
+                                break;
+                        }
+                        char buffer[256];
+                        size_t n = serializeJson(doc, buffer); 
+                        
+                        if (!publishData(buffer, n))
+                        {
+                            connectMQTT();
+                        }
                     }
                 }
-
                 // sensor_ptr->initializeReadings();
 
                 // Sub to experimentStart topic
@@ -402,6 +410,7 @@ void Smartclamp_Communication::callbackExperimentStop(byte* payload, unsigned in
 
                 // Lower flag_start
                 flag_start = false;
+                sendExperimentStopACK();
             }
 
             if(serialDebug)
@@ -643,3 +652,33 @@ int Smartclamp_Communication::getIdentifier(){return identifier;}
 const char* Smartclamp_Communication::getTopicExperimentData(){return topic_experiment_data;}
 
 const char* Smartclamp_Communication::getMqttServer(){return mqtt_server;}
+
+// ACKs
+
+void Smartclamp_Communication::sendExperimentStartACK()
+{
+    StaticJsonDocument<256> doc;
+    doc["ID"] = getIdentifier();
+    char buffer[256];
+    size_t n = serializeJson(doc, buffer);
+    if (client_ptr->publish(topic_experiment_start_ack, buffer, n))
+    {
+        if(serialDebug4)
+            Serial.println("ExperimentStart ACK sent!");
+    }
+
+
+}
+void Smartclamp_Communication::sendExperimentStopACK()
+{
+    StaticJsonDocument<256> doc;
+    doc["ID"] = getIdentifier();
+    char buffer[256];
+    size_t n = serializeJson(doc, buffer);
+    if (client_ptr->publish(topic_experiment_stop_ack, buffer, n))
+    {
+        if(serialDebug4)
+            Serial.println("ExperimentStop ACK sent!");
+    }
+
+}

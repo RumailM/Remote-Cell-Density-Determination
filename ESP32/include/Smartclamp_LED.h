@@ -15,8 +15,8 @@
 // Constants
 const double LED_FREQ = 5000; // PWM Frequency
 const uint8_t LED_RES = 8;    // 8-bit ADC Resolution
-const uint8_t LED_PIN_RED = 26;    // PWM Pin Red
-const uint8_t LED_PIN_GREEN = 4;    // PWM Pin Green
+const uint8_t LED_PIN_RED = 4;    // PWM Pin Red (red green) swapped sept 13 because of solder error
+const uint8_t LED_PIN_GREEN = 26;    // PWM Pin Green swapped sept 13 because of solder error
 const uint8_t LED_PIN_BLUE = 25;    // PWM Pin Blue
 const uint8_t LED_CH_RED = 0;     // PWM Channel Red
 const uint8_t LED_CH_GREEN = 1;     // PWM Channel Green

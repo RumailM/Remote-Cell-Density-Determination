@@ -258,6 +258,9 @@ void loop(void)
                 if (lz7.color != LZ7_COLOR_NONE)
                 {
                     lz7.turnOnLight(lz7.getChannelFromColor(lz7.getColor()));
+                    delay(200);
+                    as7341.automaticGainControl();
+                    as7341.updateSensorInfo();
                 }
                 lz7.slp_millis = current_millis;
                 isSendingData = false;

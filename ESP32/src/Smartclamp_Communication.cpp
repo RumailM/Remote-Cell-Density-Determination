@@ -266,6 +266,7 @@ void Smartclamp_Communication::callbackExperimentStart(byte* payload, unsigned i
                 }
 
                 sensor_ptr->automaticGainControl();
+                sensor_ptr->updateSensorInfo();
                 // led_ptr->slp_millis = millis();
                 // sensor_ptr->initializeReadings();
 
